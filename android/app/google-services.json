@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "977437828137",
+    "project_id": "gym-mate-23eb1",
+    "storage_bucket": "gym-mate-23eb1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977437828137:android:951f46edd7ee74b67e6838",
+        "android_client_info": {
+          "package_name": "com.gymmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977437828137-69tiaituq1rb6ct7thla85dkitp728se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAAnC91OjE5qIgFh7QSbJPh1zHra_Uecw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977437828137-69tiaituq1rb6ct7thla85dkitp728se.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "977437828137-t4oh3d48unt3625044smqg52j8daus88.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.gymMate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
