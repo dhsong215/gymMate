@@ -28,6 +28,7 @@ export default function App() {
             createAt: firestore.FieldValue.serverTimestamp(),
             imagePath: '',
             displayName: user.displayName,
+            email: user.email,
             followings: [],
             followers: [],
             isPremium: false,

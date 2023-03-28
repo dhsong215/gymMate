@@ -9,16 +9,12 @@ export default function AddPlanScreen() {
       style={[
         styles.mainContainer,
         {backgroundColor: themeColors.backgroundColor},
-      ]}>
-      <Text style={{color: themeColors.textColor}}>Hello, world.</Text>
-    </View>
+      ]}></View>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

@@ -1,7 +1,5 @@
-import React, {useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-
-import {themeColorsContext} from '../contexts';
 
 LocaleConfig.locales['kr'] = {
   monthNames: [
@@ -32,27 +30,42 @@ LocaleConfig.locales['kr'] = {
     '11월',
     '12월',
   ],
-  dayNames: ['월', '화', '수', '목', '금', '토', '일'],
-  dayNamesShort: ['월', '화', '수', '목', '금', '토', '일'],
+  dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+  dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
   today: '오늘',
 };
 LocaleConfig.defaultLocale = 'kr';
 
-export default function CalendarComponent() {
-  const themeColors = useContext(themeColorsContext);
+export default function PlanCalendar({selectedDate, setSelectedDate}) {
+  const [markedDates, setMarkedDates] = useState({});
+  //markedDates 가져오기
+
+  useEffect(() => {
+    setMarkedDates({
+      [selectedDate]: {selected: true, selectedColor: 'green'},
+      //나중에 진짜 계획 추가
+      '2023-03-17': {marked: true},
+      '2023-03-18': {marked: true, dotColor: 'red', activeOpacity: 0},
+    });
+  }, [selectedDate]);
 
   return (
     <Calendar
+      markedDates={markedDates}
       style={{
-        backgroundColor: themeColors.boxColors[0],
+        backgroundColor: '#262A56',
       }}
       theme={{
         calendarBackground: 'transparent',
-        monthTextColor: '#867070',
-        dayTextColor: '#867070',
+        monthTextColor: 'white',
+        dayTextColor: 'white',
       }}
       hideExtraDays={true}
       enableSwipeMonths={true}
+      minDate={'2023-01-01'}
+      onDayPress={day => {
+        setSelectedDate(day.dateString);
+      }}
     />
   );
 }
