@@ -14,8 +14,8 @@ export default function MainTabs() {
         name="Home"
         component={HomeScreen}
       />
-      <Tab.Screen name="Analysis" component={TemporaryScreen} />
       <Tab.Screen name="Calender" component={TemporaryScreen} />
+      <Tab.Screen name="Analysis" component={TemporaryScreen} />
       <Tab.Screen name="Social" component={TemporaryScreen} />
       <Tab.Screen name="More" component={TemporaryScreen} />
     </Tab.Navigator>

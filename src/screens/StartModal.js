@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import {themeColorsContext} from '../contexts';
 
-export default function StartModal({navigation: {goBack}}) {
+export default function StartModal({navigation: {goBack, navigate}}) {
   const themeColors = useContext(themeColorsContext);
   const modalPositionY = useRef(new Animated.Value(0)).current;
 
   const startUp = Animated.spring(modalPositionY, {
     toValue: -400,
-    tension: 70,
+    tension: 50,
     useNativeDriver: true,
   });
 
@@ -44,6 +44,7 @@ export default function StartModal({navigation: {goBack}}) {
             hideModal.start(() => goBack());
           }}></Pressable>
       </Animated.View>
+
       <Animated.View
         style={[
           styles.modal,
@@ -52,24 +53,41 @@ export default function StartModal({navigation: {goBack}}) {
             transform: [{translateY: modalPositionY}],
           },
         ]}>
+        {/* go Plan */}
         <TouchableOpacity
           style={[
             styles.button,
             {backgroundColor: themeColors.buttonColors[1]},
-          ]}>
+          ]}
+          onPress={() => {
+            hideModal.start(() => {
+              goBack();
+              navigate('Plan');
+            });
+          }}>
           <Text style={[styles.buttonText, {color: themeColors.textColor}]}>
             계획 불러오기 / 생성
           </Text>
         </TouchableOpacity>
+
+        {/* go Routine */}
         <TouchableOpacity
           style={[
             styles.button,
             {backgroundColor: themeColors.buttonColors[1]},
-          ]}>
+          ]}
+          onPress={() => {
+            hideModal.start(() => {
+              goBack();
+              navigate('Routine');
+            });
+          }}>
           <Text style={[styles.buttonText, {color: themeColors.textColor}]}>
             루틴 가져오기 / 생성
           </Text>
         </TouchableOpacity>
+
+        {/* go Start */}
         <TouchableOpacity style={[styles.button, {backgroundColor: '#B8621B'}]}>
           <Text style={[styles.buttonText, {color: 'white'}]}>바로 시작!</Text>
         </TouchableOpacity>
