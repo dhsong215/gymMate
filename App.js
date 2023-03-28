@@ -11,7 +11,7 @@ import OutStack from './src/navigation/OutStack';
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState();
+  const [userProfile, setUserProfile] = useState({});
   const [user, setUser] = useState();
 
   const colorScheme = useColorScheme(); //define themeColors
@@ -42,10 +42,9 @@ export default function App() {
           await getUserRef(user.uid).set(data);
           userProfile = await userRef.get({source: 'cache'});
         }
-        return userProfile;
+        setUserProfile(userProfile._data);
       };
-      const profileData = getUserProfile(user);
-      setUserProfile(profileData);
+      getUserProfile(user);
     }
   }, [user]);
 
