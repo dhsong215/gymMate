@@ -13,8 +13,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {userContext} from '../../contexts';
 import {themeColorsContext} from '../../contexts';
 
-export default function HomeScreen() {
-  const userProfile = useContext(userContext);
+export default function HomeScreen({navigation: {navigate}}) {
+  const userProfile = useContext(userContext); //useState로 수정하기
   const themeColors = useContext(themeColorsContext);
 
   const [routines, setRoutines] = useState([]);
@@ -66,7 +66,10 @@ export default function HomeScreen() {
                 style={[
                   styles.startWorkButton,
                   {backgroundColor: themeColors.buttonColor[0]},
-                ]}>
+                ]}
+                onPress={() => {
+                  navigate('StartModal');
+                }}>
                 <Text
                   style={[
                     styles.startWorkText,
@@ -169,6 +172,7 @@ const styles = StyleSheet.create({
   ContainerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
   },
   //하나만 있는거
