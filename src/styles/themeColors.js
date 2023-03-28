@@ -1,13 +1,15 @@
 export const darkModeColors = {
   backgroundColor: '#15191D',
-  boxColor: '#2D2727',
+  boxColors: ['#2D2727'],
   textColor: 'white',
-  buttonColor: ['#A44BE2'],
+  buttonColors: ['#A44BE2', '#245953'],
+  modalColors: ['#424242'],
 };
 
 export const lightModeColors = {
   backgroundColor: '#FFFFFF',
-  boxColor: '#F5EBEB',
+  boxColors: ['#F5EBEB'],
   textColor: 'black',
-  buttonColor: ['#9191DD'],
+  buttonColors: ['#9191DD', '#D8D8D8'],
+  modalColors: ['#F1F0F2'],
 };

@@ -1,7 +1,9 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useContext, useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, Animated, Pressable} from 'react-native';
+import {themeColorsContext} from '../contexts';
 
 export default function StartModal({navigation: {goBack}}) {
+  const themeColors = useContext(themeColorsContext);
   const modalPositionY = useRef(new Animated.Value(0)).current;
 
   const startUp = Animated.spring(modalPositionY, {
@@ -22,11 +24,12 @@ export default function StartModal({navigation: {goBack}}) {
 
   const opacity = modalPositionY.interpolate({
     inputRange: [-400, 0],
-    outputRange: [0.3, 0],
+    outputRange: [0.5, 0],
   });
 
   return (
     <>
+      {/* backdrop */}
       <Animated.View
         style={[styles.mainContainer, {backgroundColor: 'black', opacity}]}>
         <Pressable
@@ -35,11 +38,13 @@ export default function StartModal({navigation: {goBack}}) {
             hideModal.start(() => goBack());
           }}></Pressable>
       </Animated.View>
+
+      {/* modal screen */}
       <Animated.View
         style={[
           styles.modal,
           {
-            backgroundColor: 'grey',
+            backgroundColor: themeColors.modalColors[0],
             transform: [{translateY: modalPositionY}],
           },
         ]}></Animated.View>

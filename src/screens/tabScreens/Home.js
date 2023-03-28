@@ -51,7 +51,7 @@ export default function HomeScreen({navigation: {navigate}}) {
               <TouchableOpacity
                 style={[
                   styles.addGoals,
-                  {backgroundColor: themeColors.boxColor},
+                  {backgroundColor: themeColors.boxColors[0]},
                 ]}>
                 <Text
                   style={[styles.addGoalsText, {color: themeColors.textColor}]}>
@@ -65,7 +65,7 @@ export default function HomeScreen({navigation: {navigate}}) {
               <TouchableOpacity
                 style={[
                   styles.startWorkButton,
-                  {backgroundColor: themeColors.buttonColor[0]},
+                  {backgroundColor: themeColors.buttonColors[0]},
                 ]}
                 onPress={() => {
                   navigate('StartModal');
@@ -95,7 +95,7 @@ export default function HomeScreen({navigation: {navigate}}) {
               <View
                 style={[
                   styles.weeklyChart,
-                  {backgroundColor: themeColors.boxColor},
+                  {backgroundColor: themeColors.boxColors[0]},
                 ]}></View>
             </View>
 
@@ -120,7 +120,7 @@ export default function HomeScreen({navigation: {navigate}}) {
                     style={[
                       styles.routine,
                       {
-                        backgroundColor: themeColors.boxColor,
+                        backgroundColor: themeColors.boxColors[0],
                       },
                     ]}></View>
                 </ScrollView>
