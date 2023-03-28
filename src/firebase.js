@@ -7,4 +7,6 @@ GoogleSignin.configure({
     '977437828137-69tiaituq1rb6ct7thla85dkitp728se.apps.googleusercontent.com',
 });
 
+export const getUserRef = uid => firestore().collection('Users').doc(uid);
+
 export {firestore, auth, GoogleSignin};

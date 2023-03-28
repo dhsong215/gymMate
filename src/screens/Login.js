@@ -12,12 +12,7 @@ async function onGoogleButtonPress() {
 
 function GoogleSignIn() {
   return (
-    <Button
-      title="Google Sign-In"
-      onPress={() =>
-        onGoogleButtonPress().then(() => console.log('Signed in with Google!'))
-      }
-    />
+    <Button title="Google Sign-In" onPress={() => onGoogleButtonPress()} />
   );
 }
 
