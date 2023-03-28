@@ -10,19 +10,15 @@ import {themeColorsContext} from '../contexts';
 
 import PlanCalendar from '../components/calendar';
 
+//logic
+import {nowDate} from '../logic/date';
+
 export default function PlanScreen({navigation: {navigate}}) {
   const themeColors = useContext(themeColorsContext);
   const [selectedDate, setSelectedDate] = useState('');
 
   useEffect(() => {
-    //make now date 'yyyy-mm-dd'format
-    const currentDate = new Date(Date.now());
-    const datePart = currentDate.toLocaleDateString().split('/');
-    setSelectedDate(
-      `${datePart[2]}-${
-        datePart[0].length > 1 ? datePart[0] : '0' + datePart[0]
-      }-${datePart[1]}`,
-    );
+    setSelectedDate(nowDate()); // get current date yyyy-mm-dd format
   }, []);
 
   return (
@@ -45,6 +41,7 @@ export default function PlanScreen({navigation: {navigate}}) {
             </Text>
           </View>
         </View>
+        {/* ***************************<View>여기에 날짜별 계획 불러오기</View>************************** */}
       </ScrollView>
       <TouchableOpacity
         style={[

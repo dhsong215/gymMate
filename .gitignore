@@ -33,6 +33,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+!gymmate-release-key.keystore
 
 # node.js
 #

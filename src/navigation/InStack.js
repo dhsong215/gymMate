@@ -25,11 +25,13 @@ export default function InStack() {
         headerStyle: {backgroundColor: themeColors.screenHeaderColor},
       }}>
       <Stack.Screen name="MainTabs" component={MainTabs} />
+
       <Stack.Screen
         name="Plan"
         component={PlanScreen}
         options={{headerShown: true, headerTitle: '내 계획'}}
       />
+
       <Stack.Screen
         name="AddPlan"
         component={AddPlanScreen}
@@ -40,7 +42,14 @@ export default function InStack() {
           animation: 'fade_from_bottom',
         }}
       />
-      <Stack.Screen name="Routine" component={RoutineScreen} />
+
+      <Stack.Screen
+        name="Routine"
+        component={RoutineScreen}
+        options={{headerShown: true, headerTitle: '내 루틴'}}
+      />
+
+      {/* modals */}
       <Stack.Screen
         name="StartModal"
         component={StartModal}
