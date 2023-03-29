@@ -12,6 +12,7 @@ import DraggableFlatList from 'react-native-draggable-flatlist';
 
 //assets
 import exercises from '../assets/exercises.json';
+import imagePaths from '../assets/imagePath';
 
 //context
 import {themeColorsContext} from '../contexts';
@@ -44,6 +45,7 @@ const Header = ({goBack}) => {
 
 const AddWorkoutModal = ({modalVisible, setModalVisible}) => {
   const themeColors = useContext(themeColorsContext);
+  const [exerciseList, setExerciseList] = useState(exercises);
 
   return (
     <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -55,24 +57,26 @@ const AddWorkoutModal = ({modalVisible, setModalVisible}) => {
               <Text>close</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView>
-            {exercises.map(item => {
-              return (
-                <TouchableOpacity style={styles.exerciseContainer}>
-                  <View style={[styles.exerciseImgContainer]}>
-                    {/* <Image
-                      source={{
-                        uri: `bundle-assets://assets/exerciseImages/${imageId}.png`,
-                      }}
-                    /> */}
-                  </View>
-                  <Text style={[{color: themeColors.textColor}]}>
-                    {item.korName}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+          {imagePaths ? (
+            <ScrollView>
+              {exerciseList.map(item => {
+                return (
+                  <TouchableOpacity style={styles.exerciseContainer}>
+                    <View style={[styles.exerciseImgContainer]}>
+                      <Image
+                        resizeMode="contain"
+                        style={{width: 50, height: 50, borderRadius: 35}}
+                        source={imagePaths.find(a => a.id == item.id).uri}
+                      />
+                    </View>
+                    <Text style={[{color: themeColors.textColor}]}>
+                      {item.korName}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          ) : null}
         </View>
       </View>
     </Modal>
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: '95%',
-    height: '84%',
+    height: '90%',
     borderRadius: 15,
     elevation: 10,
     shadowColor: 'black',
@@ -207,10 +211,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   exerciseImgContainer: {
-    height: 50,
-    width: 50,
+    height: 60,
+    width: 60,
     margin: 10,
     backgroundColor: 'white',
-    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
   },
 });

@@ -1,7 +1,6 @@
 [
   {
     "id": 3010001,
-    "imageId": "00251101",
     "name": "Barbell-Bench-Press",
     "korName": "바벨 벤치프레스",
     "target": "chest",
@@ -10,7 +9,6 @@
   },
   {
     "id": 3020002,
-    "imageId": "00271101",
     "name": "Barbell-Bent-Over-Row",
     "korName": "바벨 벤트오버 로우",
     "target": "back",
@@ -19,7 +17,6 @@
   },
   {
     "id": 3070003,
-    "imageId": "00321101",
     "name": "Barbell-Deadlift",
     "korName": "바벨 데드리프트",
     "target": "full_body",
@@ -28,7 +25,6 @@
   },
   {
     "id": 3010004,
-    "imageId": "00471101",
     "name": "Barbell-Incline-Bench-Press",
     "korName": "바벨 인클라인 벤치프레스",
     "target": "chest",
@@ -37,7 +33,6 @@
   },
   {
     "id": 3010005,
-    "imageId": "02891101",
     "name": "Dumbbell-Bench-Press",
     "korName": "덤벨 벤치프레스",
     "target": "chest",
@@ -46,7 +41,6 @@
   },
   {
     "id": 3020006,
-    "imageId": "02921101",
     "name": "Dumbbell-Bent-over-Row",
     "korName": "덤벨 벤트오버 로우",
     "target": "back",
@@ -55,7 +49,6 @@
   },
   {
     "id": 3010007,
-    "imageId": "03081101",
     "name": "Dumbbell-Fly",
     "korName": "덤벨 플라이",
     "target": "chest",
@@ -64,7 +57,6 @@
   },
   {
     "id": 3010008,
-    "imageId": "03141101",
     "name": "Dumbbell-Incline-Bench-Press",
     "korName": "덤벨 인클라인 벤치프레스",
     "target": "chest",
@@ -73,7 +65,6 @@
   },
   {
     "id": 3030009,
-    "imageId": "00341101",
     "name": "Dumbbell-Lateral-Raise",
     "korName": "덤벨 레터럴 레이즈",
     "target": "shoulder",
@@ -82,7 +73,6 @@
   },
   {
     "id": 3000010,
-    "imageId": "05851101",
     "name": "Lever-Leg-Extension",
     "korName": "레그 익스텐션",
     "target": "lower_body",
