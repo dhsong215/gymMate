@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.7,
+    opacity: 0.9,
   },
 });

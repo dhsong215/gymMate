@@ -25,7 +25,7 @@ export default function InStack() {
         headerShown: false,
         headerShadowVisible: false,
         headerTitleStyle: {color: themeColors.textColor},
-        headerStyle: {backgroundColor: themeColors.screenHeaderColor},
+        headerStyle: {backgroundColor: themeColors.screenHeaderColors[0]},
       }}>
       <Stack.Screen name="MainTabs" component={MainTabs} />
 

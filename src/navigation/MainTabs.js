@@ -33,7 +33,7 @@ export default function MainTabs() {
           elevation: 15,
           position: 'absolute',
         },
-        headerStyle: {backgroundColor: themeColors.screenHeaderColor},
+        headerStyle: {backgroundColor: themeColors.screenHeaderColors[0]},
         headerShadowVisible: false,
         headerTitleStyle: {color: themeColors.textColor},
         tabBarActiveTintColor: '#FF6666',
