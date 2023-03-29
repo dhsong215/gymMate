@@ -53,7 +53,7 @@ export default function PlanScreen({navigation: {navigate}}) {
           {backgroundColor: themeColors.buttonColors[2]},
         ]}
         onPress={() => {
-          navigate('AddPlan');
+          navigate('AddPlan', {date: selectedDate});
         }}>
         <AntDesign name="plus" color="white" size={30} />
       </TouchableOpacity>

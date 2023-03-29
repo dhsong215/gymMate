@@ -5,91 +5,61 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  Modal,
-  Image,
 } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
-
-//assets
-import exercises from '../assets/exercises.json';
-import imagePaths from '../assets/imagePath';
 
 //context
 import {themeColorsContext} from '../contexts';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {ScrollView} from 'react-native-gesture-handler';
 
-const Header = ({goBack}) => {
+//components
+import AddExerciseModal from '../components/addExerciseModal';
+
+const Header = ({goBack, title}) => {
   const themeColors = useContext(themeColorsContext);
   return (
-    <View
-      style={[
-        styles.headerContainer,
-        {backgroundColor: themeColors.screenHeaderColors[1]},
-      ]}>
-      <View style={styles.headerTopButtonContainer}>
-        <TouchableOpacity onPress={() => goBack()}>
-          <Ionicons name="arrow-back" size={30} color={themeColors.textColor} />
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={{backgroundColor: themeColors.screenHeaderColors[1]}}>
       <View
         style={[
-          styles.headerStateBox,
-          {backgroundColor: themeColors.modalColors[0]},
-        ]}></View>
-    </View>
-  );
-};
-
-const AddWorkoutModal = ({modalVisible, setModalVisible}) => {
-  const themeColors = useContext(themeColorsContext);
-  const [exerciseList, setExerciseList] = useState(exercises);
-
-  return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible}>
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <View
-          style={[styles.modal, {backgroundColor: themeColors.modalColors[1]}]}>
-          <View style={[styles.modalHeader]}>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text>close</Text>
-            </TouchableOpacity>
-          </View>
-          {imagePaths ? (
-            <ScrollView>
-              {exerciseList.map(item => {
-                return (
-                  <TouchableOpacity style={styles.exerciseContainer}>
-                    <View style={[styles.exerciseImgContainer]}>
-                      <Image
-                        resizeMode="contain"
-                        style={{width: 50, height: 50, borderRadius: 35}}
-                        source={imagePaths.find(a => a.id == item.id).uri}
-                      />
-                    </View>
-                    <Text style={[{color: themeColors.textColor}]}>
-                      {item.korName}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          ) : null}
+          styles.headerContainer,
+          {backgroundColor: themeColors.screenHeaderColors[1]},
+        ]}>
+        <View style={styles.headerTopContainer}>
+          <TouchableOpacity
+            style={styles.headerBackButton}
+            onPress={() => goBack()}>
+            <Ionicons
+              name="arrow-back"
+              size={30}
+              color={themeColors.textColor}
+            />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
+            {title}
+          </Text>
         </View>
+        <View
+          style={[
+            styles.headerStateBox,
+            {backgroundColor: themeColors.modalColors[1]},
+          ]}></View>
       </View>
-    </Modal>
+    </SafeAreaView>
   );
 };
 
-export default function AddPlanScreen({navigation: {setOptions, goBack}}) {
+export default function AddPlanScreen({
+  navigation: {setOptions, goBack},
+  route: {params},
+}) {
   const [workoutList, setWorkoutList] = useState([]);
-  const [addWorkoutModalVisible, setAddWorkoutModalVisible] = useState(false);
+  const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const themeColors = useContext(themeColorsContext);
 
   useEffect(() => {
-    setOptions({header: () => <Header goBack={goBack} />});
+    setOptions({header: () => <Header goBack={goBack} title={params.date} />});
   }, []);
 
   const renderItem = ({item, drag, isActive}) => {
@@ -124,28 +94,34 @@ export default function AddPlanScreen({navigation: {setOptions, goBack}}) {
       />
 
       {/* button container */}
-      <View style={[styles.footerButtonContainer]}>
+      <View style={[styles.bottomButtonContainer]}>
         <TouchableOpacity
           style={[
-            styles.addWorkoutButton,
+            styles.bottomButton,
             {backgroundColor: themeColors.buttonColors[1]},
           ]}
           onPress={() => {
-            setAddWorkoutModalVisible(true);
+            setAddExerciseModalVisible(true);
           }}>
-          <Text style={[{color: themeColors.textColor}]}>운동 추가하기</Text>
+          <Text
+            style={[styles.bottomButtonText, {color: themeColors.textColor}]}>
+            운동 추가하기
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
-            styles.addWorkoutButton,
+            styles.bottomButton,
             {backgroundColor: themeColors.buttonColors[3]},
           ]}>
-          <Text style={[{color: themeColors.textColor}]}>저장</Text>
+          <Text
+            style={[styles.bottomButtonText, {color: themeColors.textColor}]}>
+            저장
+          </Text>
         </TouchableOpacity>
       </View>
-      <AddWorkoutModal
-        modalVisible={addWorkoutModalVisible}
-        setModalVisible={setAddWorkoutModalVisible}
+      <AddExerciseModal
+        modalVisible={addExerciseModalVisible}
+        setModalVisible={setAddExerciseModalVisible}
       />
     </SafeAreaView>
   );
@@ -153,14 +129,11 @@ export default function AddPlanScreen({navigation: {setOptions, goBack}}) {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    height: 110,
-    elevation: 10,
-    shadowColor: 'grey',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    height: 100,
   },
-  headerTopButtonContainer: {padding: 10},
+  headerTopContainer: {flexDirection: 'row', padding: 10, alignItems: 'center'},
+  headerBackButton: {marginRight: 20},
+  headerTitle: {fontSize: 20, fontWeight: '600'},
   headerStateBox: {
     backgroundColor: 'white',
     height: 100,
@@ -176,47 +149,22 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  footerButtonContainer: {
+
+  bottomButtonContainer: {
     position: 'absolute',
     width: '100%',
     flexDirection: 'row',
     bottom: 0,
   },
-  addWorkoutButton: {
+  bottomButton: {
     width: '50%',
     height: 80,
     paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  modal: {
-    width: '95%',
-    height: '90%',
-    borderRadius: 15,
-    elevation: 10,
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-  },
-  modalHeader: {
-    height: 60,
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
-    backgroundColor: 'grey',
-  },
-  exerciseContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
-  },
-  exerciseImgContainer: {
-    height: 60,
-    width: 60,
-    margin: 10,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
+  bottomButtonText: {
+    fontSize: 17,
+    fontWeight: '600',
   },
 });
