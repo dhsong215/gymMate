@@ -1,5 +1,9 @@
+import React, {useContext} from 'react';
+import {View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
+//context
+import {themeColorsContext} from '../contexts';
 //screens
 import TemporaryScreen from '../screens/Temporary';
 import HomeScreen from '../screens/tabScreens/Home';
@@ -12,8 +16,28 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
+  const themeColors = useContext(themeColorsContext);
+
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: themeColors.backgroundColor,
+          shadowColor: themeColors.tabBarShadowColor,
+          shadowOffset: {
+            width: 0,
+            height: 0,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 5,
+          elevation: 15,
+          position: 'absolute',
+        },
+        headerStyle: {backgroundColor: themeColors.screenHeaderColor},
+        headerShadowVisible: false,
+        headerTitleStyle: {color: themeColors.textColor},
+        tabBarActiveTintColor: '#FF6666',
+      }}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}

@@ -8,10 +8,14 @@ import {
 } from 'react-native';
 import {themeColorsContext} from '../contexts';
 
+//components
 import PlanCalendar from '../components/calendar';
 
 //logic
 import {nowDate} from '../logic/date';
+
+//icons
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 export default function PlanScreen({navigation: {navigate}}) {
   const themeColors = useContext(themeColorsContext);
@@ -50,7 +54,9 @@ export default function PlanScreen({navigation: {navigate}}) {
         ]}
         onPress={() => {
           navigate('AddPlan');
-        }}></TouchableOpacity>
+        }}>
+        <AntDesign name="plus" color="white" size={30} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -71,10 +77,13 @@ const styles = StyleSheet.create({
   plan: {},
   addButton: {
     position: 'absolute',
-    right: 30,
-    bottom: 60,
+    right: 25,
+    bottom: 30,
     width: 80,
     height: 80,
     borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.7,
   },
 });
