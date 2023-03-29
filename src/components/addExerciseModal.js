@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TextInput,
   FlatList,
+  LayoutAnimation,
 } from 'react-native';
 
 import exercises from '../assets/exercises.json';
@@ -33,7 +34,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {themeColorsContext} from '../contexts';
 
-const AddExerciseModal = ({modalVisible, setModalVisible}) => {
+const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
   const themeColors = useContext(themeColorsContext);
   const [exerciseList, setExerciseList] = useState(exercises);
   const [selectedMuscle, setSelectedMuscle] = useState({
@@ -62,6 +63,21 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
       );
     }
   }, [selectedMuscle, searchInput]);
+
+  const onPressExercise = item => {
+    LayoutAnimation.configureNext({
+      duration: 400,
+      update: {type: 'spring', springDamping: 0.7},
+    });
+    if (selectedExercises.find(a => a.id === item.id)) {
+      //선택한 운동이 이미 선택한 운동이면 선택 취소
+      const list = selectedExercises.filter(a => a.id != item.id);
+      setSelectedExercises(list);
+    } else {
+      //아니면 배열에 추가
+      setSelectedExercises(pre => [...pre, item]);
+    }
+  };
 
   return (
     <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -95,6 +111,7 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
               onChangeText={text => {
                 setSearchInput(text);
               }}
+              value={searchInput}
               placeholder="검색해서 찾아보세요!"
               style={styles.headerTextInput}
             />
@@ -130,16 +147,7 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    if (selectedExercises.find(a => a.id === item.id)) {
-                      //선택한 운동이 이미 선택한 운동이면 선택 취소
-                      const list = selectedExercises.filter(
-                        a => a.id != item.id,
-                      );
-                      setSelectedExercises(list);
-                    } else {
-                      //아니면 배열에 추가
-                      setSelectedExercises(pre => [...pre, item]);
-                    }
+                    onPressExercise(item);
                   }}
                   style={styles.exerciseContainer}>
                   <View
@@ -187,11 +195,40 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
           <View
             style={{
               backgroundColor: themeColors.modalColors[0],
-              height: 90,
+              height: 120,
               borderBottomRightRadius: 10,
               borderBottomLeftRadius: 10,
             }}>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{height: 35, padding: 5}}
+              horizontal={true}
+              data={selectedExercises}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    onPressExercise(item);
+                  }}
+                  style={[
+                    styles.selectedExercise,
+                    {
+                      backgroundColor: themeColors.boxColors[0],
+                    },
+                  ]}>
+                  <Text style={{color: themeColors.textColor}}>
+                    {item.korName}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={item => item.id}
+            />
             <TouchableOpacity
+              onPress={() => {
+                setWorkouts(pre => [...pre, ...selectedExercises]);
+                setSearchInput('');
+                setSelectedExercises([]);
+                setModalVisible(false);
+              }}
               style={[
                 styles.doneButton,
                 {backgroundColor: themeColors.buttonColors[1]},
@@ -266,6 +303,14 @@ const styles = StyleSheet.create({
   },
   exerciseText: {
     fontSize: 17,
+  },
+  selectedExercise: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    marginHorizontal: 5,
+    paddingHorizontal: 5,
   },
   doneButton: {
     position: 'absolute',

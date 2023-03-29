@@ -7,6 +7,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
+import {ScaleDecorator} from 'react-native-draggable-flatlist';
 
 //context
 import {themeColorsContext} from '../contexts';
@@ -19,6 +20,7 @@ import AddExerciseModal from '../components/addExerciseModal';
 
 const Header = ({goBack, title}) => {
   const themeColors = useContext(themeColorsContext);
+
   return (
     <SafeAreaView style={{backgroundColor: themeColors.screenHeaderColors[1]}}>
       <View
@@ -54,7 +56,7 @@ export default function AddPlanScreen({
   navigation: {setOptions, goBack},
   route: {params},
 }) {
-  const [workoutList, setWorkoutList] = useState([]);
+  const [workouts, setWorkouts] = useState([]);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const themeColors = useContext(themeColorsContext);
 
@@ -69,10 +71,11 @@ export default function AddPlanScreen({
           onLongPress={drag}
           disabled={isActive}
           style={[
-            styles.rowItem,
-            {backgroundColor: isActive ? 'red' : item.backgroundColor},
+            {
+              height: 40,
+            },
           ]}>
-          <Text style={styles.text}>{item.label}</Text>
+          <Text style={styles.text}>{item.korName}</Text>
         </TouchableOpacity>
       </ScaleDecorator>
     );
@@ -87,9 +90,11 @@ export default function AddPlanScreen({
       {/* workout list */}
       <DraggableFlatList
         ListHeaderComponent={() => <View style={{marginTop: 50}}></View>}
-        data={workoutList}
-        onDragEnd={({data}) => setWorkoutList(data)}
-        keyExtractor={item => item.key}
+        data={workouts}
+        onDragEnd={({data}) => setWorkouts(data)}
+        keyExtractor={(item, index) => {
+          return index;
+        }}
         renderItem={renderItem}
       />
 
@@ -122,6 +127,7 @@ export default function AddPlanScreen({
       <AddExerciseModal
         modalVisible={addExerciseModalVisible}
         setModalVisible={setAddExerciseModalVisible}
+        setWorkouts={setWorkouts}
       />
     </SafeAreaView>
   );
