@@ -6,8 +6,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import DraggableFlatList from 'react-native-draggable-flatlist';
-import {ScaleDecorator} from 'react-native-draggable-flatlist';
+import DraggableFlatList, {
+  ScaleDecorator,
+} from 'react-native-draggable-flatlist';
+import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 
 //context
 import {themeColorsContext} from '../contexts';
@@ -52,10 +54,7 @@ const Header = ({goBack, title}) => {
   );
 };
 
-export default function AddPlanScreen({
-  navigation: {setOptions, goBack},
-  route: {params},
-}) {
+function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workouts, setWorkouts] = useState([]);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const themeColors = useContext(themeColorsContext);
@@ -81,7 +80,7 @@ export default function AddPlanScreen({
     );
   };
 
-  return (
+  const GestureHandlerRootView = gestureHandlerRootHOC(() => (
     <SafeAreaView
       style={[
         styles.mainContainer,
@@ -130,8 +129,12 @@ export default function AddPlanScreen({
         setWorkouts={setWorkouts}
       />
     </SafeAreaView>
-  );
+  ));
+
+  return <GestureHandlerRootView />;
 }
+
+export default AddPlanScreen;
 
 const styles = StyleSheet.create({
   headerContainer: {

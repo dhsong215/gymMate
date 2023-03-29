@@ -54,7 +54,7 @@ export default function InStack() {
         options={{
           headerShown: true,
           headerTitle: '계획 추가',
-          presentation: 'containedModal',
+          presentation: 'card',
           animation: 'fade_from_bottom',
         }}
       />
