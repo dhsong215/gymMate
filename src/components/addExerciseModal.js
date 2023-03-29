@@ -13,6 +13,8 @@ import {
 import exercises from '../assets/exercises.json';
 import imagePaths from '../assets/imagePath';
 
+import FontAwsome from 'react-native-vector-icons/FontAwesome';
+
 const muscles = [
   {id: 100, name: 'all', korName: '전체'},
   {id: 0, name: 'lower_body', korName: '하체'},
@@ -40,14 +42,26 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
     korName: '전체',
   });
   const [selectedExercises, setSelectedExercises] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
 
+  //검색창 아래 타겟을 선택하면 해당 타겟에 맞는 운동만 나열
   useEffect(() => {
-    setExerciseList(
-      selectedMuscle.id === 100
-        ? exercises
-        : exercises.filter(item => item.target === selectedMuscle.name),
-    );
-  }, [selectedMuscle]);
+    if (searchInput === '') {
+      const list = exercises;
+      setExerciseList(
+        selectedMuscle.id === 100
+          ? list
+          : list.filter(item => item.target === selectedMuscle.name),
+      );
+    } else {
+      const list = exercises.filter(item => item.korName.includes(searchInput));
+      setExerciseList(
+        selectedMuscle.id === 100
+          ? list
+          : list.filter(item => item.target === selectedMuscle.name),
+      );
+    }
+  }, [selectedMuscle, searchInput]);
 
   return (
     <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -77,7 +91,13 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
                 />
               </TouchableOpacity>
             </View>
-            <TextInput style={styles.headerTextInput} />
+            <TextInput
+              onChangeText={text => {
+                setSearchInput(text);
+              }}
+              placeholder="검색해서 찾아보세요!"
+              style={styles.headerTextInput}
+            />
             <FlatList
               showsHorizontalScrollIndicator={false}
               horizontal={true}
@@ -108,11 +128,29 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
             data={exerciseList}
             renderItem={({item}) => {
               return (
-                <TouchableOpacity style={styles.exerciseContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (selectedExercises.find(a => a.id === item.id)) {
+                      //선택한 운동이 이미 선택한 운동이면 선택 취소
+                      const list = selectedExercises.filter(
+                        a => a.id != item.id,
+                      );
+                      setSelectedExercises(list);
+                    } else {
+                      //아니면 배열에 추가
+                      setSelectedExercises(pre => [...pre, item]);
+                    }
+                  }}
+                  style={styles.exerciseContainer}>
                   <View
                     style={[
                       styles.exerciseImgContainer,
-                      {backgroundColor: themeColors.boxColors[0]},
+                      {
+                        backgroundColor: themeColors.boxColors[0],
+                        opacity: selectedExercises.find(a => a.id === item.id)
+                          ? 0.4
+                          : 1,
+                      },
                     ]}>
                     <Image
                       resizeMode="contain"
@@ -120,6 +158,18 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
                       source={imagePaths.find(a => a.id == item.id).uri}
                     />
                   </View>
+                  {selectedExercises.find(a => a.id === item.id) ? (
+                    <FontAwsome
+                      style={{
+                        position: 'absolute',
+                        left: 20,
+                        opacity: 0.7,
+                      }}
+                      name="check"
+                      size={40}
+                      color={themeColors.textColor}
+                    />
+                  ) : null}
                   <Text
                     style={[
                       styles.exerciseText,
@@ -132,6 +182,8 @@ const AddExerciseModal = ({modalVisible, setModalVisible}) => {
             }}
             keyExtractor={item => item.id}
           />
+
+          {/* bottom button */}
           <View
             style={{
               backgroundColor: themeColors.modalColors[0],
@@ -198,7 +250,6 @@ const styles = StyleSheet.create({
     borderColor: '#3A98B9',
   },
   exerciseContainer: {
-    zIndex: -1000,
     flexDirection: 'row',
     width: '100%',
     alignItems: 'center',
