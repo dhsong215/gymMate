@@ -11,6 +11,9 @@ import PlanScreen from '../screens/Plan';
 import RoutineScreen from '../screens/Routine';
 import AddPlanScreen from '../screens/AddPlan';
 
+//icons
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 const Stack = createNativeStackNavigator();
 
 export default function InStack() {
