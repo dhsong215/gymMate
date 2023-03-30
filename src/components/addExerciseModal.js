@@ -224,7 +224,15 @@ const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
             />
             <TouchableOpacity
               onPress={() => {
-                setWorkouts(pre => [...pre, ...selectedExercises]);
+                const data = selectedExercises.map(item => ({
+                  exericseId: item.id,
+                  workoutName: item.korName,
+                  type: item.type,
+                  target: item.target,
+                  memo: '',
+                  entries: [],
+                }));
+                setWorkouts(pre => [...pre, ...data]);
                 setSearchInput('');
                 setSelectedExercises([]);
                 setModalVisible(false);

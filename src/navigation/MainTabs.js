@@ -37,6 +37,7 @@ export default function MainTabs() {
         headerShadowVisible: false,
         headerTitleStyle: {color: themeColors.textColor},
         tabBarActiveTintColor: '#FF6666',
+        tabBarLabelStyle: {marginBottom: 4},
       }}>
       <Tab.Screen
         name="Home"

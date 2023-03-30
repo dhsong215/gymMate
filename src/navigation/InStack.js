@@ -10,7 +10,6 @@ import MainTabs from './MainTabs';
 import PlanScreen from '../screens/Plan';
 import RoutineScreen from '../screens/Routine';
 import AddPlanScreen from '../screens/AddPlan';
-import ChooseExercisesScreen from '../screens/ChooseExercises';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -54,14 +53,9 @@ export default function InStack() {
         options={{
           headerShown: true,
           headerTitle: '계획 추가',
-          presentation: 'card',
+          presentation: 'fullScreenModal',
           animation: 'fade_from_bottom',
         }}
-      />
-      <Stack.Screen
-        name="ChooseEcercises"
-        component={ChooseExercisesScreen}
-        options={{headerShown: true, headerTitle: '추가할 운동 선택'}}
       />
     </Stack.Navigator>
   );

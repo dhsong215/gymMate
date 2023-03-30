@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import DraggableFlatList, {
+import {
   ScaleDecorator,
+  NestableScrollContainer,
+  NestableDraggableFlatList,
 } from 'react-native-draggable-flatlist';
-import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
+import {gestureHandlerRootHOC, ScrollView} from 'react-native-gesture-handler';
 
 //context
 import {themeColorsContext} from '../contexts';
@@ -54,31 +56,117 @@ const Header = ({goBack, title}) => {
   );
 };
 
+const renderItem = ({
+  item,
+  drag,
+  isActive,
+  getIndex,
+  optionVisible,
+  setOptionVisible,
+  workouts,
+  setWorkouts,
+}) => {
+  const themeColors = useContext(themeColorsContext);
+
+  const onPressPlus = () => {
+    const data = workouts.map((a, index) => {
+      if (index === getIndex()) {
+        const newEntries = [
+          ...a.entries,
+          a.type === 'strength'
+            ? {state: 'normal', reps: 0, weight: 0}
+            : a.type === 'calisthenics'
+            ? {state: 'normal', reps: 0}
+            : {speed: 0, time: 0, distance: 0},
+        ];
+        const clonedObj = {...a, entries: newEntries};
+        return clonedObj;
+      } else {
+        return a;
+      }
+    });
+    setWorkouts(data);
+  };
+  const onPressMinus = () => {
+    const data = workouts.map((a, index) => {
+      if (index === getIndex()) {
+        const newEntries = a.entries.slice(0, -1);
+        const clonedObj = {...a, entries: newEntries};
+        return clonedObj;
+      } else {
+        return a;
+      }
+    });
+    setWorkouts(data);
+  };
+
+  return (
+    <ScaleDecorator>
+      <TouchableOpacity
+        onPress={() => {
+          setOptionVisible(getIndex());
+        }}
+        onLongPress={drag}
+        disabled={isActive}
+        style={[
+          styles.workoutContainer,
+          {
+            backgroundColor: isActive ? 'lightgrey' : themeColors.boxColors[0],
+          },
+        ]}>
+        <View>
+          <Text style={[styles.workoutTitle, {color: themeColors.textColor}]}>
+            {item.workoutName}
+          </Text>
+          <View
+            style={{
+              width: '100%',
+              display: getIndex() === optionVisible ? 'flex' : 'none',
+            }}>
+            {item.entries.map(entries => {
+              if (item.type === 'strength') {
+                //개수 무게
+              }
+            })}
+            <View style={{backgroundColor: 'white'}}>
+              {item.entries.map((arr, index) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text>{arr.weight}</Text>
+                    <Text>{arr.reps}</Text>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={[styles.editBottomButtonContainer]}>
+              <TouchableOpacity
+                onPress={() => onPressMinus()}
+                style={[styles.editBottomButton]}></TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onPressPlus()}
+                style={[styles.editBottomButton]}></TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </ScaleDecorator>
+  );
+};
+
 function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workouts, setWorkouts] = useState([]);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
+  const [optionVisible, setOptionVisible] = useState();
+
   const themeColors = useContext(themeColorsContext);
 
   useEffect(() => {
     setOptions({header: () => <Header goBack={goBack} title={params.date} />});
   }, []);
-
-  const renderItem = ({item, drag, isActive}) => {
-    return (
-      <ScaleDecorator>
-        <TouchableOpacity
-          onLongPress={drag}
-          disabled={isActive}
-          style={[
-            {
-              height: 40,
-            },
-          ]}>
-          <Text style={styles.text}>{item.korName}</Text>
-        </TouchableOpacity>
-      </ScaleDecorator>
-    );
-  };
 
   const GestureHandlerRootView = gestureHandlerRootHOC(() => (
     <SafeAreaView
@@ -87,15 +175,29 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
         {backgroundColor: themeColors.backgroundColor},
       ]}>
       {/* workout list */}
-      <DraggableFlatList
-        ListHeaderComponent={() => <View style={{marginTop: 50}}></View>}
-        data={workouts}
-        onDragEnd={({data}) => setWorkouts(data)}
-        keyExtractor={(item, index) => {
-          return index;
-        }}
-        renderItem={renderItem}
-      />
+      <NestableScrollContainer>
+        <View style={{height: 30}}></View>
+        <NestableDraggableFlatList
+          scrollEnabled={false}
+          data={workouts}
+          onDragEnd={({data}) => setWorkouts(data)}
+          keyExtractor={(item, index) => {
+            return 'workout' + `${index}`;
+          }}
+          renderItem={({item, isActive, drag, getIndex}) =>
+            renderItem({
+              item,
+              isActive,
+              getIndex,
+              drag,
+              setOptionVisible,
+              optionVisible,
+              setWorkouts,
+              workouts,
+            })
+          }
+        />
+      </NestableScrollContainer>
 
       {/* button container */}
       <View style={[styles.bottomButtonContainer]}>
@@ -138,7 +240,7 @@ export default AddPlanScreen;
 
 const styles = StyleSheet.create({
   headerContainer: {
-    height: 100,
+    height: 130,
   },
   headerTopContainer: {flexDirection: 'row', padding: 10, alignItems: 'center'},
   headerBackButton: {marginRight: 20},
@@ -158,9 +260,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-
+  workoutContainer: {padding: 15, marginBottom: 5},
+  workoutTitle: {},
   bottomButtonContainer: {
-    position: 'absolute',
     width: '100%',
     flexDirection: 'row',
     bottom: 0,
@@ -168,12 +270,22 @@ const styles = StyleSheet.create({
   bottomButton: {
     width: '50%',
     height: 80,
-    paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   bottomButtonText: {
     fontSize: 17,
     fontWeight: '600',
+  },
+  editBottomButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  editBottomButton: {
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    marginHorizontal: 10,
+    backgroundColor: 'grey',
   },
 });
