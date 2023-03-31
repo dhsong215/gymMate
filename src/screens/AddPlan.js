@@ -6,20 +6,28 @@ import {
   TouchableOpacity,
   SafeAreaView,
   LayoutAnimation,
+  Platform,
+  UIManager,
+  FlatList,
+  TextInput,
 } from 'react-native';
-import DraggableFlatList, {
-  ScaleDecorator,
-} from 'react-native-draggable-flatlist';
-import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
 
 //context
 import {themeColorsContext} from '../contexts';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //components
 import AddExerciseModal from '../components/addExerciseModal';
+import {addEntry} from '../logic/entries';
+
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 const Header = ({goBack, title, setOptionVisible}) => {
   const themeColors = useContext(themeColorsContext);
@@ -44,9 +52,7 @@ const Header = ({goBack, title, setOptionVisible}) => {
           <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
             {title}
           </Text>
-          <TouchableOpacity
-            style={styles.headerBackButton}
-            onPress={() => setOptionVisible()}>
+          <TouchableOpacity style={styles.headerBackButton} onPress={() => {}}>
             <Ionicons
               name="list-circle-outline"
               size={35}
@@ -75,23 +81,14 @@ const RenderItem = ({
   const themeColors = useContext(themeColorsContext);
 
   const onPressPlus = () => {
-    const data = workouts.map((a, index) => {
-      if (index === workoutContainerIndex) {
-        const newEntries = [
-          ...a.entries,
-          a.type === 'strength'
-            ? {state: 'normal', reps: 0, weight: 0}
-            : a.type === 'calisthenics'
-            ? {state: 'normal', reps: 0}
-            : {speed: 0, time: 0, distance: 0},
-        ];
-        const clonedObj = {...a, entries: newEntries};
-        return clonedObj;
-      } else {
-        return a;
-      }
-    });
-    setWorkouts(data);
+    const targetWorkout = {...workouts[workoutContainerIndex]};
+    const updatedWorkout = addEntry(targetWorkout);
+    const updatedWorkouts = [
+      ...workouts.slice(0, workoutContainerIndex),
+      updatedWorkout,
+      ...workouts.slice(workoutContainerIndex + 1),
+    ];
+    setWorkouts(updatedWorkouts);
   };
   const onPressMinus = () => {
     const data = workouts.map((a, index) => {
@@ -105,6 +102,44 @@ const RenderItem = ({
     });
     setWorkouts(data);
   };
+  const handleWeightChange = (text, index) => {
+    const filteredText = text.replace(/[^0-9]/g, '');
+    const finalText = filteredText === '' ? '0' : filteredText;
+    const targetWorkout = {...workouts[workoutContainerIndex]};
+    const updatedEntries = targetWorkout.entries.map((entry, entryIndex) => {
+      if (entryIndex === index) {
+        return {...entry, weight: parseFloat(finalText)};
+      } else {
+        return entry;
+      }
+    });
+    const updatedWorkout = {...targetWorkout, entries: updatedEntries};
+    const updatedWorkouts = [
+      ...workouts.slice(0, workoutContainerIndex),
+      updatedWorkout,
+      ...workouts.slice(workoutContainerIndex + 1),
+    ];
+    setWorkouts(updatedWorkouts);
+  };
+  const handleRepsChange = (text, index) => {
+    const filteredText = text.replace(/[^0-9]/g, '');
+    const finalText = filteredText === '' ? '0' : filteredText;
+    const targetWorkout = {...workouts[workoutContainerIndex]};
+    const updatedEntries = targetWorkout.entries.map((entry, entryIndex) => {
+      if (entryIndex === index) {
+        return {...entry, reps: parseFloat(finalText)};
+      } else {
+        return entry;
+      }
+    });
+    const updatedWorkout = {...targetWorkout, entries: updatedEntries};
+    const updatedWorkouts = [
+      ...workouts.slice(0, workoutContainerIndex),
+      updatedWorkout,
+      ...workouts.slice(workoutContainerIndex + 1),
+    ];
+    setWorkouts(updatedWorkouts);
+  };
 
   return (
     <View
@@ -115,61 +150,114 @@ const RenderItem = ({
       <TouchableOpacity
         onPress={() => {
           LayoutAnimation.configureNext({
-            duration: 200,
-            update: {type: 'spring', springDamping: 0.6},
+            duration: 300,
+            update: {type: 'spring', springDamping: 0.8},
           });
-          if (workoutContainerIndex === optionVisible) {
-            setOptionVisible();
-            return;
+          if (optionVisible.includes(workoutContainerIndex)) {
+            setOptionVisible(pre =>
+              pre.filter(item => item !== workoutContainerIndex),
+            );
+            console.log(optionVisible);
+          } else {
+            setOptionVisible(pre => [...pre, workoutContainerIndex]);
           }
-          setOptionVisible(workoutContainerIndex);
-        }}>
+        }}
+        style={{padding: 10}}>
         <Text style={[styles.workoutTitle, {color: themeColors.textColor}]}>
-          {item.workoutName}
+          {item.workoutName} {item.entries.length}세트
         </Text>
       </TouchableOpacity>
-      <View
-        style={{
-          width: '100%',
-          display: workoutContainerIndex === optionVisible ? 'flex' : 'none',
-        }}>
-        {item.entries.map(entries => {
-          if (item.type === 'strength') {
-            //개수 무게
-          }
-        })}
-        <View>
-          <FlatList
-            data={item.entries}
-            renderItem={({item, index}) => (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  backgroundColor: 'grey',
-                  marginVertical: 3,
-                }}>
-                <Text>{index + 1}</Text>
-                <Text>{item.weight}</Text>
-                <Text>{item.reps}</Text>
-                <Text>{item.state}</Text>
-              </View>
-            )}
-            keyExtractor={(item, index) =>
-              `workout${workoutContainerIndex}${index}`
-            }
-          />
-        </View>
+      {optionVisible.includes(workoutContainerIndex) ? (
+        <View
+          style={{
+            width: '100%',
+          }}>
+          <View>
+            <FlatList
+              data={item.entries}
+              renderItem={({item, index}) => (
+                <View style={[styles.workoutEntryBox]}>
+                  <Text style={{color: themeColors.textColor}}>
+                    {index + 1}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <TextInput
+                      value={`${item.weight}`}
+                      onChangeText={text => handleWeightChange(text, index)}
+                      keyboardType="numeric"
+                      maxLength={5}
+                      style={{
+                        color: themeColors.textColor,
+                        backgroundColor: '#443C68',
+                        padding: 5,
+                        borderRadius: 3,
+                        fontSize: 15,
+                        height: 30,
+                      }}
+                    />
+                    <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+                      kg
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <TextInput
+                      value={`${item.reps}`}
+                      onChangeText={text => handleRepsChange(text, index)}
+                      keyboardType="numeric"
+                      maxLength={5}
+                      style={{
+                        color: themeColors.textColor,
+                        backgroundColor: '#443C68',
+                        padding: 5,
+                        borderRadius: 3,
+                        fontSize: 15,
+                        height: 30,
+                      }}
+                    />
+                    <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+                      회
+                    </Text>
+                  </View>
+                  <TouchableOpacity onPress={() => {}}>
+                    <Text>{item.isWarmUp === true ? '워밍업' : '일반'}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              keyExtractor={(item, index) =>
+                `workout${workoutContainerIndex}${index}`
+              }
+            />
+          </View>
 
-        <View style={[styles.editBottomButtonContainer]}>
-          <TouchableOpacity
-            onPress={() => onPressMinus()}
-            style={[styles.editBottomButton]}></TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => onPressPlus()}
-            style={[styles.editBottomButton]}></TouchableOpacity>
+          <View style={[styles.editBottomButtonContainer]}>
+            <TouchableOpacity
+              onPress={() => onPressMinus()}
+              style={[styles.editBottomButton]}>
+              <AntDesign name="minus" color={themeColors.textColor} size={30} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onPressPlus()}
+              style={[styles.editBottomButton]}>
+              <AntDesign name="plus" color={themeColors.textColor} size={30} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {}}
+              style={[styles.editBottomButton, {width: 60}]}>
+              <Text style={{color: themeColors.textColor, fontWeight: '600'}}>
+                순서 변경
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      ) : null}
     </View>
   );
 };
@@ -177,7 +265,7 @@ const RenderItem = ({
 function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workouts, setWorkouts] = useState([]);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
-  const [optionVisible, setOptionVisible] = useState();
+  const [optionVisible, setOptionVisible] = useState([]);
 
   const themeColors = useContext(themeColorsContext);
 
@@ -284,13 +372,24 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  workoutContainer: {padding: 15, marginBottom: 5},
+  workoutContainer: {marginBottom: 5},
   workoutTitle: {fontSize: 20},
+  workoutEntryBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'grey',
+    marginVertical: 3,
+    paddingHorizontal: 5,
+    paddingVertical: 4,
+    marginHorizontal: 10,
+    borderRadius: 5,
+  },
   bottomButtonContainer: {
     width: '100%',
     flexDirection: 'row',
-    bottom: 0,
   },
+
   bottomButton: {
     width: '50%',
     height: 80,
@@ -306,11 +405,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   editBottomButton: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-    marginTop: 10,
-    marginHorizontal: 10,
+    height: 40,
+    width: 120,
+    borderRadius: 5,
+    marginHorizontal: 3,
+    marginVertical: 8,
     backgroundColor: 'grey',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
