@@ -1,17 +1,16 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  LayoutAnimation,
 } from 'react-native';
-import {
+import DraggableFlatList, {
   ScaleDecorator,
-  NestableScrollContainer,
-  NestableDraggableFlatList,
 } from 'react-native-draggable-flatlist';
-import {gestureHandlerRootHOC, ScrollView} from 'react-native-gesture-handler';
+import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
 
 //context
 import {themeColorsContext} from '../contexts';
@@ -22,7 +21,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //components
 import AddExerciseModal from '../components/addExerciseModal';
 
-const Header = ({goBack, title}) => {
+const Header = ({goBack, title, setOptionVisible}) => {
   const themeColors = useContext(themeColorsContext);
 
   return (
@@ -45,6 +44,15 @@ const Header = ({goBack, title}) => {
           <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
             {title}
           </Text>
+          <TouchableOpacity
+            style={styles.headerBackButton}
+            onPress={() => setOptionVisible()}>
+            <Ionicons
+              name="list-circle-outline"
+              size={35}
+              color={themeColors.textColor}
+            />
+          </TouchableOpacity>
         </View>
         <View
           style={[
@@ -56,21 +64,19 @@ const Header = ({goBack, title}) => {
   );
 };
 
-const renderItem = ({
+const RenderItem = ({
   item,
-  drag,
-  isActive,
-  getIndex,
   optionVisible,
   setOptionVisible,
   workouts,
   setWorkouts,
+  workoutContainerIndex,
 }) => {
   const themeColors = useContext(themeColorsContext);
 
   const onPressPlus = () => {
     const data = workouts.map((a, index) => {
-      if (index === getIndex()) {
+      if (index === workoutContainerIndex) {
         const newEntries = [
           ...a.entries,
           a.type === 'strength'
@@ -89,7 +95,7 @@ const renderItem = ({
   };
   const onPressMinus = () => {
     const data = workouts.map((a, index) => {
-      if (index === getIndex()) {
+      if (index === workoutContainerIndex) {
         const newEntries = a.entries.slice(0, -1);
         const clonedObj = {...a, entries: newEntries};
         return clonedObj;
@@ -101,59 +107,70 @@ const renderItem = ({
   };
 
   return (
-    <ScaleDecorator>
+    <View
+      style={[
+        styles.workoutContainer,
+        {backgroundColor: themeColors.boxColors[0]},
+      ]}>
       <TouchableOpacity
         onPress={() => {
-          setOptionVisible(getIndex());
-        }}
-        onLongPress={drag}
-        disabled={isActive}
-        style={[
-          styles.workoutContainer,
-          {
-            backgroundColor: isActive ? 'lightgrey' : themeColors.boxColors[0],
-          },
-        ]}>
-        <View>
-          <Text style={[styles.workoutTitle, {color: themeColors.textColor}]}>
-            {item.workoutName}
-          </Text>
-          <View
-            style={{
-              width: '100%',
-              display: getIndex() === optionVisible ? 'flex' : 'none',
-            }}>
-            {item.entries.map(entries => {
-              if (item.type === 'strength') {
-                //개수 무게
-              }
-            })}
-            <View style={{backgroundColor: 'white'}}>
-              {item.entries.map((arr, index) => {
-                return (
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Text>{arr.weight}</Text>
-                    <Text>{arr.reps}</Text>
-                  </View>
-                );
-              })}
-            </View>
-            <View style={[styles.editBottomButtonContainer]}>
-              <TouchableOpacity
-                onPress={() => onPressMinus()}
-                style={[styles.editBottomButton]}></TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => onPressPlus()}
-                style={[styles.editBottomButton]}></TouchableOpacity>
-            </View>
-          </View>
-        </View>
+          LayoutAnimation.configureNext({
+            duration: 200,
+            update: {type: 'spring', springDamping: 0.6},
+          });
+          if (workoutContainerIndex === optionVisible) {
+            setOptionVisible();
+            return;
+          }
+          setOptionVisible(workoutContainerIndex);
+        }}>
+        <Text style={[styles.workoutTitle, {color: themeColors.textColor}]}>
+          {item.workoutName}
+        </Text>
       </TouchableOpacity>
-    </ScaleDecorator>
+      <View
+        style={{
+          width: '100%',
+          display: workoutContainerIndex === optionVisible ? 'flex' : 'none',
+        }}>
+        {item.entries.map(entries => {
+          if (item.type === 'strength') {
+            //개수 무게
+          }
+        })}
+        <View>
+          <FlatList
+            data={item.entries}
+            renderItem={({item, index}) => (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  backgroundColor: 'grey',
+                  marginVertical: 3,
+                }}>
+                <Text>{index + 1}</Text>
+                <Text>{item.weight}</Text>
+                <Text>{item.reps}</Text>
+                <Text>{item.state}</Text>
+              </View>
+            )}
+            keyExtractor={(item, index) =>
+              `workout${workoutContainerIndex}${index}`
+            }
+          />
+        </View>
+
+        <View style={[styles.editBottomButtonContainer]}>
+          <TouchableOpacity
+            onPress={() => onPressMinus()}
+            style={[styles.editBottomButton]}></TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onPressPlus()}
+            style={[styles.editBottomButton]}></TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 };
 
@@ -165,39 +182,43 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const themeColors = useContext(themeColorsContext);
 
   useEffect(() => {
-    setOptions({header: () => <Header goBack={goBack} title={params.date} />});
+    setOptions({
+      header: () => (
+        <Header
+          goBack={goBack}
+          title={params.date}
+          setOptionVisible={setOptionVisible}
+        />
+      ),
+    });
   }, []);
 
-  const GestureHandlerRootView = gestureHandlerRootHOC(() => (
+  return (
     <SafeAreaView
       style={[
         styles.mainContainer,
         {backgroundColor: themeColors.backgroundColor},
       ]}>
       {/* workout list */}
-      <NestableScrollContainer>
-        <View style={{height: 30}}></View>
-        <NestableDraggableFlatList
-          scrollEnabled={false}
-          data={workouts}
-          onDragEnd={({data}) => setWorkouts(data)}
-          keyExtractor={(item, index) => {
-            return 'workout' + `${index}`;
-          }}
-          renderItem={({item, isActive, drag, getIndex}) =>
-            renderItem({
-              item,
-              isActive,
-              getIndex,
-              drag,
-              setOptionVisible,
-              optionVisible,
-              setWorkouts,
-              workouts,
-            })
-          }
-        />
-      </NestableScrollContainer>
+
+      <FlatList
+        style={{flex: 1}}
+        contentContainerStyle={{paddingTop: 40, paddingBottom: 10}}
+        data={workouts}
+        keyExtractor={(item, index) => `workout_${index}`}
+        renderItem={({item, index}) => {
+          return (
+            <RenderItem
+              item={item}
+              optionVisible={optionVisible}
+              setOptionVisible={setOptionVisible}
+              workouts={workouts}
+              setWorkouts={setWorkouts}
+              workoutContainerIndex={index}
+            />
+          );
+        }}
+      />
 
       {/* button container */}
       <View style={[styles.bottomButtonContainer]}>
@@ -231,9 +252,7 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
         setWorkouts={setWorkouts}
       />
     </SafeAreaView>
-  ));
-
-  return <GestureHandlerRootView />;
+  );
 }
 
 export default AddPlanScreen;
@@ -242,8 +261,13 @@ const styles = StyleSheet.create({
   headerContainer: {
     height: 130,
   },
-  headerTopContainer: {flexDirection: 'row', padding: 10, alignItems: 'center'},
-  headerBackButton: {marginRight: 20},
+  headerTopContainer: {
+    flexDirection: 'row',
+    padding: 13,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerBackButton: {},
   headerTitle: {fontSize: 20, fontWeight: '600'},
   headerStateBox: {
     backgroundColor: 'white',
@@ -261,7 +285,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   workoutContainer: {padding: 15, marginBottom: 5},
-  workoutTitle: {},
+  workoutTitle: {fontSize: 20},
   bottomButtonContainer: {
     width: '100%',
     flexDirection: 'row',
@@ -282,9 +306,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   editBottomButton: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    marginTop: 10,
     marginHorizontal: 10,
     backgroundColor: 'grey',
   },
