@@ -63,7 +63,8 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workouts, setWorkouts] = useState([]);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const [optionVisible, setOptionVisible] = useState([]);
-  const [scrollY, setScrollY] = useState(0);
+
+  console.log(workouts);
 
   const themeColors = useContext(themeColorsContext);
 
@@ -92,10 +93,9 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
       <FlatList
         ref={flatListRef}
         style={{flex: 1}}
-        onScroll={event => setScrollY(event.nativeEvent.contentOffset.y)}
         contentContainerStyle={{paddingTop: 40, paddingBottom: 10}}
         data={workouts}
-        keyExtractor={(item, index) => `workout_${index}`}
+        keyExtractor={item => item.workoutId}
         renderItem={({item, index}) => {
           return (
             <WorkoutBox
@@ -106,10 +106,21 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
               setWorkouts={setWorkouts}
               workoutContainerIndex={index}
               flatListRef={flatListRef}
-              scrollY={scrollY}
             />
           );
         }}
+        ListFooterComponent={() => (
+          <View
+            style={{
+              height: 100,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text style={{color: themeColors.textColor}}>
+              운동을 추가해 보세요
+            </Text>
+          </View>
+        )}
       />
 
       {/* button container */}

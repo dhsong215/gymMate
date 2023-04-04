@@ -4,9 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  LayoutAnimation,
-  Platform,
-  UIManager,
   FlatList,
   TextInput,
 } from 'react-native';
@@ -20,15 +17,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 //components
 import {addEntry} from '../logic/entries';
 
-if (Platform.OS === 'android') {
-  if (UIManager.setLayoutAnimationEnabledExperimental) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-  }
-}
-
 const Entry = React.memo(
-  ({index, item, handleWeightChange, handleRepsChange, themeColors}) => {
-    const [weightValue, setWeightValue] = useState('');
+  ({index, item, handleWeightChange, handleRepsChange, themeColors, entry}) => {
+    const [weightValue, setWeightValue] = useState(entry.weight);
+    const [repsValue, setRepsValue] = useState(entry.reps);
+    const [timeValue, setTimeValue] = useState(entry.time);
+    const [distance, setDistance] = useState(entry.distance);
+    const [speed, setSpeed] = useState(entry.speed);
 
     return (
       <View style={[styles.workoutEntryBox]}>
@@ -48,16 +43,14 @@ const Entry = React.memo(
             keyboardType="numeric"
             maxLength={6}
             placeholder={'0'}
-            style={{
-              color: themeColors.textColor,
-              backgroundColor: '#443C68',
-              padding: 5,
-              borderRadius: 3,
-              fontSize: 15,
-              height: 30,
-              width: 70,
-              textAlign: 'center',
-            }}
+            style={[
+              styles.entryInput,
+              {
+                color: themeColors.textColor,
+                width: 70,
+                backgroundColor: '#443C68',
+              },
+            ]}
           />
           <Text style={{color: themeColors.textColor, marginLeft: 5}}>kg</Text>
         </View>
@@ -72,16 +65,13 @@ const Entry = React.memo(
             onChangeText={text => handleRepsChange(text, index)}
             keyboardType="numeric"
             maxLength={4}
-            style={{
-              color: themeColors.textColor,
-              backgroundColor: '#443C68',
-              padding: 5,
-              borderRadius: 3,
-              fontSize: 15,
-              height: 30,
-              width: 50,
-              textAlign: 'center',
-            }}
+            style={[
+              styles.entryInput,
+              {
+                color: themeColors.textColor,
+                backgroundColor: '#443C68',
+              },
+            ]}
           />
           <Text style={{color: themeColors.textColor, marginLeft: 5}}>회</Text>
         </View>
@@ -102,104 +92,71 @@ const WorkoutBox = ({
   workouts,
   setWorkouts,
   flatListRef, //scroll
-  scrollY,
 }) => {
+  const [entries, setEntries] = useState([]);
   const themeColors = useContext(themeColorsContext);
 
-  const onPressPlus = useCallback(() => {
-    const targetWorkout = {...workouts[workoutContainerIndex]};
-    const updatedWorkout = addEntry(targetWorkout);
-    const updatedWorkouts = [
-      ...workouts.slice(0, workoutContainerIndex),
-      updatedWorkout,
-      ...workouts.slice(workoutContainerIndex + 1),
-    ];
+  const onPressPlus = () => {
+    const workoutType = workouts[workoutContainerIndex].type;
+    const newEntries = addEntry(entries, workoutType);
 
-    setWorkouts(updatedWorkouts);
-
-    flatListRef.current.scrollToOffset({
-      offset: Math.max(0, scrollY + 50),
-      animated: false,
-    });
-  }, [scrollY, workouts]);
-
-  const onPressMinus = () => {
-    const data = workouts.map((a, index) => {
-      if (index === workoutContainerIndex) {
-        const newEntries = a.entries.slice(0, -1);
-        const clonedObj = {...a, entries: newEntries};
-        return clonedObj;
-      } else {
-        return a;
-      }
-    });
-
-    setWorkouts(data);
-
-    flatListRef.current.scrollToOffset({
-      offset: Math.max(0, scrollY - 50),
-      animated: false,
-    });
+    setEntries(newEntries);
+    if (workoutContainerIndex === workouts.length - 1) {
+      flatListRef.current.scrollToEnd({animated: false});
+    }
   };
 
-  const handleWeightChange = useCallback(
-    (text, index, setWeightValue) => {
-      let filteredText = text.replace(/[^0-9.]/g, ''); // 텍스트에 문자가 있으면 해당 문자를 공백으로 변환합니다.
-      if (filteredText.endsWith('.')) {
-        setWeightValue(filteredText);
-        filteredText = filteredText.slice(0, -1);
+  const onPressMinus = () => {
+    setEntries(pre => pre.slice(0, -1));
+  };
+
+  const handleWeightChange = (text, index, setWeightValue) => {
+    let filteredText = text.replace(/[^0-9.]/g, ''); // 텍스트에 문자가 있으면 해당 문자를 공백으로 변환합니다.
+    if (filteredText.endsWith('.')) {
+      setWeightValue(filteredText);
+      filteredText = filteredText.slice(0, -1);
+    } else {
+      setWeightValue(filteredText);
+    }
+    const finalText = filteredText === '' ? '0' : filteredText; // 최종 문자가 공백이면 entry에 값이 0으로 저장되도록 합니다.
+    // const targetWorkout = {...workouts[workoutContainerIndex]}; // 수정될 entry가 있는 workout을 복제해 옵니다.
+
+    // 현재 수정한 entry의 인덱스 값과 일치하는 targetWorkout의 entry를 수정한 값으로 바꾸고 entry배열을 updeatedEntries에 저장합니ㅏㄷ.
+    const updatedEntries = entries.map((entry, entryIndex) => {
+      if (entryIndex === index) {
+        return {...entry, weight: parseFloat(finalText)};
       } else {
-        setWeightValue(filteredText);
+        return entry;
       }
-      const finalText = filteredText === '' ? '0' : filteredText; // 최종 문자가 공백이면 entry에 값이 0으로 저장되도록 합니다.
-      const targetWorkout = {...workouts[workoutContainerIndex]}; // 수정될 entry가 있는 workout을 복제해 옵니다.
+    });
+    setEntries(updatedEntries);
+    // console.log(parseFloat(finalText));
 
-      // 현재 수정한 entry의 인덱스 값과 일치하는 targetWorkout의 entry를 수정한 값으로 바꾸고 entry배열을 updeatedEntries에 저장합니ㅏㄷ.
-      const updatedEntries = targetWorkout.entries.map((entry, entryIndex) => {
-        if (entryIndex === index) {
-          return {...entry, weight: parseFloat(finalText)};
-        } else {
-          return entry;
-        }
-      });
-      console.log(parseFloat(finalText));
+    // //변경된 entry값이 반영된 새로운 workout객체
+    // const updatedWorkout = {...targetWorkout, entries: updatedEntries};
 
-      //변경된 entry값이 반영된 새로운 workout객체
-      const updatedWorkout = {...targetWorkout, entries: updatedEntries};
+    // //변경된 workout(updatedWorkout)값으로 기존 targetWorkout의 원 값 바꿔치기
+    // const updatedWorkouts = [
+    //   ...workouts.slice(0, workoutContainerIndex),
+    //   updatedWorkout,
+    //   ...workouts.slice(workoutContainerIndex + 1),
+    // ];
+    // setWorkouts(updatedWorkouts);
+  };
 
-      //변경된 workout(updatedWorkout)값으로 기존 targetWorkout의 원 값 바꿔치기
-      const updatedWorkouts = [
-        ...workouts.slice(0, workoutContainerIndex),
-        updatedWorkout,
-        ...workouts.slice(workoutContainerIndex + 1),
-      ];
-      setWorkouts(updatedWorkouts);
-    },
-    [workouts, workoutContainerIndex],
-  );
-
-  const handleRepsChange = useCallback(
-    (text, index) => {
-      const filteredText = text.replace(/[^0-9.]/g, '');
-      const finalText = filteredText === '' ? '0' : filteredText;
-      const targetWorkout = {...workouts[workoutContainerIndex]};
-      const updatedEntries = targetWorkout.entries.map((entry, entryIndex) => {
-        if (entryIndex === index) {
-          return {...entry, reps: parseFloat(finalText)};
-        } else {
-          return entry;
-        }
-      });
-      const updatedWorkout = {...targetWorkout, entries: updatedEntries};
-      const updatedWorkouts = [
-        ...workouts.slice(0, workoutContainerIndex),
-        updatedWorkout,
-        ...workouts.slice(workoutContainerIndex + 1),
-      ];
-      setWorkouts(updatedWorkouts);
-    },
-    [workouts, workoutContainerIndex],
-  );
+  const handleRepsChange = (text, index) => {
+    //index는 이벤트가 발생한 인덱스
+    const filteredText = text.replace(/[^0-9.]/g, '');
+    const finalText = filteredText === '' ? '0' : filteredText;
+    const updatedEntries = entries.map((entry, entryIndex) => {
+      if (entryIndex === index) {
+        return {...entry, reps: parseFloat(finalText)};
+      } else {
+        return entry;
+      }
+    });
+    setEntries(updatedEntries);
+  };
 
   return (
     <View
@@ -209,10 +166,6 @@ const WorkoutBox = ({
       ]}>
       <TouchableOpacity
         onPress={() => {
-          LayoutAnimation.configureNext({
-            duration: 300,
-            update: {type: 'spring', springDamping: 0.8},
-          });
           if (optionVisible.includes(workoutContainerIndex)) {
             setOptionVisible(pre =>
               pre.filter(item => item !== workoutContainerIndex),
@@ -223,7 +176,7 @@ const WorkoutBox = ({
         }}
         style={{padding: 10}}>
         <Text style={[styles.workoutTitle, {color: themeColors.textColor}]}>
-          {item.workoutName} {item.entries.length}세트
+          {item.workoutName} {entries.length}세트
         </Text>
       </TouchableOpacity>
       {optionVisible.includes(workoutContainerIndex) ? (
@@ -233,18 +186,19 @@ const WorkoutBox = ({
           }}>
           <View>
             <FlatList
-              data={item.entries}
+              data={entries}
               renderItem={({item, index}) => (
                 <Entry
-                  index={index}
                   item={item}
+                  index={index}
                   handleWeightChange={handleWeightChange}
                   handleRepsChange={handleRepsChange}
                   themeColors={themeColors}
+                  entry={entries[index]}
                 />
               )}
               keyExtractor={(item, index) =>
-                `workout${workoutContainerIndex}${index}`
+                `entry${workoutContainerIndex}${index}`
               }
             />
           </View>
@@ -345,5 +299,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  entryInput: {
+    padding: 5,
+    borderRadius: 3,
+    fontSize: 15,
+    height: 30,
+    width: 50,
+    textAlign: 'center',
   },
 });
