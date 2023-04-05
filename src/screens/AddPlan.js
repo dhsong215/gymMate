@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   FlatList,
+  Modal,
 } from 'react-native';
 
 //context
@@ -16,9 +17,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //components
 import AddExerciseModal from '../components/addExerciseModal';
+import WorkoutsReorderModal from '../components/workoutsReorderModal';
 import WorkoutBox from '../components/workoutBox';
 
-const Header = ({goBack, title}) => {
+const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   const themeColors = useContext(themeColorsContext);
 
   return (
@@ -41,7 +43,11 @@ const Header = ({goBack, title}) => {
           <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
             {title}
           </Text>
-          <TouchableOpacity style={styles.headerBackButton} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.headerBackButton}
+            onPress={() => {
+              setWorkoutsReorderModalVisible(true);
+            }}>
             <Ionicons
               name="list-circle-outline"
               size={35}
@@ -62,9 +68,11 @@ const Header = ({goBack, title}) => {
 function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workouts, setWorkouts] = useState([]);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
+  const [workoutsReorderModalVisible, setWorkoutsReorderModalVisible] =
+    useState(false);
   const [optionVisible, setOptionVisible] = useState([]);
 
-  console.log(workouts);
+  console.log(workoutsReorderModalVisible);
 
   const themeColors = useContext(themeColorsContext);
 
@@ -74,7 +82,7 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
         <Header
           goBack={goBack}
           title={params.date}
-          setOptionVisible={setOptionVisible}
+          setWorkoutsReorderModalVisible={setWorkoutsReorderModalVisible}
         />
       ),
     });
@@ -149,6 +157,12 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
           </Text>
         </TouchableOpacity>
       </View>
+      <WorkoutsReorderModal
+        modalVisible={workoutsReorderModalVisible}
+        setModalVisible={setWorkoutsReorderModalVisible}
+        workouts={workouts}
+        setWorkouts={setWorkouts}
+      />
       <AddExerciseModal
         modalVisible={addExerciseModalVisible}
         setModalVisible={setAddExerciseModalVisible}

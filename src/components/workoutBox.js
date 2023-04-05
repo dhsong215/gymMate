@@ -26,7 +26,11 @@ const Entry = React.memo(
     const [speed, setSpeed] = useState(entry.speed);
 
     return (
-      <View style={[styles.workoutEntryBox]}>
+      <View
+        style={[
+          styles.workoutEntryBox,
+          {backgroundColor: themeColors.boxColors[1]},
+        ]}>
         <Text style={{color: themeColors.textColor, width: 30}}>
           {index + 1}
         </Text>
@@ -48,7 +52,7 @@ const Entry = React.memo(
               {
                 color: themeColors.textColor,
                 width: 70,
-                backgroundColor: '#443C68',
+                backgroundColor: themeColors.boxColors[0],
               },
             ]}
           />
@@ -69,7 +73,7 @@ const Entry = React.memo(
               styles.entryInput,
               {
                 color: themeColors.textColor,
-                backgroundColor: '#443C68',
+                backgroundColor: themeColors.boxColors[0],
               },
             ]}
           />
@@ -166,12 +170,19 @@ const WorkoutBox = ({
       ]}>
       <TouchableOpacity
         onPress={() => {
-          if (optionVisible.includes(workoutContainerIndex)) {
+          if (
+            optionVisible.includes(workouts[workoutContainerIndex].workoutId)
+          ) {
             setOptionVisible(pre =>
-              pre.filter(item => item !== workoutContainerIndex),
+              pre.filter(
+                item => item !== workouts[workoutContainerIndex].workoutId,
+              ),
             );
           } else {
-            setOptionVisible(pre => [...pre, workoutContainerIndex]);
+            setOptionVisible(pre => [
+              ...pre,
+              workouts[workoutContainerIndex].workoutId,
+            ]);
           }
         }}
         style={{padding: 10}}>
@@ -179,7 +190,7 @@ const WorkoutBox = ({
           {item.workoutName} {entries.length}세트
         </Text>
       </TouchableOpacity>
-      {optionVisible.includes(workoutContainerIndex) ? (
+      {optionVisible.includes(workouts[workoutContainerIndex].workoutId) ? (
         <View
           style={{
             width: '100%',
@@ -204,20 +215,29 @@ const WorkoutBox = ({
           </View>
 
           {/* 엔트리 더하기 빼기 순서변경 버튼이 있습니다 */}
-          <View style={[styles.editBottomButtonContainer]}>
+          <View style={[styles.bottomEditButtonContainer]}>
             <TouchableOpacity
               onPress={() => onPressMinus()}
-              style={[styles.editBottomButton]}>
+              style={[
+                styles.bottomEditButton,
+                {backgroundColor: themeColors.buttonColors[1]},
+              ]}>
               <AntDesign name="minus" color={themeColors.textColor} size={30} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onPressPlus()}
-              style={[styles.editBottomButton]}>
+              style={[
+                styles.bottomEditButton,
+                {backgroundColor: themeColors.buttonColors[1]},
+              ]}>
               <AntDesign name="plus" color={themeColors.textColor} size={30} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {}}
-              style={[styles.editBottomButton, {width: 60}]}>
+              style={[
+                styles.bottomEditButton,
+                {width: 60, backgroundColor: themeColors.buttonColors[1]},
+              ]}>
               <Text style={{color: themeColors.textColor, fontWeight: '600'}}>
                 순서 변경
               </Text>
@@ -264,7 +284,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'grey',
     marginVertical: 3,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -286,17 +305,16 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
   },
-  editBottomButtonContainer: {
+  bottomEditButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  editBottomButton: {
+  bottomEditButton: {
     height: 40,
     width: 120,
     borderRadius: 5,
     marginHorizontal: 3,
     marginVertical: 8,
-    backgroundColor: 'grey',
     alignItems: 'center',
     justifyContent: 'center',
   },
