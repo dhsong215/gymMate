@@ -1,5 +1,5 @@
 import React, {createContext} from 'react';
 
-export const themeColorsContext = createContext();
-export const userContext = createContext();
-export const workoutBoxContext = createContext();
+export const ThemeColorsContext = createContext();
+export const UserContext = createContext();
+export const SettingsContext = createContext();

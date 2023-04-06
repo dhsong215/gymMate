@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 //context
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 
 //screens
 import StartModal from '../screens/StartModal';
@@ -17,7 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const Stack = createNativeStackNavigator();
 
 export default function InStack() {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
 
   return (
     <Stack.Navigator

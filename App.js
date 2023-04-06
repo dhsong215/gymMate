@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {useColorScheme} from 'react-native';
-import {auth, getUserRef, firestore} from './src/firebase';
+import {auth, getUserRef, firestore} from './src/logic/firebase';
 
-import {themeColorsContext, userContext} from './src/contexts';
+import {ThemeColorsContext, UserContext} from './src/contexts';
 import {darkModeColors, lightModeColors} from './src/styles/themeColors';
 
 import InStack from './src/navigation/InStack';
@@ -11,7 +11,6 @@ import OutStack from './src/navigation/OutStack';
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState({});
   const [user, setUser] = useState();
 
   const colorScheme = useColorScheme(); //define themeColors
@@ -43,7 +42,6 @@ export default function App() {
           await getUserRef(user.uid).set(data);
           userProfile = await userRef.get({source: 'cache'});
         }
-        setUserProfile(userProfile._data);
       };
       getUserProfile(user);
     }
@@ -66,24 +64,26 @@ export default function App() {
   //no login -> choose login method screen
   if (!user) {
     return (
-      <themeColorsContext.Provider
-        value={colorScheme === 'dark' ? darkModeColors : lightModeColors}>
-        <NavigationContainer>
-          <OutStack />
-        </NavigationContainer>
-      </themeColorsContext.Provider>
+      <UserContext.Provider value={user}>
+        <ThemeColorsContext.Provider
+          value={colorScheme === 'dark' ? darkModeColors : lightModeColors}>
+          <NavigationContainer>
+            <OutStack />
+          </NavigationContainer>
+        </ThemeColorsContext.Provider>
+      </UserContext.Provider>
     );
   }
 
   //user loggedin -> user home screen
   return (
-    <userContext.Provider value={userProfile}>
-      <themeColorsContext.Provider
+    <UserContext.Provider value={user}>
+      <ThemeColorsContext.Provider
         value={colorScheme === 'dark' ? darkModeColors : lightModeColors}>
         <NavigationContainer>
           <InStack />
         </NavigationContainer>
-      </themeColorsContext.Provider>
-    </userContext.Provider>
+      </ThemeColorsContext.Provider>
+    </UserContext.Provider>
   );
 }

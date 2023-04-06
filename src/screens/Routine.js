@@ -1,9 +1,9 @@
 import React, {useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 
 export default function RoutineScreen() {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
   return (
     <View
       style={[

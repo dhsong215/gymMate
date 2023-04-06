@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, Animated, Pressable} from 'react-native';
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 
 export default function StartModal({navigation: {goBack}}) {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
   const modalPositionY = useRef(new Animated.Value(0)).current;
 
   const startUp = Animated.spring(modalPositionY, {

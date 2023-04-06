@@ -5,15 +5,15 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
-  Pressable,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 //icons
 import FontAwsome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 import {TextInput} from 'react-native-gesture-handler';
 
 const WorkoutEditModal = ({
@@ -22,12 +22,12 @@ const WorkoutEditModal = ({
   workoutData,
   setWorkoutData,
 }) => {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
 
   return (
     <Modal animationType="slide" transparent={true} visible={modalVisible}>
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{
           flex: 1,
           alignItems: 'center',
@@ -87,6 +87,7 @@ const WorkoutEditModal = ({
                 borderColor: themeColors.borderColors[0],
               },
             ]}
+            maxLength={300}
             multiline={true}
             value={workoutData.memo}
             onChangeText={text => {
@@ -104,7 +105,7 @@ export default WorkoutEditModal;
 const styles = StyleSheet.create({
   modal: {
     width: '90%',
-    height: '60%',
+    height: '70%',
     borderRadius: 10,
     elevation: 10,
     shadowColor: 'black',

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 //context
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -249,7 +249,7 @@ const WorkoutBox = ({
   const [workoutData, setWorkoutData] = useState(workout);
   const [WorkoutEditModalVisible, setWorkoutEditModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
 
   useEffect(() => {
     const setNewWorkouts = () => {
@@ -263,6 +263,10 @@ const WorkoutBox = ({
     };
     setNewWorkouts();
   }, [workoutData]);
+
+  useEffect(() => {
+    setWorkoutData(pre => ({...pre, entries: entries}));
+  }, [entries]);
 
   const onPressPlus = () => {
     const workoutType = workout.type;

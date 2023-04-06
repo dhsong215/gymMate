@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   SafeAreaView,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 //context
-import {themeColorsContext, workoutBoxContext} from '../contexts';
+import {UserContext, ThemeColorsContext} from '../contexts';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,8 +21,12 @@ import AddExerciseModal from '../components/AddExerciseModal';
 import WorkoutsReorderModal from '../components/WorkoutsReorderModal';
 import WorkoutBox from '../components/WorkoutBox';
 
+//logics
+import {uploadPlan} from '../logic/firebase';
+import {nowDate} from '../logic/date';
+
 const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
 
   return (
     <SafeAreaView style={{backgroundColor: themeColors.screenHeaderColors[1]}}>
@@ -71,7 +77,8 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
     useState(false);
   const [optionVisible, setOptionVisible] = useState([]);
 
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
+  const user = useContext(UserContext);
 
   useEffect(() => {
     setOptions({
@@ -93,78 +100,87 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
         styles.mainContainer,
         {backgroundColor: themeColors.backgroundColor},
       ]}>
-      {/* workout list */}
+      <KeyboardAvoidingView
+        style={styles.mainContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {/* workout list */}
 
-      <FlatList
-        ref={flatListRef}
-        style={{flex: 1}}
-        contentContainerStyle={{paddingTop: 40, paddingBottom: 10}}
-        data={workouts}
-        keyExtractor={item => item.workoutId}
-        renderItem={({item, index}) => {
-          return (
-            <WorkoutBox
-              workout={item}
-              optionVisible={optionVisible}
-              setOptionVisible={setOptionVisible}
-              workouts={workouts}
-              setWorkouts={setWorkouts}
-              workoutContainerIndex={index}
-              flatListRef={flatListRef}
-            />
-          );
-        }}
-        ListFooterComponent={() => (
-          <View
-            style={{
-              height: 100,
-              alignItems: 'center',
-              justifyContent: 'center',
+        <FlatList
+          ref={flatListRef}
+          style={{flex: 1}}
+          contentContainerStyle={{paddingTop: 40, paddingBottom: 10}}
+          data={workouts}
+          keyExtractor={item => item.workoutId}
+          renderItem={({item, index}) => {
+            return (
+              <WorkoutBox
+                workout={item}
+                optionVisible={optionVisible}
+                setOptionVisible={setOptionVisible}
+                workouts={workouts}
+                setWorkouts={setWorkouts}
+                workoutContainerIndex={index}
+                flatListRef={flatListRef}
+              />
+            );
+          }}
+          ListFooterComponent={() => (
+            <View
+              style={{
+                height: 100,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text style={{color: themeColors.textColor}}>
+                운동을 추가해 보세요
+              </Text>
+            </View>
+          )}
+        />
+
+        {/* button container */}
+        <View style={[styles.bottomButtonContainer]}>
+          <TouchableOpacity
+            style={[
+              styles.bottomButton,
+              {backgroundColor: themeColors.buttonColors[1]},
+            ]}
+            onPress={() => {
+              setAddExerciseModalVisible(true);
             }}>
-            <Text style={{color: themeColors.textColor}}>
-              운동을 추가해 보세요
+            <Text
+              style={[styles.bottomButtonText, {color: themeColors.textColor}]}>
+              운동 추가하기
             </Text>
-          </View>
-        )}
-      />
-
-      {/* button container */}
-      <View style={[styles.bottomButtonContainer]}>
-        <TouchableOpacity
-          style={[
-            styles.bottomButton,
-            {backgroundColor: themeColors.buttonColors[1]},
-          ]}
-          onPress={() => {
-            setAddExerciseModalVisible(true);
-          }}>
-          <Text
-            style={[styles.bottomButtonText, {color: themeColors.textColor}]}>
-            운동 추가하기
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.bottomButton,
-            {backgroundColor: themeColors.buttonColors[3]},
-          ]}>
-          <Text
-            style={[styles.bottomButtonText, {color: themeColors.textColor}]}>
-            저장
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <WorkoutsReorderModal
-        modalVisible={workoutsReorderModalVisible}
-        setModalVisible={setWorkoutsReorderModalVisible}
-        workouts={workouts}
-        setWorkouts={setWorkouts}
-      />
-      <AddExerciseModal
-        modalVisible={addExerciseModalVisible}
-        setModalVisible={setAddExerciseModalVisible}
-        setWorkouts={setWorkouts}
-      />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              uploadPlan(user, workouts, params.date);
+              goBack();
+            }}
+            style={[
+              styles.bottomButton,
+              {backgroundColor: themeColors.buttonColors[3]},
+            ]}>
+            <Text
+              style={[styles.bottomButtonText, {color: themeColors.textColor}]}>
+              저장
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <WorkoutsReorderModal
+          modalVisible={workoutsReorderModalVisible}
+          setModalVisible={setWorkoutsReorderModalVisible}
+          workouts={workouts}
+          setWorkouts={setWorkouts}
+        />
+        <AddExerciseModal
+          modalVisible={addExerciseModalVisible}
+          setModalVisible={setAddExerciseModalVisible}
+          setWorkouts={setWorkouts}
+          date={params.date}
+        />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

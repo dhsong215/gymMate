@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 
 //components
 import PlanCalendar from '../components/Calendar';
@@ -18,7 +18,7 @@ import {nowDate} from '../logic/date';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 export default function PlanScreen({navigation: {navigate}}) {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
   const [selectedDate, setSelectedDate] = useState('');
 
   useEffect(() => {

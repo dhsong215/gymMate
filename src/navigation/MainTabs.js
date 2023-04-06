@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 //context
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 //screens
 import TemporaryScreen from '../screens/Temporary';
 import HomeScreen from '../screens/tabScreens/Home';
@@ -16,7 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
 
   return (
     <Tab.Navigator

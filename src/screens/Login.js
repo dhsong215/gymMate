@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {StyleSheet, View, Text, Button} from 'react-native';
-import {themeColorsContext} from '../contexts';
-import {auth, GoogleSignin} from '../firebase';
+import {ThemeColorsContext} from '../contexts';
+import {auth, GoogleSignin} from '../logic/firebase';
 
 async function onGoogleButtonPress() {
   await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
@@ -17,7 +17,7 @@ function GoogleSignIn() {
 }
 
 export default function LoginScreen() {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
   return (
     <View
       style={[

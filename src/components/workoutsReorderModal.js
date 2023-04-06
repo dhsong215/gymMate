@@ -17,7 +17,7 @@ import FontAwsome from 'react-native-vector-icons/FontAwesome';
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 
 const WorkoutsReorderModal = ({
   modalVisible,
@@ -25,7 +25,7 @@ const WorkoutsReorderModal = ({
   workouts,
   setWorkouts,
 }) => {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
 
   const renderItem = ({item, drag, isActive, getIndex}) => {
     return (

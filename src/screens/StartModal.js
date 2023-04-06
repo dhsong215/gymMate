@@ -7,10 +7,10 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import {themeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../contexts';
 
 export default function StartModal({navigation: {goBack, navigate}}) {
-  const themeColors = useContext(themeColorsContext);
+  const themeColors = useContext(ThemeColorsContext);
   const modalPositionY = useRef(new Animated.Value(0)).current;
 
   const startUp = Animated.spring(modalPositionY, {
