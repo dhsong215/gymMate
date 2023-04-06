@@ -6,6 +6,7 @@ import {
   Modal,
   StyleSheet,
   Pressable,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 //icons
@@ -18,15 +19,15 @@ import {TextInput} from 'react-native-gesture-handler';
 const WorkoutEditModal = ({
   modalVisible,
   setModalVisible,
-  workouts,
-  setWorkouts,
-  index,
+  workoutData,
+  setWorkoutData,
 }) => {
   const themeColors = useContext(themeColorsContext);
 
   return (
     <Modal animationType="slide" transparent={true} visible={modalVisible}>
-      <View
+      <KeyboardAvoidingView
+        behavior="padding"
         style={{
           flex: 1,
           alignItems: 'center',
@@ -55,10 +56,45 @@ const WorkoutEditModal = ({
               </TouchableOpacity>
             </View>
           </View>
-          <Text>{workouts[index].workoutName}</Text>
-          <TextInput value="" />
+          <TextInput
+            style={[
+              styles.titleInput,
+              {
+                color: themeColors.textColor,
+                borderColor: themeColors.borderColors[0],
+              },
+            ]}
+            value={workoutData.workoutName}
+            maxLength={15}
+            onChangeText={text => {
+              setWorkoutData({...workoutData, workoutName: text});
+            }}
+          />
+          <Text
+            style={{
+              color: themeColors.textColor,
+              fontSize: 20,
+              margin: 10,
+              fontWeight: '600',
+            }}>
+            메모
+          </Text>
+          <TextInput
+            style={[
+              styles.memoInput,
+              {
+                color: themeColors.textColor,
+                borderColor: themeColors.borderColors[0],
+              },
+            ]}
+            multiline={true}
+            value={workoutData.memo}
+            onChangeText={text => {
+              setWorkoutData({...workoutData, memo: text});
+            }}
+          />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -89,5 +125,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     marginVertical: 3,
+  },
+  titleInput: {
+    borderBottomWidth: 0.4,
+    padding: 10,
+  },
+  memoInput: {
+    backgroundColor: 'grey',
+    marginHorizontal: 10,
+    borderRadius: 15,
+    marginBottom: 10,
+    flex: 1,
+    padding: 15,
   },
 });

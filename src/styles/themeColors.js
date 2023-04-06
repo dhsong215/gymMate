@@ -6,6 +6,7 @@ export const darkModeColors = {
   boxColors: ['#2D2727', '#245953'],
   buttonColors: ['#A44BE2', '#245953', '#443C68', '#374045'],
   modalColors: ['#424242', '#374045'],
+  borderColors: ['#CBE4DE'],
 };
 
 export const lightModeColors = {
@@ -16,4 +17,5 @@ export const lightModeColors = {
   boxColors: ['#e5e5e5', '#D8D8D8'],
   buttonColors: ['#9191DD', '#D8D8D8', '#305EDB', '#938282'],
   modalColors: ['#F1F0F2', '#F1F0F2'],
+  borderColors: ['#CBE4DE'],
 };

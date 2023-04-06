@@ -290,20 +290,12 @@ const WorkoutBox = ({
       ]}>
       <TouchableOpacity
         onPress={() => {
-          if (
-            optionVisible.includes(workouts[workoutContainerIndex].workoutId)
-          ) {
+          if (optionVisible.includes(workout.workoutId)) {
             setOptionVisible(pre =>
-              pre.filter(
-                workout =>
-                  workout !== workouts[workoutContainerIndex].workoutId,
-              ),
+              pre.filter(item => item !== workout.workoutId),
             );
           } else {
-            setOptionVisible(pre => [
-              ...pre,
-              workouts[workoutContainerIndex].workoutId,
-            ]);
+            setOptionVisible(pre => [...pre, workout.workoutId]);
           }
         }}
         style={{
@@ -323,7 +315,7 @@ const WorkoutBox = ({
           <AntDesign name="edit" size={25} color={themeColors.textColor} />
         </TouchableOpacity>
       </TouchableOpacity>
-      {optionVisible.includes(workouts[workoutContainerIndex].workoutId) ? (
+      {optionVisible.includes(workout.workoutId) ? (
         <View
           style={{
             width: '100%',
@@ -341,9 +333,7 @@ const WorkoutBox = ({
                   refreshing={refreshing}
                 />
               )}
-              keyExtractor={(_, index) =>
-                `entry${workoutContainerIndex}${index}`
-              }
+              keyExtractor={(_, index) => `entry${workout.workoutId}${index}`}
               refreshing={refreshing}
             />
           </View>
@@ -397,9 +387,8 @@ const WorkoutBox = ({
       <WorkoutEditModal
         modalVisible={WorkoutEditModalVisible}
         setModalVisible={setWorkoutEditModalVisible}
-        workouts={workouts}
-        setWorkouts={setWorkouts}
-        workoutId={workout.workoutId}
+        workoutData={workoutData}
+        setWorkoutData={setWorkoutData}
       />
     </View>
   );
