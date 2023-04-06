@@ -15,25 +15,33 @@ import {themeColorsContext} from '../contexts';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //components
-import {addEntry} from '../logic/entries';
+import EntriesReorderModal from './EntriesReorderModal';
 
-const Entry = React.memo(
-  ({index, item, handleWeightChange, handleRepsChange, themeColors, entry}) => {
-    const [weightValue, setWeightValue] = useState(entry.weight);
-    const [repsValue, setRepsValue] = useState(entry.reps);
-    const [timeValue, setTimeValue] = useState(entry.time);
-    const [distance, setDistance] = useState(entry.distance);
-    const [speed, setSpeed] = useState(entry.speed);
+//logics
+import {
+  addEntry,
+  handleWeightChange,
+  handleDistanceChange,
+  handleSpeedChange,
+  handleRepsChange,
+  handleTimeChange,
+} from '../logic/entries';
 
-    return (
-      <View
-        style={[
-          styles.workoutEntryBox,
-          {backgroundColor: themeColors.boxColors[1]},
-        ]}>
-        <Text style={{color: themeColors.textColor, width: 30}}>
-          {index + 1}
-        </Text>
+const Entry = React.memo(({index, item, themeColors, entries, setEntries}) => {
+  const [weightValue, setWeightValue] = useState(entries[index].weight);
+  const [repsValue, setRepsValue] = useState(entries[index].reps);
+  const [timeValue, setTimeValue] = useState(entries[index].time);
+  const [distanceValue, setDistanceValue] = useState(entries[index].distance);
+  const [speedValue, setSpeedValue] = useState(entries[index].speed);
+
+  return (
+    <View
+      style={[
+        styles.workoutEntryBox,
+        {backgroundColor: themeColors.boxColors[1]},
+      ]}>
+      <Text style={{color: themeColors.textColor, width: 30}}>{index + 1}</Text>
+      {entries[index].weight >= 0 ? (
         <View
           style={{
             flexDirection: 'row',
@@ -42,7 +50,13 @@ const Entry = React.memo(
           <TextInput
             value={`${weightValue === 0 ? '' : weightValue}`}
             onChangeText={text =>
-              handleWeightChange(text, index, setWeightValue)
+              handleWeightChange(
+                entries,
+                setEntries,
+                text,
+                index,
+                setWeightValue,
+              )
             }
             keyboardType="numeric"
             maxLength={6}
@@ -58,15 +72,82 @@ const Entry = React.memo(
           />
           <Text style={{color: themeColors.textColor, marginLeft: 5}}>kg</Text>
         </View>
+      ) : null}
+
+      {entries[index].speed >= 0 ? (
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
           }}>
           <TextInput
-            value={`${item.reps === 0 ? '' : item.reps}`}
+            value={`${speedValue === 0 ? '' : speedValue}`}
             placeholder={'0'}
-            onChangeText={text => handleRepsChange(text, index)}
+            onChangeText={text =>
+              handleSpeedChange(entries, setEntries, text, index, setSpeedValue)
+            }
+            keyboardType="numeric"
+            maxLength={6}
+            style={[
+              styles.entryInput,
+              {
+                color: themeColors.textColor,
+                width: 70,
+                backgroundColor: themeColors.boxColors[0],
+              },
+            ]}
+          />
+          <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+            km/h
+          </Text>
+        </View>
+      ) : null}
+
+      {entries[index].distance >= 0 ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <TextInput
+            value={`${distanceValue === 0 ? '' : distanceValue}`}
+            placeholder={'0'}
+            onChangeText={text =>
+              handleDistanceChange(
+                entries,
+                setEntries,
+                text,
+                index,
+                setDistanceValue,
+              )
+            }
+            keyboardType="numeric"
+            maxLength={6}
+            style={[
+              styles.entryInput,
+              {
+                color: themeColors.textColor,
+                width: 70,
+                backgroundColor: themeColors.boxColors[0],
+              },
+            ]}
+          />
+          <Text style={{color: themeColors.textColor, marginLeft: 5}}>km</Text>
+        </View>
+      ) : null}
+
+      {entries[index].reps >= 0 ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <TextInput
+            value={`${repsValue === 0 ? '' : repsValue}`}
+            placeholder={'0'}
+            onChangeText={text =>
+              handleRepsChange(entries, setEntries, text, index, setRepsValue)
+            }
             keyboardType="numeric"
             maxLength={4}
             style={[
@@ -79,13 +160,40 @@ const Entry = React.memo(
           />
           <Text style={{color: themeColors.textColor, marginLeft: 5}}>회</Text>
         </View>
-        <TouchableOpacity onPress={() => {}}>
-          <Text>{item.isWarmUp === true ? '워밍업' : '일반'}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  },
-);
+      ) : null}
+
+      {entries[index].time >= 0 ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <TextInput
+            value={`${timeValue === 0 ? '' : timeValue}`}
+            placeholder={'0'}
+            onChangeText={text =>
+              handleTimeChange(entries, setEntries, text, index, setTimeValue)
+            }
+            keyboardType="numeric"
+            maxLength={4}
+            style={[
+              styles.entryInput,
+              {
+                color: themeColors.textColor,
+                backgroundColor: themeColors.boxColors[0],
+              },
+            ]}
+          />
+          <Text style={{color: themeColors.textColor, marginLeft: 5}}>분</Text>
+        </View>
+      ) : null}
+
+      <TouchableOpacity onPress={() => {}}>
+        <Text>{item.isWarmUp === true ? '워밍업' : '일반'}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+});
 
 const WorkoutBox = ({
   item,
@@ -97,7 +205,9 @@ const WorkoutBox = ({
   setWorkouts,
   flatListRef, //scroll
 }) => {
-  const [entries, setEntries] = useState([]);
+  const [entries, setEntries] = useState([]); //handler에 보내야됨
+  const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
+    useState(false);
   const themeColors = useContext(themeColorsContext);
 
   const onPressPlus = () => {
@@ -114,52 +224,8 @@ const WorkoutBox = ({
     setEntries(pre => pre.slice(0, -1));
   };
 
-  const handleWeightChange = (text, index, setWeightValue) => {
-    let filteredText = text.replace(/[^0-9.]/g, ''); // 텍스트에 문자가 있으면 해당 문자를 공백으로 변환합니다.
-    if (filteredText.endsWith('.')) {
-      setWeightValue(filteredText);
-      filteredText = filteredText.slice(0, -1);
-    } else {
-      setWeightValue(filteredText);
-    }
-    const finalText = filteredText === '' ? '0' : filteredText; // 최종 문자가 공백이면 entry에 값이 0으로 저장되도록 합니다.
-    // const targetWorkout = {...workouts[workoutContainerIndex]}; // 수정될 entry가 있는 workout을 복제해 옵니다.
-
-    // 현재 수정한 entry의 인덱스 값과 일치하는 targetWorkout의 entry를 수정한 값으로 바꾸고 entry배열을 updeatedEntries에 저장합니ㅏㄷ.
-    const updatedEntries = entries.map((entry, entryIndex) => {
-      if (entryIndex === index) {
-        return {...entry, weight: parseFloat(finalText)};
-      } else {
-        return entry;
-      }
-    });
-    setEntries(updatedEntries);
-    // console.log(parseFloat(finalText));
-
-    // //변경된 entry값이 반영된 새로운 workout객체
-    // const updatedWorkout = {...targetWorkout, entries: updatedEntries};
-
-    // //변경된 workout(updatedWorkout)값으로 기존 targetWorkout의 원 값 바꿔치기
-    // const updatedWorkouts = [
-    //   ...workouts.slice(0, workoutContainerIndex),
-    //   updatedWorkout,
-    //   ...workouts.slice(workoutContainerIndex + 1),
-    // ];
-    // setWorkouts(updatedWorkouts);
-  };
-
-  const handleRepsChange = (text, index) => {
-    //index는 이벤트가 발생한 인덱스
-    const filteredText = text.replace(/[^0-9.]/g, '');
-    const finalText = filteredText === '' ? '0' : filteredText;
-    const updatedEntries = entries.map((entry, entryIndex) => {
-      if (entryIndex === index) {
-        return {...entry, reps: parseFloat(finalText)};
-      } else {
-        return entry;
-      }
-    });
-    setEntries(updatedEntries);
+  const onPressReorder = () => {
+    setEntriesReorderModalVisible(true);
   };
 
   return (
@@ -202,10 +268,9 @@ const WorkoutBox = ({
                 <Entry
                   item={item}
                   index={index}
-                  handleWeightChange={handleWeightChange}
-                  handleRepsChange={handleRepsChange}
                   themeColors={themeColors}
-                  entry={entries[index]}
+                  entries={entries}
+                  setEntries={setEntries}
                 />
               )}
               keyExtractor={(item, index) =>
@@ -216,6 +281,7 @@ const WorkoutBox = ({
 
           {/* 엔트리 더하기 빼기 순서변경 버튼이 있습니다 */}
           <View style={[styles.bottomEditButtonContainer]}>
+            {/* 엔트리를 하나 뺍니다 */}
             <TouchableOpacity
               onPress={() => onPressMinus()}
               style={[
@@ -224,6 +290,8 @@ const WorkoutBox = ({
               ]}>
               <AntDesign name="minus" color={themeColors.textColor} size={30} />
             </TouchableOpacity>
+
+            {/* 엔트리 하나 더합니다 */}
             <TouchableOpacity
               onPress={() => onPressPlus()}
               style={[
@@ -232,8 +300,12 @@ const WorkoutBox = ({
               ]}>
               <AntDesign name="plus" color={themeColors.textColor} size={30} />
             </TouchableOpacity>
+
+            {/* 엔트리 순서를 수정*/}
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => {
+                onPressReorder();
+              }}
               style={[
                 styles.bottomEditButton,
                 {width: 60, backgroundColor: themeColors.buttonColors[1]},
@@ -245,6 +317,15 @@ const WorkoutBox = ({
           </View>
         </View>
       ) : null}
+      <EntriesReorderModal
+        modalVisible={entriesReorderModalVisible}
+        setModalVisible={setEntriesReorderModalVisible}
+        entries={entries}
+        setEntries={setEntries}
+        workouts={workouts}
+        workoutContainerIndex={workoutContainerIndex}
+        setOptionVisible={setOptionVisible}
+      />
     </View>
   );
 };

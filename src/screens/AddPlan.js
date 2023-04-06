@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   FlatList,
-  Modal,
 } from 'react-native';
 
 //context
@@ -16,9 +15,9 @@ import {themeColorsContext, workoutBoxContext} from '../contexts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //components
-import AddExerciseModal from '../components/addExerciseModal';
-import WorkoutsReorderModal from '../components/workoutsReorderModal';
-import WorkoutBox from '../components/workoutBox';
+import AddExerciseModal from '../components/AddExerciseModal';
+import WorkoutsReorderModal from '../components/WorkoutsReorderModal';
+import WorkoutBox from '../components/WorkoutBox';
 
 const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   const themeColors = useContext(themeColorsContext);
@@ -71,8 +70,6 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workoutsReorderModalVisible, setWorkoutsReorderModalVisible] =
     useState(false);
   const [optionVisible, setOptionVisible] = useState([]);
-
-  console.log(workoutsReorderModalVisible);
 
   const themeColors = useContext(themeColorsContext);
 

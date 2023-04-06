@@ -10,7 +10,6 @@ import MainTabs from './MainTabs';
 import PlanScreen from '../screens/Plan';
 import RoutineScreen from '../screens/Routine';
 import AddPlanScreen from '../screens/AddPlan';
-import ReorderModal from '../screens/Reorder';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -46,11 +45,6 @@ export default function InStack() {
       <Stack.Screen
         name="StartModal"
         component={StartModal}
-        options={{animation: 'none', presentation: 'transparentModal'}}
-      />
-      <Stack.Screen
-        name="ReorderModal"
-        component={ReorderModal}
         options={{animation: 'none', presentation: 'transparentModal'}}
       />
       <Stack.Screen

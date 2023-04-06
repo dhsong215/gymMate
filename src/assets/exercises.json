@@ -1,82 +1,626 @@
 [
   {
-    "id": "3010001",
+    "id": "1010001",
+    "imageId": "00251101",
     "name": "Barbell-Bench-Press",
     "korName": "바벨 벤치프레스",
     "target": "chest",
-    "type": "strength",
-    "description": "가슴, 어깨, 삼두근\n\n플랫 벤치에 누워 발을 바닥에 단단히 놓고, 엉덩이와 어깨는 벤치에 고정하세요.\n양손을 바벨에 올바른 그립 위치로 올려 손목이 안정되게 하세요.\n바벨을 가슴에 천천히 내려놓은 후, 숨을 내쉬며 바벨을 확실하게 밀어올리세요. 팔을 완전히 펴고 손목과 팔꿈치를 잠근 상태로 유지하세요."
+    "type": "strength"
   },
   {
-    "id": "3020002",
+    "id": "1020002",
+    "imageId": "00271101",
     "name": "Barbell-Bent-Over-Row",
     "korName": "바벨 벤트오버 로우",
     "target": "back",
-    "type": "strength",
-    "description": "등, 어깨, 이두근\n\n발을 어깨너비로 벌리고, 무릎을 약간 굽힌 상태로 서서 바벨을 잡습니다.\n상체를 앞으로 기울여 허리에 약 45도 각도를 유지하면서 바벨을 들어올립니다.\n팔을 굽혀 바벨을 가슴 쪽으로 당겨 올리고, 다시 천천히 내립니다."
+    "type": "strength"
   },
   {
-    "id": "3070003",
+    "id": "1070003",
+    "imageId": "00321101",
     "name": "Barbell-Deadlift",
     "korName": "바벨 데드리프트",
     "target": "full_body",
-    "type": "strength",
-    "description": "하체, 등, 코어\n\n발을 어깨너비로 벌리고 바벨 앞에 서서, 무릎을 굽힌 상태로 바벨을 잡습니다.\n등을 펴고 엉덩이를 뒤로 빼면서, 전신의 힘을 이용해 바벨을 들어올립니다. 올릴 때 무릎과 엉덩이를 동시에 펴세요.\n바벨이 허벅지 상단에 닿았을 때, 상체를 곧게 세우고 엉덩이를 조금 앞으로 밀어 완전한 서있는 자세를 취하세요.\n천천히 바벨을 내리며 원래의 자세로 돌아옵니다."
+    "type": "strength"
   },
   {
-    "id": "3010004",
+    "id": "1010004",
+    "imageId": "00471101",
     "name": "Barbell-Incline-Bench-Press",
     "korName": "바벨 인클라인 벤치프레스",
     "target": "chest",
-    "type": "strength",
-    "description": "상부 가슴, 어깨, 삼두근\n\n인클라인 벤치에 누워 발을 바닥에 단단히 놓고, 엉덩이와 어깨는 벤치에 고정하세요.\n양손을 바벨에 올바른 그립 위치로 올려 손목이 안정되게 하세요.\n바벨을 랙에서 들어올리며, 가슴 위에 위치시키세요. 이때, 바벨이 몸의 중앙선에 위치해야 합니다.\n4바벨을 천천히 가슴에 내려놓으세요. 가슴에 닿을 때까지 내려가되, 팔꿈치가 어깨선 밑으로 내려가지 않게 주의하세요.\n가슴에 바벨이 닿은 순간, 숨을 내쉬며 바벨을 확실하게 밀어올리세요. 팔을 완전히 펴고, 손목과 팔꿈치를 잠근 상태로 유지하세요."
+    "type": "strength"
   },
   {
-    "id": "3010005",
+    "id": "1010005",
+    "imageId": "02891101",
     "name": "Dumbbell-Bench-Press",
     "korName": "덤벨 벤치프레스",
     "target": "chest",
-    "type": "strength",
-    "description": "가슴, 어깨, 삼두근\n\n플랫 벤치에 누워 발을 바닥에 단단히 놓고, 엉덩이와 어깨는 벤치에 고정하세요.\n덤벨을 양손에 들고, 손목이 안정되어 있고 가슴 근육에 부담을 주지 않는 상태를 유지하세요.\n덤벨을 천천히 가슴에 내려놓은 후, 숨을 내쉬며 덤벨을 확실하게 밀어올리세요. 팔을 완전히 펴고 손목과 팔꿈치를 잠근 상태로 유지하세요."
+    "type": "strength"
   },
   {
-    "id": "3020006",
-    "name": "Dumbbell-Bent-over-Row",
-    "korName": "덤벨 벤트오버 로우",
+    "id": "1020006",
+    "imageId": "02921101",
+    "name": "Dumbbell-Bench-Bent-over-Row",
+    "korName": "덤벨 벤치 벤트오버 로우",
     "target": "back",
-    "type": "strength",
-    "description": "등, 어깨, 이두근\n\n한쪽 무릎과 동일한 손을 벤치에 받쳐서 안정된 자세를 취하세요. 다른 발은 바닥에 단단히 놓습니다.\n반대손에 덤벨을 들고, 팔을 무릎 쪽으로 펴서 덤벨이 몸 옆에 닿을 때까지 팔을 굽힙니다.\n팔을 천천히 원래의 위치로 돌려놓습니다."
+    "type": "strength"
   },
   {
-    "id": "3010007",
+    "id": "1010007",
+    "imageId": "03081101",
     "name": "Dumbbell-Fly",
     "korName": "덤벨 플라이",
     "target": "chest",
-    "type": "strength",
-    "description": "가슴, 어깨\n\n플랫 벤치에 누워 발을 바닥에 단단히 놓고, 엉덩이와 어깨는 벤치에 고정하세요.\n덤벨을 양손에 들고, 팔을 살짝 굽힌 상태로 유지한채 가슴 위에서 덤벨을 들어올리세요. 손목이 안정된 상태를 유지하세요.\n숨을 들이마시며 덤벨을 양옆으로 천천히 벌리세요. 팔꿈치를 굽힌 상태로 유지하며 가슴을 최대한 늘립니다.\n가슴을 완전히 늘린 후 숨을 내쉬며 덤벨을 원래의 위치로 천천히 되돌리세요. 가슴 근육을 사용해 덤벨을 다시 밀어올립니다."
+    "type": "strength"
   },
   {
-    "id": "3010008",
+    "id": "1010008",
+    "imageId": "03141101",
     "name": "Dumbbell-Incline-Bench-Press",
     "korName": "덤벨 인클라인 벤치프레스",
     "target": "chest",
-    "type": "strength",
-    "description": "상부 가슴, 어깨, 삼두근\n\n인클라인 벤치에 누워 발을 바닥에 단단히 놓고, 엉덩이와 어깨는 벤치에 고정하세요.\n덤벨을 양손에 들고, 손목이 안정되어 있고 가슴 근육에 부담을 주지 않는 상태를 유지하세요.\n덤벨을 천천히 가슴에 내려놓은 후, 숨을 내쉬며 덤벨을 확실하게 밀어올리세요. 팔을 완전히 펴고 손목과 팔꿈치를 잠근 상태로 유지하세요."
+    "type": "strength"
   },
   {
-    "id": "3030009",
+    "id": "1030009",
+    "imageId": "03341101",
     "name": "Dumbbell-Lateral-Raise",
-    "korName": "덤벨 레터럴 레이즈",
+    "korName": "덤벨 사이드 레터럴 레이즈",
     "target": "shoulder",
-    "type": "strength",
-    "description": "어깨, 삼각근\n\n발을 어깨너비로 벌리고 덤벨을 양손에 들고 서서, 팔을 몸 옆에 놓으세요.\n숨을 들이마시며 양팔을 어깨 높이까지 천천히 올리세요. 팔은 약간 굽힌 상태로 유지하되, 어깨에 무리를 주지 않게 주의하세요.\n숨을 내쉬며 천천히 팔을 원래의 위치로 돌려놓으세요. 움직임을 느리게 하여 근육에 지속적인 부하를 주도록 하세요."
+    "type": "strength"
   },
   {
-    "id": "3000010",
+    "id": "1000010",
+    "imageId": "05851101",
     "name": "Lever-Leg-Extension",
-    "korName": "레그 익스텐션",
+    "korName": "레그 익스텐션 머신",
     "target": "lower_body",
-    "type": "strength",
-    "description": "사두근\n\n레그 익스텐션 기계에 앉아서 등판에 등을 기대고 발목에 롤러 패드를 위치시키세요.\n허벅지에 단단하게 고정되어 있는지 확인하세요.\n숨을 들이마시며 다리를 천천히 들어올리세요. 다리를 완전히 펴되, 무릎에 과도한 부담을 주지 않게 주의하세요.\n숨을 내쉬며 천천히 다리를 원래의 위치로 돌려놓으세요. 이때 근육에 지속적인 부하를 주기 위해 움직임을 느리게 하세요. 사두근에 긴장을 유지한 채로 움직임을 반복하세요."
+    "type": "strength"
+  },
+  {
+    "id": "2060011",
+    "imageId": "00011101",
+    "name": "Sit-up",
+    "korName": "싯업",
+    "target": "core",
+    "type": "calisthenics"
+  },
+  {
+    "id": "1050012",
+    "imageId": "00311101",
+    "name": "Barbell-Curl",
+    "korName": "바벨 컬",
+    "target": "biceps",
+    "type": "strength"
+  },
+  {
+    "id": "1010013",
+    "imageId": "00331101",
+    "name": "Barbell-Decline-Bench-Press",
+    "korName": "바벨 디클라인 벤치프레스",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1000014",
+    "imageId": "00431101",
+    "name": "Barbell-Full-Squat",
+    "korName": "바벨 스쿼트",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "1020015",
+    "imageId": "01971101",
+    "name": "Cable-Wide-Pulldown",
+    "korName": "케이블 와이드 풀다운",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "1040016",
+    "imageId": "02001101",
+    "name": "Cable-Pushdown-(with-rope-attachment)",
+    "korName": "케이블 \b푸쉬 다운 (로프)",
+    "target": "triceps",
+    "type": "strength"
+  },
+  {
+    "id": "1020017",
+    "imageId": "02931101",
+    "name": "Dumbbell-Bent-Over-Row",
+    "korName": "덤벨 벤트오버 \b로우",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "1050018",
+    "imageId": "02971101",
+    "name": "Dumbbell-Concentration-Curl",
+    "korName": "덤벨 컬",
+    "target": "biceps",
+    "type": "strength"
+  },
+  {
+    "id": "1010019",
+    "imageId": "03191101",
+    "name": "Dumbbell-Incline-Fly",
+    "korName": "덤벨 인클라인 플라이",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1030020",
+    "imageId": "04051101",
+    "name": "Dumbbell-Seated-Shoulder-Press",
+    "korName": "덤벨 시티드 숄더 프레스",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1020021",
+    "imageId": "04061101",
+    "name": "Dumbbell-Shrug",
+    "korName": "덤벨 슈러그",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "4060022",
+    "imageId": "04651101",
+    "name": "Front-Plank",
+    "korName": "플랭크",
+    "target": "core",
+    "type": "calisthenics_time"
+  },
+  {
+    "id": "1000023",
+    "imageId": "05861101",
+    "name": "Lever-Lying-Leg-Curl",
+    "korName": "라잉 레그 컬 머신",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "1010024",
+    "imageId": "05961101",
+    "name": "Lever-Seated-Fly",
+    "korName": "시티드 플라이 머신",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1000025",
+    "imageId": "05991101",
+    "name": "Lever-Seated-Leg-Curl",
+    "korName": "시티드 레그 컬 머신",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "2020026",
+    "imageId": "06521101",
+    "name": "Pull-up",
+    "korName": "풀업",
+    "target": "back",
+    "type": "calisthenics"
+  },
+  {
+    "id": "2010027",
+    "imageId": "06621101",
+    "name": "Push-up",
+    "korName": "푸쉬업",
+    "target": "chest",
+    "type": "calisthenics"
+  },
+  {
+    "id": "1000028",
+    "imageId": "10601101",
+    "name": "Barbell-Hip-Thrust",
+    "korName": "바벨 힙 쓰러스트",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "2060029",
+    "imageId": "00061101",
+    "name": "Alternate-Heel-Touchers",
+    "korName": "힐터치",
+    "target": "core",
+    "type": "calisthenics"
+  },
+  {
+    "id": "2020030",
+    "imageId": "00171101",
+    "name": "Assisted-Pull-up",
+    "korName": "어시스트 풀업",
+    "target": "back",
+    "type": "calisthenics"
+  },
+  {
+    "id": "1000031",
+    "imageId": "00421101",
+    "name": "Barbell-Front-Squat",
+    "korName": "바벨 프론트 스쿼트",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "1050032",
+    "imageId": "00701101",
+    "name": "Barbell-Preacher-Curl",
+    "korName": "바벨 프리쳐 컬",
+    "target": "biceps",
+    "type": "strength"
+  },
+  {
+    "id": "1070033",
+    "imageId": "00851101",
+    "name": "Barbell-Romanian-Deadlift",
+    "korName": "바벨 루마니안 데드리프트",
+    "target": "full_body",
+    "type": "strength"
+  },
+  {
+    "id": "1020034",
+    "imageId": "00951101",
+    "name": "Barbell-Shrug",
+    "korName": "바벨 슈러그",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "1070035",
+    "imageId": "01161101",
+    "name": "Barbell-Straight-Leg-Deadlift",
+    "korName": "바벨 스티프 레그 데드리프트",
+    "target": "full_body",
+    "type": "strength"
+  },
+  {
+    "id": "1070036",
+    "imageId": "01171101",
+    "name": "Barbell-Sumo-Deadlift",
+    "korName": "바벨 스모 데드리프트",
+    "target": "full_body",
+    "type": "strength"
+  },
+  {
+    "id": "1020037",
+    "imageId": "01181101",
+    "name": "Barbell-Reverse-Grip-Bent-over-Row",
+    "korName": "바벨 리버스 그립 벤트오버 로우",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "1020038",
+    "imageId": "01201101",
+    "name": "Barbell-Upright-Row",
+    "korName": "바벨 업라이트 로우",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "1020039",
+    "imageId": "01501101",
+    "name": "Cable-Bar-Lateral-Pulldown",
+    "korName": "케이블 바 랫풀다운",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "1050040",
+    "imageId": "01651101",
+    "name": "Cable-Hammer-Curl-(with-rope-attachment)",
+    "korName": "케이블 헤머 컬 (로프)",
+    "target": "biceps",
+    "type": "strength"
+  },
+  {
+    "id": "1010041",
+    "imageId": "01791101",
+    "name": "Cable-Low-Fly",
+    "korName": "케이블 로우 플라이",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1020042",
+    "imageId": "01801101",
+    "name": "Cable-Low-Seated-Row",
+    "korName": "케이블 시티드 로우",
+    "target": "back",
+    "type": "strength"
+  },
+  {
+    "id": "1010043",
+    "imageId": "01881101",
+    "name": "Cable-Middle-Fly",
+    "korName": "케이블 미들 플라이",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1030044",
+    "imageId": "01921101",
+    "name": "Cable-One-Arm-Lateral-Raise",
+    "korName": "케이블 원 암 레터럴 레이즈",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1040045",
+    "imageId": "02011101",
+    "name": "Cable-Pushdown",
+    "korName": "케이블 푸쉬다운",
+    "target": "triceps",
+    "type": "strength"
+  },
+  {
+    "id": "1010046",
+    "imageId": "02271101",
+    "name": "Cable-Standing-Fly",
+    "korName": "케이블 스탠딩 플라이",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "2010047",
+    "imageId": "02511101",
+    "name": "Chest-Dip",
+    "korName": "딥스",
+    "target": "chest",
+    "type": "calisthenics"
+  },
+  {
+    "id": "2010048",
+    "imageId": "02791101",
+    "name": "Decline-Push-Up",
+    "korName": "디클라인 푸쉬업",
+    "target": "chest",
+    "type": "calisthenics"
+  },
+  {
+    "id": "1030049",
+    "imageId": "02901101",
+    "name": "Dumbbell-Bench-Seated-Press",
+    "korName": "시티드 덤벨 프레스",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1050050",
+    "imageId": "02941101",
+    "name": "Dumbbell-Biceps-Curl",
+    "korName": "덤벨 컬",
+    "target": "biceps",
+    "type": "strength"
+  },
+  {
+    "id": "1010051",
+    "imageId": "03011101",
+    "name": "Dumbbell-Decline-Bench-Press",
+    "korName": "덤벨 디클라인 벤치프레스",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1030052",
+    "imageId": "03101101",
+    "name": "Dumbbell-Front-Raise",
+    "korName": "덤벨 프론트 레이즈",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1050053",
+    "imageId": "03131101",
+    "name": "Dumbbell-Hammer-Curl",
+    "korName": "덤벨 헤머 컬",
+    "target": "biceps",
+    "type": "strength"
+  },
+  {
+    "id": "1040054",
+    "imageId": "03331101",
+    "name": "Dumbbell-Kickback",
+    "korName": "덤벨 킥백",
+    "target": "triceps",
+    "type": "strength"
+  },
+  {
+    "id": "1030055",
+    "imageId": "03781101",
+    "name": "Dumbbell-Rear-Fly",
+    "korName": "덤벨 리어 델트 플라이",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1030056",
+    "imageId": "03801101",
+    "name": "Dumbbell-Rear-Lateral-Raise",
+    "korName": "덤벨 리어 레터럴 레이즈",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1030057",
+    "imageId": "04261101",
+    "name": "Dumbbell-Standing-Overhead-Press",
+    "korName": "덤벨 스탠딩 오버헤드 프레스",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1010058",
+    "imageId": "04331101",
+    "name": "Dumbbell-Straight-Arm-Pullover",
+    "korName": "덤벨 풀오버",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1070059",
+    "imageId": "05491101",
+    "name": "Kettlebell-Swing",
+    "korName": "케틀벨 스윙",
+    "target": "full_body",
+    "type": "strength"
+  },
+  {
+    "id": "1000060",
+    "imageId": "05971101",
+    "name": "Lever-Seated-Hip-Abduction",
+    "korName": "시티드 힙 어브덕션 머신",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "1000061",
+    "imageId": "05981101",
+    "name": "Lever-Seated-Hip-Adduction",
+    "korName": "시티드 힙 어덕션 머신",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "1030062",
+    "imageId": "06021101",
+    "name": "Lever-Seated-Reverse-Fly",
+    "korName": "시티드 리버스 플라이 머신",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1000063",
+    "imageId": "06051101",
+    "name": "Lever-Standing-Calf-Raise",
+    "korName": "스탠딩 카프 레이즈 머신",
+    "target": "lower_body",
+    "type": "strength"
+  },
+  {
+    "id": "3080064",
+    "imageId": "06301101",
+    "name": "Mountain-Climber",
+    "korName": "마운틴 클라이머",
+    "target": "others",
+    "type": "cardio"
+  },
+  {
+    "id": "5080065",
+    "imageId": "06841101",
+    "name": "Treadmill",
+    "korName": "트레드밀",
+    "target": "others",
+    "type": "cardio_speed"
+  },
+  {
+    "id": "6080066",
+    "imageId": "06851101",
+    "name": "Run",
+    "korName": "러닝",
+    "target": "others",
+    "type": "cardio_distance"
+  },
+  {
+    "id": "4060067",
+    "imageId": "07151101",
+    "name": "Side-Plank",
+    "korName": "사이드 플랭크",
+    "target": "core",
+    "type": "calisthenics_time"
+  },
+  {
+    "id": "1010068",
+    "imageId": "07571101",
+    "name": "Smith-Incline-Bench-Press",
+    "korName": "스미스 인클라인 벤치프레스",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "1010069",
+    "imageId": "10301101",
+    "name": "Lever-Pec-Deck-Fly",
+    "korName": "펙덱 플라이 머신",
+    "target": "chest",
+    "type": "strength"
+  },
+  {
+    "id": "2070070",
+    "imageId": "11601101",
+    "name": "Burpee",
+    "korName": "버피",
+    "target": "full_body",
+    "type": "calisthenics"
+  },
+  {
+    "id": "3080071",
+    "imageId": "11611101",
+    "name": "Rowing",
+    "korName": "로잉머신",
+    "target": "others",
+    "type": "cardio"
+  },
+  {
+    "id": "1030072",
+    "imageId": "11651101",
+    "name": "Barbell-Standing-Military-Press-(without-rack)",
+    "korName": "바벨 스탠드 밀리터리 프레스",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "2020073",
+    "imageId": "13261101",
+    "name": "Chin-Up",
+    "korName": "친업",
+    "target": "back",
+    "type": "calisthenics"
+  },
+  {
+    "id": "1030074",
+    "imageId": "14541101",
+    "name": "Lever-Seated-Shoulder-Press",
+    "korName": "시티드 숄더 프레스 머신",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "1030075",
+    "imageId": "21371101",
+    "name": "Dumbbell-Arnold-Press",
+    "korName": "아놀드 덤벨 프레스",
+    "target": "shoulder",
+    "type": "strength"
+  },
+  {
+    "id": "6080076",
+    "imageId": "21381101",
+    "name": "Stationary-Bike-Run",
+    "korName": "바이크",
+    "target": "others",
+    "type": "cardio_distance"
+  },
+  {
+    "id": "5080077",
+    "imageId": "24901101",
+    "name": "Stepmill",
+    "korName": "스텝밀",
+    "target": "others",
+    "type": "cardio_speed"
+  },
+  {
+    "id": "3080078",
+    "imageId": "26121101",
+    "name": "Jump-Rope",
+    "korName": "줄넘기",
+    "target": "others",
+    "type": "cardio"
   }
 ]

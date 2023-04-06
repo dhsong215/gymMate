@@ -9,7 +9,7 @@ import {
 import {themeColorsContext} from '../contexts';
 
 //components
-import PlanCalendar from '../components/calendar';
+import PlanCalendar from '../components/Calendar';
 
 //logic
 import {nowDate} from '../logic/date';

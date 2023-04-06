@@ -19,15 +19,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {themeColorsContext} from '../contexts';
 
-const WorkoutsReorderModal = ({
+const EntriesReorderModal = ({
   modalVisible,
   setModalVisible,
+  entries,
+  setEntries,
   workouts,
-  setWorkouts,
+  workoutContainerIndex,
+  setOptionVisible,
 }) => {
   const themeColors = useContext(themeColorsContext);
 
-  const renderItem = ({item, drag, isActive}) => {
+  const renderItem = ({item, drag, isActive, index}) => {
     return (
       <ScaleDecorator>
         <View
@@ -42,8 +45,20 @@ const WorkoutsReorderModal = ({
               />
             </TouchableOpacity>
             <Text style={[styles.text, {color: themeColors.textColor}]}>
-              {item.workoutName}
+              {item.weight}
             </Text>
+            {/* <Text style={[styles.text, {color: themeColors.textColor}]}>
+              {item.speed}
+            </Text>
+            <Text style={[styles.text, {color: themeColors.textColor}]}>
+              {item.distance}
+            </Text>
+            <Text style={[styles.text, {color: themeColors.textColor}]}>
+              {item.reps}
+            </Text>
+            <Text style={[styles.text, {color: themeColors.textColor}]}>
+              {item.time}
+            </Text> */}
           </View>
           <Pressable onLongPress={drag}>
             <FontAwsome
@@ -77,7 +92,13 @@ const WorkoutsReorderModal = ({
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
                 style={{opacity: 0.6}}
-                onPress={() => setModalVisible(false)}>
+                onPress={() => {
+                  setModalVisible(false);
+                  setOptionVisible(pre => [
+                    ...pre,
+                    workouts[workoutContainerIndex].workoutId,
+                  ]);
+                }}>
                 <Ionicons
                   name="close"
                   size={40}
@@ -86,20 +107,21 @@ const WorkoutsReorderModal = ({
               </TouchableOpacity>
             </View>
           </View>
+
           <GestureHandlerRootView style={{flex: 1}}>
             <DraggableFlatList
               containerStyle={{flex: 1, paddingVertical: 3}}
-              data={workouts}
-              onDragEnd={({data}) => setWorkouts(data)}
-              keyExtractor={(item, index) => `workout_reorder_${index}`}
-              renderItem={({item, isActive, drag, getIndex}) =>
-                renderItem({
-                  item,
-                  isActive,
-                  getIndex,
-                  drag,
-                })
-              }
+              data={entries}
+              onDragEnd={({data}) => {
+                setEntries(data);
+                setOptionVisible(pre =>
+                  pre.filter(
+                    item => item !== workouts[workoutContainerIndex].workoutId,
+                  ),
+                );
+              }}
+              keyExtractor={(item, index) => `entries_reorder_${index}`}
+              renderItem={renderItem}
             />
           </GestureHandlerRootView>
         </View>
@@ -108,7 +130,7 @@ const WorkoutsReorderModal = ({
   );
 };
 
-export default WorkoutsReorderModal;
+export default EntriesReorderModal;
 
 const styles = StyleSheet.create({
   modal: {
