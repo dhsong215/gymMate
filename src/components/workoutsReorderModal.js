@@ -27,14 +27,20 @@ const WorkoutsReorderModal = ({
 }) => {
   const themeColors = useContext(themeColorsContext);
 
-  const renderItem = ({item, drag, isActive}) => {
+  const renderItem = ({item, drag, isActive, getIndex}) => {
     return (
       <ScaleDecorator>
         <View
           disabled={isActive}
           style={[styles.rowItem, {backgroundColor: themeColors.boxColors[0]}]}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <TouchableOpacity style={{marginRight: 10}}>
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => {
+                setWorkouts(pre =>
+                  pre.filter((_, index) => index !== getIndex()),
+                );
+              }}>
               <FontAwsome
                 name="trash-o"
                 size={25}

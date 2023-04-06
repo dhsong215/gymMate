@@ -24,46 +24,64 @@ const EntriesReorderModal = ({
   setModalVisible,
   entries,
   setEntries,
-  workouts,
-  workoutContainerIndex,
-  setOptionVisible,
+  setRefreshing,
 }) => {
   const themeColors = useContext(themeColorsContext);
 
-  const renderItem = ({item, drag, isActive, index}) => {
+  const renderItem = ({item, drag, isActive, getIndex}) => {
     return (
       <ScaleDecorator>
         <View
           disabled={isActive}
           style={[styles.rowItem, {backgroundColor: themeColors.boxColors[0]}]}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <TouchableOpacity style={{marginRight: 10}}>
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => {
+                setEntries(pre =>
+                  pre.filter((_, index) => index !== getIndex()),
+                );
+              }}>
               <FontAwsome
                 name="trash-o"
-                size={25}
+                size={22}
                 color={themeColors.textColor}
               />
             </TouchableOpacity>
             <Text style={[styles.text, {color: themeColors.textColor}]}>
-              {item.weight}
+              {`${getIndex() + 1}. `}
             </Text>
-            {/* <Text style={[styles.text, {color: themeColors.textColor}]}>
-              {item.speed}
-            </Text>
-            <Text style={[styles.text, {color: themeColors.textColor}]}>
-              {item.distance}
-            </Text>
-            <Text style={[styles.text, {color: themeColors.textColor}]}>
-              {item.reps}
-            </Text>
-            <Text style={[styles.text, {color: themeColors.textColor}]}>
-              {item.time}
-            </Text> */}
+            {item.weight >= 0 ? (
+              <Text style={[styles.text, {color: themeColors.textColor}]}>
+                {`${item.weight}${1 ? 'kg' : 'lbs'}`}
+                {'  '}
+              </Text>
+            ) : null}
+            {item.speed >= 0 ? (
+              <Text style={[styles.text, {color: themeColors.textColor}]}>
+                {item.speed}km/h{'  '}
+              </Text>
+            ) : null}
+            {item.distance >= 0 ? (
+              <Text style={[styles.text, {color: themeColors.textColor}]}>
+                {item.distance}km{'  '}
+              </Text>
+            ) : null}
+            {item.reps >= 0 ? (
+              <Text style={[styles.text, {color: themeColors.textColor}]}>
+                {item.reps}회{'  '}
+              </Text>
+            ) : null}
+            {item.time >= 0 ? (
+              <Text style={[styles.text, {color: themeColors.textColor}]}>
+                {item.time}분{'  '}
+              </Text>
+            ) : null}
           </View>
           <Pressable onLongPress={drag}>
             <FontAwsome
               name="reorder"
-              size={25}
+              size={22}
               color={themeColors.textColor}
             />
           </Pressable>
@@ -93,11 +111,8 @@ const EntriesReorderModal = ({
               <TouchableOpacity
                 style={{opacity: 0.6}}
                 onPress={() => {
+                  setRefreshing(false);
                   setModalVisible(false);
-                  setOptionVisible(pre => [
-                    ...pre,
-                    workouts[workoutContainerIndex].workoutId,
-                  ]);
                 }}>
                 <Ionicons
                   name="close"
@@ -114,13 +129,8 @@ const EntriesReorderModal = ({
               data={entries}
               onDragEnd={({data}) => {
                 setEntries(data);
-                setOptionVisible(pre =>
-                  pre.filter(
-                    item => item !== workouts[workoutContainerIndex].workoutId,
-                  ),
-                );
               }}
-              keyExtractor={(item, index) => `entries_reorder_${index}`}
+              keyExtractor={(_, index) => `entries_reorder_${index}`}
               renderItem={renderItem}
             />
           </GestureHandlerRootView>
@@ -150,7 +160,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
   },
   rowItem: {
-    height: 60,
+    height: 40,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

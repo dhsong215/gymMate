@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, memo} from 'react';
+import React, {useState, useCallback, useContext, useEffect, memo} from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //components
 import EntriesReorderModal from './EntriesReorderModal';
+import WorkoutEditModal from './WorkoutEditModal';
 
 //logics
 import {
@@ -25,178 +26,215 @@ import {
   handleSpeedChange,
   handleRepsChange,
   handleTimeChange,
+  handleIsWarmUpChange,
 } from '../logic/entries';
 
-const Entry = React.memo(({index, item, themeColors, entries, setEntries}) => {
-  const [weightValue, setWeightValue] = useState(entries[index].weight);
-  const [repsValue, setRepsValue] = useState(entries[index].reps);
-  const [timeValue, setTimeValue] = useState(entries[index].time);
-  const [distanceValue, setDistanceValue] = useState(entries[index].distance);
-  const [speedValue, setSpeedValue] = useState(entries[index].speed);
+const Entry = React.memo(
+  ({index, item, themeColors, entries, setEntries, refreshing}) => {
+    const [weightValue, setWeightValue] = useState(entries[index].weight);
+    const [repsValue, setRepsValue] = useState(entries[index].reps);
+    const [timeValue, setTimeValue] = useState(entries[index].time);
+    const [distanceValue, setDistanceValue] = useState(entries[index].distance);
+    const [speedValue, setSpeedValue] = useState(entries[index].speed);
 
-  return (
-    <View
-      style={[
-        styles.workoutEntryBox,
-        {backgroundColor: themeColors.boxColors[1]},
-      ]}>
-      <Text style={{color: themeColors.textColor, width: 30}}>{index + 1}</Text>
-      {entries[index].weight >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${weightValue === 0 ? '' : weightValue}`}
-            onChangeText={text =>
-              handleWeightChange(
-                entries,
-                setEntries,
-                text,
-                index,
-                setWeightValue,
-              )
-            }
-            keyboardType="numeric"
-            maxLength={6}
-            placeholder={'0'}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                width: 70,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>kg</Text>
-        </View>
-      ) : null}
+    useEffect(() => {
+      setWeightValue(entries[index].weight);
+      setRepsValue(entries[index].reps);
+      setTimeValue(entries[index].time);
+      setDistanceValue(entries[index].distance);
+      setSpeedValue(entries[index].speed);
+    }, [refreshing]);
 
-      {entries[index].speed >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
+    return (
+      <View
+        style={[
+          styles.workoutEntryBox,
+          {backgroundColor: themeColors.boxColors[1]},
+        ]}>
+        <Text style={{color: themeColors.textColor, width: 30}}>
+          {index + 1}
+        </Text>
+        {entries[index].weight >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${weightValue === 0 ? '' : weightValue}`}
+              onChangeText={text =>
+                handleWeightChange(
+                  entries,
+                  setEntries,
+                  text,
+                  index,
+                  setWeightValue,
+                )
+              }
+              keyboardType="numeric"
+              maxLength={6}
+              placeholder={'0'}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  width: 70,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              kg
+            </Text>
+          </View>
+        ) : null}
+
+        {entries[index].speed >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${speedValue === 0 ? '' : speedValue}`}
+              placeholder={'0'}
+              onChangeText={text =>
+                handleSpeedChange(
+                  entries,
+                  setEntries,
+                  text,
+                  index,
+                  setSpeedValue,
+                )
+              }
+              keyboardType="numeric"
+              maxLength={6}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  width: 70,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              km/h
+            </Text>
+          </View>
+        ) : null}
+
+        {entries[index].distance >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${distanceValue === 0 ? '' : distanceValue}`}
+              placeholder={'0'}
+              onChangeText={text =>
+                handleDistanceChange(
+                  entries,
+                  setEntries,
+                  text,
+                  index,
+                  setDistanceValue,
+                )
+              }
+              keyboardType="numeric"
+              maxLength={6}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  width: 70,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              km
+            </Text>
+          </View>
+        ) : null}
+
+        {entries[index].reps >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${repsValue === 0 ? '' : repsValue}`}
+              placeholder={'0'}
+              onChangeText={text =>
+                handleRepsChange(entries, setEntries, text, index, setRepsValue)
+              }
+              keyboardType="numeric"
+              maxLength={4}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              회
+            </Text>
+          </View>
+        ) : null}
+
+        {entries[index].time >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${timeValue === 0 ? '' : timeValue}`}
+              placeholder={'0'}
+              onChangeText={text =>
+                handleTimeChange(entries, setEntries, text, index, setTimeValue)
+              }
+              keyboardType="numeric"
+              maxLength={4}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              분
+            </Text>
+          </View>
+        ) : null}
+
+        <TouchableOpacity
+          onPress={() => {
+            handleIsWarmUpChange(entries, setEntries, index);
           }}>
-          <TextInput
-            value={`${speedValue === 0 ? '' : speedValue}`}
-            placeholder={'0'}
-            onChangeText={text =>
-              handleSpeedChange(entries, setEntries, text, index, setSpeedValue)
-            }
-            keyboardType="numeric"
-            maxLength={6}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                width: 70,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>
-            km/h
+          <Text
+            style={{
+              color: themeColors.textColor,
+              width: 40,
+              textAlign: 'center',
+            }}>
+            {item.isWarmUp === true ? '워밍업' : '일반'}
           </Text>
-        </View>
-      ) : null}
-
-      {entries[index].distance >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${distanceValue === 0 ? '' : distanceValue}`}
-            placeholder={'0'}
-            onChangeText={text =>
-              handleDistanceChange(
-                entries,
-                setEntries,
-                text,
-                index,
-                setDistanceValue,
-              )
-            }
-            keyboardType="numeric"
-            maxLength={6}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                width: 70,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>km</Text>
-        </View>
-      ) : null}
-
-      {entries[index].reps >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${repsValue === 0 ? '' : repsValue}`}
-            placeholder={'0'}
-            onChangeText={text =>
-              handleRepsChange(entries, setEntries, text, index, setRepsValue)
-            }
-            keyboardType="numeric"
-            maxLength={4}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>회</Text>
-        </View>
-      ) : null}
-
-      {entries[index].time >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${timeValue === 0 ? '' : timeValue}`}
-            placeholder={'0'}
-            onChangeText={text =>
-              handleTimeChange(entries, setEntries, text, index, setTimeValue)
-            }
-            keyboardType="numeric"
-            maxLength={4}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>분</Text>
-        </View>
-      ) : null}
-
-      <TouchableOpacity onPress={() => {}}>
-        <Text>{item.isWarmUp === true ? '워밍업' : '일반'}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-});
+        </TouchableOpacity>
+      </View>
+    );
+  },
+);
 
 const WorkoutBox = ({
-  item,
+  workout,
   workoutContainerIndex,
   //contexts
   optionVisible,
@@ -208,10 +246,26 @@ const WorkoutBox = ({
   const [entries, setEntries] = useState([]); //handler에 보내야됨
   const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
     useState(false);
+  const [workoutData, setWorkoutData] = useState(workout);
+  const [WorkoutEditModalVisible, setWorkoutEditModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const themeColors = useContext(themeColorsContext);
 
+  useEffect(() => {
+    const setNewWorkouts = () => {
+      const updatedData = workouts.map(item => {
+        if (item.workoutId === workoutData.workoutId) {
+          return {...workoutData};
+        }
+        return item;
+      });
+      setWorkouts(updatedData);
+    };
+    setNewWorkouts();
+  }, [workoutData]);
+
   const onPressPlus = () => {
-    const workoutType = workouts[workoutContainerIndex].type;
+    const workoutType = workout.type;
     const newEntries = addEntry(entries, workoutType);
 
     setEntries(newEntries);
@@ -241,7 +295,8 @@ const WorkoutBox = ({
           ) {
             setOptionVisible(pre =>
               pre.filter(
-                item => item !== workouts[workoutContainerIndex].workoutId,
+                workout =>
+                  workout !== workouts[workoutContainerIndex].workoutId,
               ),
             );
           } else {
@@ -251,10 +306,22 @@ const WorkoutBox = ({
             ]);
           }
         }}
-        style={{padding: 10}}>
+        style={{
+          padding: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
         <Text style={[styles.workoutTitle, {color: themeColors.textColor}]}>
-          {item.workoutName} {entries.length}세트
+          {workout.workoutName} {entries.length}세트
         </Text>
+        {/* workout modal 띄우는 버튼 */}
+        <TouchableOpacity
+          onPress={() => {
+            setWorkoutEditModalVisible(true);
+          }}>
+          <AntDesign name="edit" size={25} color={themeColors.textColor} />
+        </TouchableOpacity>
       </TouchableOpacity>
       {optionVisible.includes(workouts[workoutContainerIndex].workoutId) ? (
         <View
@@ -271,11 +338,13 @@ const WorkoutBox = ({
                   themeColors={themeColors}
                   entries={entries}
                   setEntries={setEntries}
+                  refreshing={refreshing}
                 />
               )}
-              keyExtractor={(item, index) =>
+              keyExtractor={(_, index) =>
                 `entry${workoutContainerIndex}${index}`
               }
+              refreshing={refreshing}
             />
           </View>
 
@@ -304,6 +373,7 @@ const WorkoutBox = ({
             {/* 엔트리 순서를 수정*/}
             <TouchableOpacity
               onPress={() => {
+                setRefreshing(true);
                 onPressReorder();
               }}
               style={[
@@ -322,9 +392,14 @@ const WorkoutBox = ({
         setModalVisible={setEntriesReorderModalVisible}
         entries={entries}
         setEntries={setEntries}
+        setRefreshing={setRefreshing}
+      />
+      <WorkoutEditModal
+        modalVisible={WorkoutEditModalVisible}
+        setModalVisible={setWorkoutEditModalVisible}
         workouts={workouts}
-        workoutContainerIndex={workoutContainerIndex}
-        setOptionVisible={setOptionVisible}
+        setWorkouts={setWorkouts}
+        workoutId={workout.workoutId}
       />
     </View>
   );

@@ -104,7 +104,7 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
         renderItem={({item, index}) => {
           return (
             <WorkoutBox
-              item={item}
+              workout={item}
               optionVisible={optionVisible}
               setOptionVisible={setOptionVisible}
               workouts={workouts}

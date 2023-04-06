@@ -13,6 +13,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {userContext} from '../../contexts';
 import {themeColorsContext} from '../../contexts';
 
+//icons
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 export default function HomeScreen({navigation: {navigate}}) {
   const userProfile = useContext(userContext); //useState로 수정하기
   const themeColors = useContext(themeColorsContext);
@@ -86,11 +89,13 @@ export default function HomeScreen({navigation: {navigate}}) {
                 <Text style={[styles.title, {color: themeColors.textColor}]}>
                   최근 일주일
                 </Text>
-                <TouchableOpacity
-                  style={[
-                    styles.detailButton,
-                    {backgroundColor: themeColors.textColor},
-                  ]}></TouchableOpacity>
+                <TouchableOpacity style={[styles.detailButton]}>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={30}
+                    color={themeColors.textColor}
+                  />
+                </TouchableOpacity>
               </View>
               <View
                 style={[
@@ -105,11 +110,13 @@ export default function HomeScreen({navigation: {navigate}}) {
                 <Text style={[styles.title, {color: themeColors.textColor}]}>
                   루틴
                 </Text>
-                <TouchableOpacity
-                  style={[
-                    styles.detailButton,
-                    {backgroundColor: themeColors.textColor},
-                  ]}></TouchableOpacity>
+                <TouchableOpacity style={[styles.detailButton]}>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={30}
+                    color={themeColors.textColor}
+                  />
+                </TouchableOpacity>
               </View>
               {routines.length > 0 ? (
                 <ScrollView
@@ -143,11 +150,13 @@ export default function HomeScreen({navigation: {navigate}}) {
               <Text style={[styles.title, {color: themeColors.textColor}]}>
                 최근 기록
               </Text>
-              <TouchableOpacity
-                style={[
-                  styles.detailButton,
-                  {backgroundColor: themeColors.textColor},
-                ]}></TouchableOpacity>
+              <TouchableOpacity style={[styles.detailButton]}>
+                <Ionicons
+                  name="chevron-forward"
+                  size={30}
+                  color={themeColors.textColor}
+                />
+              </TouchableOpacity>
             </View>
           </View>
         }

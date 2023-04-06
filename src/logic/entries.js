@@ -158,3 +158,14 @@ export const handleRepsChange = (
   });
   setEntries(updatedEntries);
 };
+
+export const handleIsWarmUpChange = (entries, setEntries, index) => {
+  const updatedEntries = entries.map((entry, entryIndex) => {
+    if (entryIndex === index) {
+      return {...entry, isWarmUp: !entry.isWarmUp};
+    } else {
+      return entry;
+    }
+  });
+  setEntries(updatedEntries);
+};
