@@ -40,20 +40,28 @@ export default function PlanCalendar({
   selectedDate,
   setSelectedDate,
   setIsLoading,
+  markedList,
 }) {
   const [markedDates, setMarkedDates] = useState({});
-  //markedDates 가져오기
 
   useEffect(() => {
+    const markedDates = markedList.reduce((accumulator, date) => {
+      accumulator[date] = {
+        marked: true,
+        dotColor: 'grey',
+      };
+      return accumulator;
+    }, {});
+
     setMarkedDates({
-      '2023-03-17': {marked: true},
-      '2023-03-18': {marked: true, dotColor: 'red', activeOpacity: 0},
+      ...markedDates,
       [selectedDate]: {
         selected: true,
         marked: markedDates[selectedDate]?.marked,
+        selectedColor: 'grey',
       },
     });
-  }, [selectedDate]);
+  }, [markedList]);
 
   return (
     <Calendar
@@ -69,7 +77,7 @@ export default function PlanCalendar({
       hideExtraDays={true}
       enableSwipeMonths={true}
       minDate={'2023-01-01'}
-      // onMonthChange={x => console.log(x)}
+      onMonthChange={month => setSelectedDate(month.dateString)}
       onDayPress={day => {
         setSelectedDate(day.dateString);
         setIsLoading(true);

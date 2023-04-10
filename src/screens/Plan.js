@@ -73,6 +73,7 @@ export default function PlanScreen({navigation: {navigate}}) {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           setIsLoading={setIsLoading}
+          markedList={monthPlans.map(plan => plan._data.date)}
         />
         <View style={styles.plansContainer}>
           <View style={styles.plansContainerHeader}>
@@ -85,16 +86,7 @@ export default function PlanScreen({navigation: {navigate}}) {
             </Text>
           </View>
         </View>
-        {/* ***************************<View>여기에 날짜별 계획 불러오기</View>************************** */}
-        {/* {plans.map(({_data: plan}) => {
-          return (
-            <TouchableOpacity style={styles.planBox}>
-              <Text style={{color: themeColors.textColor}}>{plan.title}</Text>
-            </TouchableOpacity>
-          );
-        })} */}
         {monthPlans.map(({_data: plan}, index) => {
-          console.log(plan);
           if (plan.date === selectedDate) {
             return <PlanBox key={plan.title + index} plan={plan} />;
           } else {
