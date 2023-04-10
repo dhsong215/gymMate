@@ -6,7 +6,6 @@ import {ThemeColorsContext} from '../contexts';
 
 export default function PlanBox({plan}) {
   const themeColors = useContext(ThemeColorsContext);
-  console.log(plan.workouts);
   return (
     <TouchableOpacity
       style={[styles.container, {backgroundColor: themeColors.boxColors[0]}]}>

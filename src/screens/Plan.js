@@ -28,7 +28,6 @@ export default function PlanScreen({navigation: {navigate}}) {
   const [monthPlans, setMonthPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(monthPlans);
   useEffect(() => {
     const getPlans = async () => {
       const userRef = getUserRef(user.uid);
@@ -94,8 +93,13 @@ export default function PlanScreen({navigation: {navigate}}) {
             </TouchableOpacity>
           );
         })} */}
-        {monthPlans.map(({_data: plan}) => {
-          return plan.date === selectedDate ? <PlanBox plan={plan} /> : null;
+        {monthPlans.map(({_data: plan}, index) => {
+          console.log(plan);
+          if (plan.date === selectedDate) {
+            return <PlanBox key={plan.title + index} plan={plan} />;
+          } else {
+            return null;
+          }
         })}
       </ScrollView>
       <TouchableOpacity

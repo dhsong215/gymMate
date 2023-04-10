@@ -69,7 +69,7 @@ export default function PlanCalendar({
       hideExtraDays={true}
       enableSwipeMonths={true}
       minDate={'2023-01-01'}
-      onMonthChange={x => console.log(x)}
+      // onMonthChange={x => console.log(x)}
       onDayPress={day => {
         setSelectedDate(day.dateString);
         setIsLoading(true);
