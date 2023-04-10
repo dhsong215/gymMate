@@ -39,4 +39,23 @@ export async function uploadPlan(user, workouts, planTitle, date) {
   }
 }
 
+export async function deletePlans(user, plans) {
+  const userRef = getUserRef(user.uid);
+  const userPlansRef = userRef.collection('Plans');
+
+  const batch = firestore().batch();
+
+  for (const planId of plans) {
+    const planDocRef = userPlansRef.doc(planId);
+    batch.delete(planDocRef);
+  }
+
+  try {
+    await batch.commit();
+    console.log('Deleted plans:', plans);
+  } catch (error) {
+    console.error('Error deleting plans:', error);
+  }
+}
+
 export {firestore, auth, GoogleSignin};

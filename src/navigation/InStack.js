@@ -10,6 +10,7 @@ import MainTabs from './MainTabs';
 import PlanScreen from '../screens/Plan';
 import RoutineScreen from '../screens/Routine';
 import AddPlanScreen from '../screens/AddPlan';
+import WorkingScreen from '../screens/Working';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -46,6 +47,16 @@ export default function InStack() {
         name="StartModal"
         component={StartModal}
         options={{animation: 'none', presentation: 'transparentModal'}}
+      />
+      <Stack.Screen
+        name="Working"
+        component={WorkingScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '으쌰',
+          presentation: 'card',
+          animation: 'fade_from_bottom',
+        }}
       />
       <Stack.Screen
         name="AddPlan"

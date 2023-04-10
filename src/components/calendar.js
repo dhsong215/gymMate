@@ -39,7 +39,6 @@ LocaleConfig.defaultLocale = 'kr';
 export default function PlanCalendar({
   selectedDate,
   setSelectedDate,
-  setIsLoading,
   markedList,
 }) {
   const [markedDates, setMarkedDates] = useState({});
@@ -80,7 +79,6 @@ export default function PlanCalendar({
       onMonthChange={month => setSelectedDate(month.dateString)}
       onDayPress={day => {
         setSelectedDate(day.dateString);
-        setIsLoading(true);
       }}
     />
   );

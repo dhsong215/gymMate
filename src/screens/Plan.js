@@ -5,14 +5,15 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  LayoutAnimation,
 } from 'react-native';
 import {ThemeColorsContext, UserContext} from '../contexts';
-import {getUserRef, firestore} from '../logic/firebase';
 
 //components
 import PlanCalendar from '../components/Calendar';
 
 //logic
+import {getUserRef, deletePlans, firestore} from '../logic/firebase';
 import {nowDate} from '../logic/date';
 
 //icons
@@ -26,33 +27,50 @@ export default function PlanScreen({navigation: {navigate}}) {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [monthPlans, setMonthPlans] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [checkedPlans, setCheckedPlans] = useState([]);
+
+  const onPressEdit = () => {
+    setIsEditMode(pre => !pre);
+    setCheckedPlans([]);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+  };
+
+  //delete selected plans
+  const onPressDelete = async () => {
+    try {
+      await deletePlans(user, checkedPlans);
+    } catch (error) {
+      console.error('Error deleting plans:', error);
+    }
+  };
 
   useEffect(() => {
-    const getPlans = async () => {
-      const userRef = getUserRef(user.uid);
-      const userPlansRef = userRef.collection('Plans');
+    const userRef = getUserRef(user.uid);
+    const userPlansRef = userRef.collection('Plans');
 
-      // 시작 날짜와 종료 날짜 설정
-      const startDate = `${selectedMonth}-01`;
-      const endDate = `${selectedMonth}-31`;
+    // 시작 날짜와 종료 날짜 설정
+    const startDate = `${selectedMonth}-01`;
+    const endDate = `${selectedMonth}-31`;
 
-      userPlansRef
-        .where('date', '>=', startDate)
-        .where('date', '<=', endDate)
-        .get({source: 'cache'})
-        .then(querySnapshot => {
-          setMonthPlans(querySnapshot._docs);
-        })
-        .catch(error => {
-          console.error('Error getting documents from cache:', error);
-        });
+    // 리스너를 설정하여 변화를 감지하고, 변화가 발생하면 monthPlans를 업데이트합니다.
+    const unsubscribe = userPlansRef
+      .where('date', '>=', startDate)
+      .where('date', '<=', endDate)
+      .onSnapshot(querySnapshot => {
+        setMonthPlans(querySnapshot.docs);
+      });
+
+    // 컴포넌트가 언마운트 될 때 리스너를 제거합니다.
+    return () => {
+      unsubscribe();
     };
-    getPlans();
   }, [selectedMonth]);
 
   useEffect(() => {
     setSelectedMonth(selectedDate.slice(0, 7));
+    setIsEditMode(false);
+    setCheckedPlans([]);
   }, [selectedDate]);
 
   useEffect(() => {
@@ -72,10 +90,10 @@ export default function PlanScreen({navigation: {navigate}}) {
         <PlanCalendar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
-          setIsLoading={setIsLoading}
           markedList={monthPlans.map(plan => plan._data.date)}
         />
         <View style={styles.plansContainer}>
+          {/* plans header */}
           <View style={styles.plansContainerHeader}>
             <Text
               style={[
@@ -84,16 +102,58 @@ export default function PlanScreen({navigation: {navigate}}) {
               ]}>
               계획 | {selectedDate}
             </Text>
+
+            {/* edit mode button */}
+            <View style={{flexDirection: 'row'}}>
+              {/* edit button */}
+              <TouchableOpacity
+                onPress={() => {
+                  onPressEdit();
+                }}
+                style={[
+                  styles.editButton,
+                  {backgroundColor: themeColors.buttonColors[4]},
+                ]}>
+                <AntDesign name="edit" color={'white'} size={15} />
+              </TouchableOpacity>
+
+              {/* delete button */}
+              {isEditMode ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    onPressDelete();
+                  }}
+                  style={[
+                    styles.editButton,
+                    {backgroundColor: themeColors.buttonColors[5]},
+                  ]}>
+                  <AntDesign name="delete" color={'white'} size={15} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
           </View>
         </View>
-        {monthPlans.map(({_data: plan}, index) => {
+
+        {/* 현재 날짜 계획들 불러옴 */}
+        {monthPlans.map(({_data: plan, _ref: {id}}, index) => {
           if (plan.date === selectedDate) {
-            return <PlanBox key={plan.title + index} plan={plan} />;
+            return (
+              <PlanBox
+                key={id}
+                id={id}
+                plan={plan}
+                isEditMode={isEditMode}
+                checkedPlans={checkedPlans}
+                setCheckedPlans={setCheckedPlans}
+              />
+            );
           } else {
             return null;
           }
         })}
       </ScrollView>
+
+      {/* 계획 추가 버튼 */}
       <TouchableOpacity
         style={[
           styles.addButton,
@@ -119,14 +179,19 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   plansContainer: {padding: 15},
-  plansContainerHeader: {flexDirection: 'row', justifyContent: 'space-between'},
+  plansContainerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   plansContainerHeaderTitle: {fontSize: 20, fontWeight: '600'},
-  planBox: {
-    backgroundColor: 'grey',
-    padding: 10,
-    marginHorizontal: 10,
-    marginBottom: 10,
-    borderRadius: 10,
+  editButton: {
+    width: 35,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    marginLeft: 10,
   },
   addButton: {
     position: 'absolute',
