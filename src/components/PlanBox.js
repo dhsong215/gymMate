@@ -11,6 +11,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 export default function PlanBox({
   plan,
   isEditMode,
+  setIsEditMode,
   setCheckedPlans,
   checkedPlans,
   id,
@@ -73,6 +74,19 @@ export default function PlanBox({
           </View>
         ))}
       </TouchableOpacity>
+      {isEditMode ? (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('EditPlan', {
+              plan,
+              id,
+            });
+            setIsEditMode(false);
+          }}
+          style={{marginLeft: 10}}>
+          <MaterialIcons name="edit" size={25} color={themeColors.textColor} />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -85,7 +99,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  plan: {width: '100%'},
+  plan: {flex: 1},
   planTitle: {
     fontSize: 17,
     fontWeight: '600',

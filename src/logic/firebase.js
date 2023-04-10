@@ -14,7 +14,7 @@ GoogleSignin.configure({
 
 export const getUserRef = uid => firestore().collection('Users').doc(uid);
 
-export async function uploadPlan(user, workouts, planTitle, date) {
+export async function uploadNewPlan(user, workouts, planTitle, date) {
   const exercisesData = workouts.map(workout => workout.exerciseId);
   const planData = {
     title: planTitle,
@@ -35,7 +35,27 @@ export async function uploadPlan(user, workouts, planTitle, date) {
   try {
     await userPlanRef.add(planData);
   } catch (error) {
-    console.error('Batch write failed: ', error);
+    console.error(error);
+  }
+}
+
+export async function uploadPlan(user, workouts, planTitle, plan, id) {
+  const exercisesData = workouts.map(workout => workout.exerciseId);
+  console.log(plan.date);
+  const planData = {
+    ...plan,
+    workouts,
+    title: planTitle,
+    exercises: exercisesData,
+  };
+
+  const userRef = getUserRef(user.uid);
+  const userPlanDocRef = userRef.collection('Plans').doc(id);
+
+  try {
+    await userPlanDocRef.set(planData);
+  } catch (error) {
+    console.error(error);
   }
 }
 

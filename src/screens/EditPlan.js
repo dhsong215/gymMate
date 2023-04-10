@@ -22,7 +22,7 @@ import WorkoutsReorderModal from '../components/WorkoutsReorderModal';
 import WorkoutBox from '../components/WorkoutBox';
 
 //logics
-import {uploadPlan} from '../logic/firebase';
+import {uploadNewPlan, uploadPlan} from '../logic/firebase';
 
 const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   const themeColors = useContext(ThemeColorsContext);
@@ -69,13 +69,17 @@ const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   );
 };
 
-function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
-  const [workouts, setWorkouts] = useState([]);
+function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
+  const [workouts, setWorkouts] = useState(
+    params.plan ? params.plan.workouts : [],
+  );
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const [workoutsReorderModalVisible, setWorkoutsReorderModalVisible] =
     useState(false);
   const [optionVisible, setOptionVisible] = useState([]);
-  const [planTitle, setPlanTitle] = useState(params.date + ' 운동');
+  const [planTitle, setPlanTitle] = useState(
+    params.plan ? params.plan.title : params.date + ' 운동',
+  );
 
   const themeColors = useContext(ThemeColorsContext);
   const user = useContext(UserContext);
@@ -155,7 +159,11 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              uploadPlan(user, workouts, planTitle, params.date);
+              if (params.id) {
+                uploadPlan(user, workouts, planTitle, params.plan, params.id);
+              } else {
+                uploadNewPlan(user, workouts, planTitle, params.date);
+              }
               goBack();
             }}
             style={[
@@ -187,7 +195,7 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   );
 }
 
-export default AddPlanScreen;
+export default EditPlanScreen;
 
 const styles = StyleSheet.create({
   headerContainer: {

@@ -122,6 +122,7 @@ export default function PlanScreen({navigation: {navigate}}) {
                 <TouchableOpacity
                   onPress={() => {
                     onPressDelete();
+                    setIsEditMode(false);
                   }}
                   style={[
                     styles.editButton,
@@ -143,6 +144,7 @@ export default function PlanScreen({navigation: {navigate}}) {
                 id={id}
                 plan={plan}
                 isEditMode={isEditMode}
+                setIsEditMode={setIsEditMode}
                 checkedPlans={checkedPlans}
                 setCheckedPlans={setCheckedPlans}
               />
@@ -160,7 +162,7 @@ export default function PlanScreen({navigation: {navigate}}) {
           {backgroundColor: themeColors.buttonColors[2]},
         ]}
         onPress={() => {
-          navigate('AddPlan', {date: selectedDate});
+          navigate('EditPlan', {date: selectedDate});
         }}>
         <AntDesign name="plus" color="white" size={30} />
       </TouchableOpacity>

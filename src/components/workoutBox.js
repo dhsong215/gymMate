@@ -243,7 +243,7 @@ const WorkoutBox = ({
   setWorkouts,
   flatListRef, //scroll
 }) => {
-  const [entries, setEntries] = useState([]); //handler에 보내야됨
+  const [entries, setEntries] = useState([...workout.entries]); //handler에 보내야됨
   const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
     useState(false);
   const [workoutData, setWorkoutData] = useState(workout);

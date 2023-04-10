@@ -9,7 +9,7 @@ import StartModal from '../screens/StartModal';
 import MainTabs from './MainTabs';
 import PlanScreen from '../screens/Plan';
 import RoutineScreen from '../screens/Routine';
-import AddPlanScreen from '../screens/AddPlan';
+import EditPlanScreen from '../screens/EditPlan';
 import WorkingScreen from '../screens/Working';
 
 //icons
@@ -59,8 +59,8 @@ export default function InStack() {
         }}
       />
       <Stack.Screen
-        name="AddPlan"
-        component={AddPlanScreen}
+        name="EditPlan"
+        component={EditPlanScreen}
         options={{
           headerShown: true,
           headerTitle: '계획 추가',
