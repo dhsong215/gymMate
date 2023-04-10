@@ -10,7 +10,7 @@ import {
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 
 import FontAwsome from 'react-native-vector-icons/FontAwesome';
 
@@ -24,6 +24,8 @@ const WorkoutsReorderModal = ({
   setModalVisible,
   workouts,
   setWorkouts,
+  planTitle,
+  setPlanTitle,
 }) => {
   const themeColors = useContext(ThemeColorsContext);
 
@@ -91,13 +93,28 @@ const WorkoutsReorderModal = ({
                 />
               </TouchableOpacity>
             </View>
+
+            {/* 플랜 이름 변경 */}
+            <TextInput
+              value={planTitle}
+              onChangeText={text => setPlanTitle(text)}
+              maxLength={15}
+              style={{
+                color: themeColors.textColor,
+                backgroundColor: themeColors.boxColors[0],
+                marginBottom: 10,
+                padding: 10,
+                borderRadius: 10,
+                textAlign: 'center',
+              }}
+            />
           </View>
           <GestureHandlerRootView style={{flex: 1}}>
             <DraggableFlatList
               containerStyle={{flex: 1, paddingVertical: 3}}
               data={workouts}
               onDragEnd={({data}) => setWorkouts(data)}
-              keyExtractor={(item, index) => `workout_reorder_${index}`}
+              keyExtractor={(_, index) => `workout_reorder_${index}`}
               renderItem={({item, isActive, drag, getIndex}) =>
                 renderItem({
                   item,

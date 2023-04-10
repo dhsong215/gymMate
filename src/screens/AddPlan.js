@@ -23,7 +23,6 @@ import WorkoutBox from '../components/WorkoutBox';
 
 //logics
 import {uploadPlan} from '../logic/firebase';
-import {nowDate} from '../logic/date';
 
 const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   const themeColors = useContext(ThemeColorsContext);
@@ -76,6 +75,7 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workoutsReorderModalVisible, setWorkoutsReorderModalVisible] =
     useState(false);
   const [optionVisible, setOptionVisible] = useState([]);
+  const [planTitle, setPlanTitle] = useState(params.date + ' 운동');
 
   const themeColors = useContext(ThemeColorsContext);
   const user = useContext(UserContext);
@@ -85,12 +85,12 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
       header: () => (
         <Header
           goBack={goBack}
-          title={params.date}
+          title={planTitle}
           setWorkoutsReorderModalVisible={setWorkoutsReorderModalVisible}
         />
       ),
     });
-  }, []);
+  }, [planTitle]);
 
   const flatListRef = useRef(null);
 
@@ -155,7 +155,7 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              uploadPlan(user, workouts, params.date);
+              uploadPlan(user, workouts, planTitle, params.date);
               goBack();
             }}
             style={[
@@ -173,6 +173,8 @@ function AddPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
           setModalVisible={setWorkoutsReorderModalVisible}
           workouts={workouts}
           setWorkouts={setWorkouts}
+          planTitle={planTitle}
+          setPlanTitle={setPlanTitle}
         />
         <AddExerciseModal
           modalVisible={addExerciseModalVisible}
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerBackButton: {},
-  headerTitle: {fontSize: 20, fontWeight: '600'},
+  headerTitle: {fontSize: 20, fontWeight: '600', maxWidth: 300, maxHeight: 30},
   headerStateBox: {
     backgroundColor: 'white',
     height: 100,

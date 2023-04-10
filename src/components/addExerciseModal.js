@@ -34,12 +34,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {ThemeColorsContext} from '../contexts';
 
-const AddExerciseModal = ({
-  modalVisible,
-  setModalVisible,
-  setWorkouts,
-  date,
-}) => {
+const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
   const themeColors = useContext(ThemeColorsContext);
   const [exerciseList, setExerciseList] = useState(exercises);
   const [selectedMuscle, setSelectedMuscle] = useState({
@@ -230,8 +225,8 @@ const AddExerciseModal = ({
             <TouchableOpacity
               onPress={() => {
                 const data = selectedExercises.map((item, index) => ({
-                  date: date,
-                  exericseId: item.id,
+                  exerciseId: item.id,
+                  entries: [],
                   workoutId: `${Date.now()}${index}`,
                   workoutName: item.korName,
                   type: item.type,

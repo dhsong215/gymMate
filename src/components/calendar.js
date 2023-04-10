@@ -36,16 +36,22 @@ LocaleConfig.locales['kr'] = {
 };
 LocaleConfig.defaultLocale = 'kr';
 
-export default function PlanCalendar({selectedDate, setSelectedDate}) {
+export default function PlanCalendar({
+  selectedDate,
+  setSelectedDate,
+  setIsLoading,
+}) {
   const [markedDates, setMarkedDates] = useState({});
   //markedDates 가져오기
 
   useEffect(() => {
     setMarkedDates({
-      [selectedDate]: {selected: true, selectedColor: 'green'},
-      //나중에 진짜 계획 추가
       '2023-03-17': {marked: true},
       '2023-03-18': {marked: true, dotColor: 'red', activeOpacity: 0},
+      [selectedDate]: {
+        selected: true,
+        marked: markedDates[selectedDate]?.marked,
+      },
     });
   }, [selectedDate]);
 
@@ -63,8 +69,10 @@ export default function PlanCalendar({selectedDate, setSelectedDate}) {
       hideExtraDays={true}
       enableSwipeMonths={true}
       minDate={'2023-01-01'}
+      onMonthChange={x => console.log(x)}
       onDayPress={day => {
         setSelectedDate(day.dateString);
+        setIsLoading(true);
       }}
     />
   );

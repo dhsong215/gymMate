@@ -6,7 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {ThemeColorsContext} from '../contexts';
+import {ThemeColorsContext, UserContext} from '../contexts';
+import {getUserRef, firestore} from '../logic/firebase';
 
 //components
 import PlanCalendar from '../components/Calendar';
@@ -16,13 +17,48 @@ import {nowDate} from '../logic/date';
 
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import PlanBox from '../components/PlanBox';
 
 export default function PlanScreen({navigation: {navigate}}) {
   const themeColors = useContext(ThemeColorsContext);
+  const user = useContext(UserContext);
+
   const [selectedDate, setSelectedDate] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [monthPlans, setMonthPlans] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  console.log(monthPlans);
+  useEffect(() => {
+    const getPlans = async () => {
+      const userRef = getUserRef(user.uid);
+      const userPlansRef = userRef.collection('Plans');
+
+      // 시작 날짜와 종료 날짜 설정
+      const startDate = `${selectedMonth}-01`;
+      const endDate = `${selectedMonth}-31`;
+
+      userPlansRef
+        .where('date', '>=', startDate)
+        .where('date', '<=', endDate)
+        .get({source: 'cache'})
+        .then(querySnapshot => {
+          setMonthPlans(querySnapshot._docs);
+        })
+        .catch(error => {
+          console.error('Error getting documents from cache:', error);
+        });
+    };
+    getPlans();
+  }, [selectedMonth]);
+
+  useEffect(() => {
+    setSelectedMonth(selectedDate.slice(0, 7));
+  }, [selectedDate]);
 
   useEffect(() => {
     setSelectedDate(nowDate()); // get current date yyyy-mm-dd format
+    setSelectedMonth(nowDate().slice(0, 7));
   }, []);
 
   return (
@@ -37,15 +73,30 @@ export default function PlanScreen({navigation: {navigate}}) {
         <PlanCalendar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          setIsLoading={setIsLoading}
         />
         <View style={styles.plansContainer}>
-          <View style={styles.containerHeader}>
-            <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
+          <View style={styles.plansContainerHeader}>
+            <Text
+              style={[
+                styles.plansContainerHeaderTitle,
+                {color: themeColors.textColor},
+              ]}>
               계획 | {selectedDate}
             </Text>
           </View>
         </View>
         {/* ***************************<View>여기에 날짜별 계획 불러오기</View>************************** */}
+        {/* {plans.map(({_data: plan}) => {
+          return (
+            <TouchableOpacity style={styles.planBox}>
+              <Text style={{color: themeColors.textColor}}>{plan.title}</Text>
+            </TouchableOpacity>
+          );
+        })} */}
+        {monthPlans.map(({_data: plan}) => {
+          return plan.date === selectedDate ? <PlanBox plan={plan} /> : null;
+        })}
       </ScrollView>
       <TouchableOpacity
         style={[
@@ -72,9 +123,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   plansContainer: {padding: 15},
-  containerHeader: {flexDirection: 'row', justifyContent: 'space-between'},
-  headerTitle: {fontSize: 20, fontWeight: '600'},
-  plan: {},
+  plansContainerHeader: {flexDirection: 'row', justifyContent: 'space-between'},
+  plansContainerHeaderTitle: {fontSize: 20, fontWeight: '600'},
+  planBox: {
+    backgroundColor: 'grey',
+    padding: 10,
+    marginHorizontal: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+  },
   addButton: {
     position: 'absolute',
     right: 25,

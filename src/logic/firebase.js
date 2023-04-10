@@ -14,46 +14,29 @@ GoogleSignin.configure({
 
 export const getUserRef = uid => firestore().collection('Users').doc(uid);
 
-export const usersQuerySnapshot = firestore().collection('Users').get();
-
-export async function uploadPlan(user, workouts, date) {
+export async function uploadPlan(user, workouts, planTitle, date) {
+  const exercisesData = workouts.map(workout => workout.exerciseId);
   const planData = {
-    data: date,
+    title: planTitle,
+    date: date,
     startTimestamp: null,
     finishTimestamp: null,
     isDone: false,
-    workoutIds: workouts.map(workout => workout.workoutId),
     time: null,
     routine: null,
+    workouts: workouts,
+    exercises: exercisesData,
+    createdAt: firestore.FieldValue.serverTimestamp(),
   };
 
+  const userRef = getUserRef(user.uid);
+  const userPlanRef = userRef.collection('Plans');
+
   try {
-    const batch = firestore().batch();
-
-    // Plans 컬렉션에 문서 추가
-    const newPlanRef = firestore()
-      .collection('Users')
-      .doc(user.uid)
-      .collection('Plans')
-      .doc();
-    batch.set(newPlanRef, planData);
-
-    // Workouts 컬렉션에 참조 문서들 추가
-    for (const workout of workouts) {
-      const newWorkoutRef = firestore()
-        .collection('Users')
-        .doc(user.uid)
-        .collection('Workouts')
-        .doc(workout.workoutId);
-      batch.set(newWorkoutRef, {planRef: newPlanRef, ...workout});
-    }
-
-    await batch.commit();
-    console.log('Batch write successfully committed!');
+    await userPlanRef.add(planData);
   } catch (error) {
     console.error('Batch write failed: ', error);
   }
-  console.log('Objects and ref objects uploaded successfully');
 }
 
 export {firestore, auth, GoogleSignin};

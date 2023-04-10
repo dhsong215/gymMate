@@ -251,19 +251,18 @@ const WorkoutBox = ({
   const [refreshing, setRefreshing] = useState(false);
   const themeColors = useContext(ThemeColorsContext);
 
+  //workoutData바뀌면 실행
   useEffect(() => {
-    const setNewWorkouts = () => {
-      const updatedData = workouts.map(item => {
-        if (item.workoutId === workoutData.workoutId) {
-          return {...workoutData};
-        }
-        return item;
-      });
-      setWorkouts(updatedData);
-    };
-    setNewWorkouts();
+    const updatedData = workouts.map(item => {
+      if (item.workoutId === workoutData.workoutId) {
+        return {...workoutData};
+      }
+      return item;
+    });
+    setWorkouts(updatedData);
   }, [workoutData]);
 
+  //entry변경되면 실행
   useEffect(() => {
     setWorkoutData(pre => ({...pre, entries: entries}));
   }, [entries]);
