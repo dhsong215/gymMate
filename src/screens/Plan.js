@@ -88,6 +88,7 @@ export default function PlanScreen({navigation: {navigate}}) {
       ]}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
         style={{width: '100%'}}>
         <PlanCalendar
           selectedDate={selectedDate}
@@ -181,6 +182,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     width: '100%',
+    paddingBottom: 110,
   },
   plansContainer: {padding: 15},
   plansContainerHeader: {

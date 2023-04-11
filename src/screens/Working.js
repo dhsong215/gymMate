@@ -38,11 +38,7 @@ const Header = ({goBack, title}) => {
           <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
             {title}
           </Text>
-          <TouchableOpacity
-            style={styles.headerBackButton}
-            onPress={() => {
-              setWorkoutsReorderModalVisible(true);
-            }}>
+          <TouchableOpacity style={styles.headerBackButton} onPress={() => {}}>
             <Ionicons
               name="list-circle-outline"
               size={35}
@@ -58,6 +54,52 @@ const Header = ({goBack, title}) => {
   );
 };
 
+const WorkoutPage = ({workout, workoutIndex}) => {
+  const themeColors = useContext(ThemeColorsContext);
+
+  return (
+    <View style={styles.workoutPageContainer}>
+      <Text style={[styles.workoutIndex, {color: themeColors.textColor}]}>
+        {workoutIndex}
+      </Text>
+      <Text style={[styles.workoutName, {color: themeColors.textColor}]}>
+        {workout.workoutName}
+      </Text>
+      <Text style={[styles.workoutTarget, {color: themeColors.textColor}]}>
+        {workout.target}
+      </Text>
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: 200,
+        }}>
+        <View
+          style={{
+            backgroundColor: 'grey',
+            width: 180,
+            height: 180,
+            borderRadius: 90,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: themeColors.backgroundColor,
+              width: 160,
+              height: 160,
+              borderRadius: 80,
+            }}></View>
+        </View>
+      </View>
+      <View>
+        <Text>entrys</Text>
+      </View>
+    </View>
+  );
+};
+
 export default function WorkingScreen({navigation: {setOptions, goBack}}) {
   const themeColors = useContext(ThemeColorsContext);
 
@@ -66,13 +108,18 @@ export default function WorkingScreen({navigation: {setOptions, goBack}}) {
 
   useEffect(() => {
     setOptions({
-      header: () => <Header goBack={goBack} title={nowWorking.title} />,
+      header: () => (
+        <Header
+          goBack={goBack}
+          title={isLoading ? 'Working' : nowWorking.title}
+        />
+      ),
     });
-  }, [nowWorking]);
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getData('nowOnWorking');
+      const data = await getData('nowWorking');
       setNowWorking(data);
       setIsLoading(false);
     };
@@ -90,11 +137,16 @@ export default function WorkingScreen({navigation: {setOptions, goBack}}) {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={true}>
-          {nowWorking.workouts.map(workout => (
-            <Text style={{color: themeColors.textColor, width: WINDOW_WIDTH}}>
-              {workout.workoutName}
-            </Text>
-          ))}
+          {nowWorking.workouts.map((workout, index) => {
+            const workoutIndex = `${index + 1} / ${nowWorking.workouts.length}`;
+            return (
+              <WorkoutPage
+                key={index}
+                workoutIndex={workoutIndex}
+                workout={workout}
+              />
+            );
+          })}
         </ScrollView>
       ) : (
         <ActivityIndicator />
@@ -120,5 +172,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  workoutPageContainer: {width: WINDOW_WIDTH, padding: 10},
+  workoutIndex: {opacity: 0.7, marginBottom: 8},
+  workoutName: {
+    fontSize: 22,
+    fontWeight: '500',
+    marginBottom: 3,
+  },
+  workoutTarget: {
+    opacity: 0.7,
+    fontSize: 17,
   },
 });

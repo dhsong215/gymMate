@@ -32,8 +32,8 @@ export default function PlanBox({
       },
       {
         text: 'OK',
-        onPress: () => {
-          storeData('nowOnWorking', plan);
+        onPress: async () => {
+          await storeData('nowWorking', plan);
           navigation.goBack();
           navigation.navigate('Working');
         },

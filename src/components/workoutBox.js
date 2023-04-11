@@ -1,12 +1,5 @@
 import React, {useState, useCallback, useContext, useEffect, memo} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  TextInput,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 
 //context
 import {ThemeColorsContext} from '../contexts';
@@ -17,221 +10,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 //components
 import EntriesReorderModal from './EntriesReorderModal';
 import WorkoutEditModal from './WorkoutEditModal';
+import Entry from './Entry';
 
 //logics
-import {
-  addEntry,
-  handleWeightChange,
-  handleDistanceChange,
-  handleSpeedChange,
-  handleRepsChange,
-  handleTimeChange,
-  handleIsWarmUpChange,
-} from '../logic/entries';
-
-const Entry = React.memo(
-  ({index, item, themeColors, entries, setEntries, refreshing}) => {
-    const [weightValue, setWeightValue] = useState(entries[index].weight);
-    const [repsValue, setRepsValue] = useState(entries[index].reps);
-    const [timeValue, setTimeValue] = useState(entries[index].time);
-    const [distanceValue, setDistanceValue] = useState(entries[index].distance);
-    const [speedValue, setSpeedValue] = useState(entries[index].speed);
-
-    useEffect(() => {
-      setWeightValue(entries[index].weight);
-      setRepsValue(entries[index].reps);
-      setTimeValue(entries[index].time);
-      setDistanceValue(entries[index].distance);
-      setSpeedValue(entries[index].speed);
-    }, [refreshing]);
-
-    return (
-      <View
-        style={[
-          styles.workoutEntryBox,
-          {backgroundColor: themeColors.boxColors[1]},
-        ]}>
-        <Text style={{color: themeColors.textColor, width: 30}}>
-          {index + 1}
-        </Text>
-        {entries[index].weight >= 0 ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TextInput
-              value={`${weightValue === 0 ? '' : weightValue}`}
-              onChangeText={text =>
-                handleWeightChange(
-                  entries,
-                  setEntries,
-                  text,
-                  index,
-                  setWeightValue,
-                )
-              }
-              keyboardType="numeric"
-              maxLength={6}
-              placeholder={'0'}
-              style={[
-                styles.entryInput,
-                {
-                  color: themeColors.textColor,
-                  width: 70,
-                  backgroundColor: themeColors.boxColors[0],
-                },
-              ]}
-            />
-            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
-              kg
-            </Text>
-          </View>
-        ) : null}
-
-        {entries[index].speed >= 0 ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TextInput
-              value={`${speedValue === 0 ? '' : speedValue}`}
-              placeholder={'0'}
-              onChangeText={text =>
-                handleSpeedChange(
-                  entries,
-                  setEntries,
-                  text,
-                  index,
-                  setSpeedValue,
-                )
-              }
-              keyboardType="numeric"
-              maxLength={6}
-              style={[
-                styles.entryInput,
-                {
-                  color: themeColors.textColor,
-                  width: 70,
-                  backgroundColor: themeColors.boxColors[0],
-                },
-              ]}
-            />
-            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
-              km/h
-            </Text>
-          </View>
-        ) : null}
-
-        {entries[index].distance >= 0 ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TextInput
-              value={`${distanceValue === 0 ? '' : distanceValue}`}
-              placeholder={'0'}
-              onChangeText={text =>
-                handleDistanceChange(
-                  entries,
-                  setEntries,
-                  text,
-                  index,
-                  setDistanceValue,
-                )
-              }
-              keyboardType="numeric"
-              maxLength={6}
-              style={[
-                styles.entryInput,
-                {
-                  color: themeColors.textColor,
-                  width: 70,
-                  backgroundColor: themeColors.boxColors[0],
-                },
-              ]}
-            />
-            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
-              km
-            </Text>
-          </View>
-        ) : null}
-
-        {entries[index].reps >= 0 ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TextInput
-              value={`${repsValue === 0 ? '' : repsValue}`}
-              placeholder={'0'}
-              onChangeText={text =>
-                handleRepsChange(entries, setEntries, text, index, setRepsValue)
-              }
-              keyboardType="numeric"
-              maxLength={4}
-              style={[
-                styles.entryInput,
-                {
-                  color: themeColors.textColor,
-                  backgroundColor: themeColors.boxColors[0],
-                },
-              ]}
-            />
-            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
-              회
-            </Text>
-          </View>
-        ) : null}
-
-        {entries[index].time >= 0 ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TextInput
-              value={`${timeValue === 0 ? '' : timeValue}`}
-              placeholder={'0'}
-              onChangeText={text =>
-                handleTimeChange(entries, setEntries, text, index, setTimeValue)
-              }
-              keyboardType="numeric"
-              maxLength={4}
-              style={[
-                styles.entryInput,
-                {
-                  color: themeColors.textColor,
-                  backgroundColor: themeColors.boxColors[0],
-                },
-              ]}
-            />
-            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
-              분
-            </Text>
-          </View>
-        ) : null}
-
-        <TouchableOpacity
-          onPress={() => {
-            handleIsWarmUpChange(entries, setEntries, index);
-          }}>
-          <Text
-            style={{
-              color: themeColors.textColor,
-              width: 40,
-              textAlign: 'center',
-            }}>
-            {item.isWarmUp === true ? '워밍업' : '일반'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  },
-);
+import {addEntry} from '../logic/entries';
 
 const WorkoutBox = ({
   workout,
@@ -330,7 +112,6 @@ const WorkoutBox = ({
                 <Entry
                   item={item}
                   index={index}
-                  themeColors={themeColors}
                   entries={entries}
                   setEntries={setEntries}
                   refreshing={refreshing}
@@ -403,56 +184,9 @@ const styles = StyleSheet.create({
   headerContainer: {
     height: 130,
   },
-  headerTopContainer: {
-    flexDirection: 'row',
-    padding: 13,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerBackButton: {},
   headerTitle: {fontSize: 20, fontWeight: '600'},
-  headerStateBox: {
-    backgroundColor: 'white',
-    height: 100,
-    width: '92%',
-    alignSelf: 'center',
-    borderRadius: 10,
-    elevation: 20,
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-  },
-  mainContainer: {
-    flex: 1,
-  },
   workoutContainer: {marginBottom: 5},
   workoutTitle: {fontSize: 20},
-  workoutEntryBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 3,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginHorizontal: 10,
-    borderRadius: 5,
-  },
-  bottomButtonContainer: {
-    width: '100%',
-    flexDirection: 'row',
-  },
-
-  bottomButton: {
-    width: '50%',
-    height: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bottomButtonText: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
   bottomEditButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -465,13 +199,5 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  entryInput: {
-    padding: 5,
-    borderRadius: 3,
-    fontSize: 15,
-    height: 30,
-    width: 50,
-    textAlign: 'center',
   },
 });

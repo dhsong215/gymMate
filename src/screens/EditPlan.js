@@ -224,24 +224,10 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  workoutContainer: {marginBottom: 5},
-  workoutTitle: {fontSize: 20},
-  workoutEntryBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'grey',
-    marginVertical: 3,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginHorizontal: 10,
-    borderRadius: 5,
-  },
   bottomButtonContainer: {
     width: '100%',
     flexDirection: 'row',
   },
-
   bottomButton: {
     width: '50%',
     height: 80,
@@ -251,19 +237,5 @@ const styles = StyleSheet.create({
   bottomButtonText: {
     fontSize: 17,
     fontWeight: '600',
-  },
-  editBottomButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  editBottomButton: {
-    height: 40,
-    width: 120,
-    borderRadius: 5,
-    marginHorizontal: 3,
-    marginVertical: 8,
-    backgroundColor: 'grey',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
