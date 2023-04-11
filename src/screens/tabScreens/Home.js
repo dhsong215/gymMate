@@ -92,7 +92,7 @@ export default function HomeScreen({navigation: {navigate}}) {
                     styles.startWorkText,
                     {color: themeColors.textColor},
                   ]}>
-                  운동 시작
+                  내 운동
                 </Text>
               </TouchableOpacity>
             </View>

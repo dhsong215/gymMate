@@ -7,6 +7,7 @@ import {ThemeColorsContext} from '../contexts';
 //screens
 import TemporaryScreen from '../screens/Temporary';
 import HomeScreen from '../screens/tabScreens/Home';
+import PlanScreen from '../screens/Plan';
 
 //icons
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -31,13 +32,13 @@ export default function MainTabs() {
           shadowOpacity: 0.1,
           shadowRadius: 5,
           elevation: 15,
-          position: 'absolute',
+          position: 'relative',
         },
         headerStyle: {backgroundColor: themeColors.screenHeaderColors[0]},
         headerShadowVisible: false,
         headerTitleStyle: {color: themeColors.textColor},
         tabBarActiveTintColor: '#FF6666',
-        tabBarLabelStyle: {marginBottom: 4},
+        tabBarLabelStyle: {marginBottom: 3},
       }}>
       <Tab.Screen
         name="Home"
@@ -51,10 +52,11 @@ export default function MainTabs() {
         }}
       />
       <Tab.Screen
-        name="Calender"
-        component={TemporaryScreen}
+        name="Plan"
+        component={PlanScreen}
         options={{
-          tabBarLabel: '기록',
+          headerTitle: '플랜',
+          tabBarLabel: '플랜',
           tabBarIcon: ({focused, color, size}) => (
             <Ionicons name="calendar" color={color} size={size} />
           ),
