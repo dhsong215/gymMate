@@ -5,6 +5,9 @@ import {useNavigation} from '@react-navigation/native';
 //context
 import {ThemeColorsContext} from '../contexts';
 
+//logics
+import {storeData, getData} from '../logic/asyncStorage';
+
 //icons
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -30,6 +33,7 @@ export default function PlanBox({
       {
         text: 'OK',
         onPress: () => {
+          storeData('nowOnWorking', plan);
           navigation.goBack();
           navigation.navigate('Working');
         },

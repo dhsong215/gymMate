@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   LayoutAnimation,
 } from 'react-native';
-import {ThemeColorsContext, UserContext} from '../contexts';
 
 //components
 import PlanCalendar from '../components/Calendar';
@@ -19,6 +18,9 @@ import {nowDate} from '../logic/date';
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import PlanBox from '../components/PlanBox';
+
+//contexts
+import {ThemeColorsContext, UserContext} from '../contexts';
 
 export default function PlanScreen({navigation: {navigate}}) {
   const themeColors = useContext(ThemeColorsContext);
