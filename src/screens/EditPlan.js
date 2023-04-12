@@ -100,8 +100,8 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   useEffect(() => {
     if (changedWorkout) {
       const updatedWorkouts = workouts.map(workout => {
-        if (changedWorkout.workout.workoutId === workout.workoutId) {
-          return {...changedWorkout.workout};
+        if (changedWorkout.workoutId === workout.workoutId) {
+          return {...changedWorkout};
         } else {
           return workout;
         }
@@ -133,7 +133,7 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
           renderItem={({item, index}) => {
             return (
               <WorkoutBox
-                workout={item}
+                workoutData={item}
                 optionVisible={optionVisible}
                 setOptionVisible={setOptionVisible}
                 isLastIndex={index === workouts.length - 1}

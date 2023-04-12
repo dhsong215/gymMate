@@ -8,9 +8,11 @@ export const darkModeColors = {
     '#A44BE2',
     '#245953',
     '#443C68',
-    '#374045',
+    '#374045', //어둠
     '#735F32',
-    '#D21312',
+    '#D21312', //빨강 주로 시작버튼
+    '#F9F5EB', //엔트리 비 체크버튼
+    '#B0DAFF', //엔트리 체크버튼
   ],
   modalColors: ['#424242', '#374045'],
   borderColors: ['#CBE4DE'],
@@ -29,6 +31,9 @@ export const lightModeColors = {
     '#938282',
     '#647E68',
     '#ED2B2A',
+    '#F9F5EB',
+    '#F9F5EB', //엔트리 비 체크버튼
+    '#B0DAFF',
   ],
   modalColors: ['#F1F0F2', '#F1F0F2'],
   borderColors: ['#CBE4DE'],

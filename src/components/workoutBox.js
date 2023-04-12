@@ -16,7 +16,7 @@ import Entry from './Entry';
 import {addEntry} from '../logic/entries';
 
 const WorkoutBox = ({
-  workout,
+  workoutData,
   //contexts
   optionVisible,
   setOptionVisible,
@@ -24,10 +24,10 @@ const WorkoutBox = ({
   flatListRef, //scroll
   setChangedWorkout,
 }) => {
-  const [entries, setEntries] = useState([...workout.entries]); //handler에 보내야됨
+  const [entries, setEntries] = useState([...workoutData.entries]); //handler에 보내야됨
   const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
     useState(false);
-  const [workoutData, setWorkoutData] = useState(workout);
+  const [workout, setWorkout] = useState(workoutData);
   const [WorkoutEditModalVisible, setWorkoutEditModalVisible] = useState(false);
   const [changedEntry, setChangedEntry] = useState();
   const [refreshing, setRefreshing] = useState(false);
@@ -35,8 +35,8 @@ const WorkoutBox = ({
 
   //workoutData바뀌면 실행
   useEffect(() => {
-    setChangedWorkout({id: workout.workoutId, workout});
-  }, [workoutData]);
+    setChangedWorkout({...workout});
+  }, [workout]);
 
   useEffect(() => {
     if (changedEntry) {
@@ -54,7 +54,7 @@ const WorkoutBox = ({
 
   //entry변경되면 실행
   useEffect(() => {
-    setWorkoutData(pre => ({...pre, entries: entries}));
+    setWorkout(pre => ({...pre, entries: entries}));
   }, [entries]);
 
   const onPressPlus = () => {
@@ -124,7 +124,6 @@ const WorkoutBox = ({
                 />
               )}
               keyExtractor={(_, index) => `entry${workout.workoutId}${index}`}
-              refreshing={refreshing}
             />
           </View>
 
@@ -177,8 +176,8 @@ const WorkoutBox = ({
       <WorkoutEditModal
         modalVisible={WorkoutEditModalVisible}
         setModalVisible={setWorkoutEditModalVisible}
-        workoutData={workoutData}
-        setWorkoutData={setWorkoutData}
+        workoutData={workout}
+        setWorkout={setWorkout}
       />
     </View>
   );

@@ -10,7 +10,7 @@ import {
 
 import {ThemeColorsContext} from '../../contexts';
 
-const SetEditModal = ({modalVisible, setModalVisible}) => {
+const SetEditModal = ({modalVisible, setModalVisible, setEntrySetValue}) => {
   const themeColors = useContext(ThemeColorsContext);
 
   return (
@@ -26,38 +26,58 @@ const SetEditModal = ({modalVisible, setModalVisible}) => {
           style={[styles.modal, {backgroundColor: themeColors.modalColors[0]}]}>
           <TouchableOpacity
             onPress={() => {
+              setEntrySetValue('normal');
               setModalVisible(false);
             }}
             style={styles.button}>
-            <View style={[styles.buttonView, {backgroundColor: 'grey'}]}>
-              <Text>일반</Text>
+            <View
+              style={[
+                styles.buttonView,
+                {backgroundColor: themeColors.buttonColors[1]},
+              ]}>
+              <Text style={styles.buttonText}>일반</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
+              setEntrySetValue('warming_up');
               setModalVisible(false);
             }}
             style={styles.button}>
-            <View style={[styles.buttonView, {backgroundColor: 'grey'}]}>
-              <Text>워밍업</Text>
+            <View
+              style={[
+                styles.buttonView,
+                {backgroundColor: themeColors.buttonColors[2]},
+              ]}>
+              <Text style={styles.buttonText}>워밍업</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
+              setEntrySetValue('drop');
               setModalVisible(false);
             }}
             style={styles.button}>
-            <View style={[styles.buttonView, {backgroundColor: 'grey'}]}>
-              <Text>드롭</Text>
+            <View
+              style={[
+                styles.buttonView,
+                {backgroundColor: themeColors.buttonColors[2]},
+              ]}>
+              <Text style={styles.buttonText}>드롭</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
+              setEntrySetValue('fail');
               setModalVisible(false);
             }}
             style={styles.button}>
-            <View style={[styles.buttonView, {backgroundColor: 'grey'}]}>
-              <Text>실패</Text>
+            <View
+              style={[
+                styles.buttonView,
+                {backgroundColor: themeColors.buttonColors[3]},
+              ]}>
+              <Text style={styles.buttonText}>실패</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -96,5 +116,10 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.1,
     shadowRadius: 5,
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: 'white',
   },
 });

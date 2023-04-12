@@ -90,13 +90,6 @@ export const handleRepsChange = (entry, text, setRepsValue) => {
   return {...entry, reps: parseFloat(finalText)};
 };
 
-export const handleSetChange = (entries, setEntries, index) => {
-  const updatedEntries = entries.map((entry, entryIndex) => {
-    if (entryIndex === index) {
-      return {...entry, isWarmUp: !entry.isWarmUp};
-    } else {
-      return entry;
-    }
-  });
-  setEntries(updatedEntries);
+export const handleSetChange = (entry, text) => {
+  return {...entry, set: text};
 };

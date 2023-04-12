@@ -17,11 +17,13 @@ import {
   handleSpeedChange,
   handleRepsChange,
   handleTimeChange,
-  handleSetChange,
 } from '../logic/entries';
 
 //component
 import SetEditModal from './modals/SetEditModal';
+
+//icons
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Entry = ({index, item, refreshing, setChangedEntry}) => {
   const themeColors = useContext(ThemeColorsContext);
@@ -31,6 +33,7 @@ const Entry = ({index, item, refreshing, setChangedEntry}) => {
   const [timeValue, setTimeValue] = useState(item.time);
   const [distanceValue, setDistanceValue] = useState(item.distance);
   const [speedValue, setSpeedValue] = useState(item.speed);
+  const [entrySetValue, setEntrySetValue] = useState(item.set);
   const [setEditModalVisible, setSetEditModalVisible] = useState(false);
 
   useEffect(() => {
@@ -40,6 +43,11 @@ const Entry = ({index, item, refreshing, setChangedEntry}) => {
     setDistanceValue(item.distance);
     setSpeedValue(item.speed);
   }, [refreshing]);
+
+  useEffect(() => {
+    const changedEntry = {...item, set: entrySetValue};
+    setChangedEntry({index, entry: changedEntry});
+  }, [entrySetValue]);
 
   return (
     <View
@@ -67,162 +75,216 @@ const Entry = ({index, item, refreshing, setChangedEntry}) => {
               width: 40,
               textAlign: 'center',
             }}>
-            {item.isWarmUp === true ? '워밍업' : '일반'}
+            {item.set === 'warming_up'
+              ? '워밍업'
+              : item.set === 'drop'
+              ? '드롭'
+              : item.set === 'fail'
+              ? '실패'
+              : '일반'}
           </Text>
         </TouchableOpacity>
       </View>
 
-      {item.weight >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${weightValue === 0 ? '' : weightValue}`}
-            onChangeText={text => {
-              const changedEntry = handleWeightChange(
-                item,
-                text,
-                setWeightValue,
-              );
-              setChangedEntry({index, entry: changedEntry});
-            }}
-            keyboardType="numeric"
-            maxLength={6}
-            placeholder={'0'}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                width: 70,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>kg</Text>
-        </View>
-      ) : null}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+        }}>
+        {item.weight >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${weightValue === 0 ? '' : weightValue}`}
+              onChangeText={text => {
+                const changedEntry = handleWeightChange(
+                  item,
+                  text,
+                  setWeightValue,
+                );
+                setChangedEntry({index, entry: changedEntry});
+              }}
+              keyboardType="numeric"
+              maxLength={6}
+              placeholder={'0'}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  width: 70,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              kg
+            </Text>
+          </View>
+        ) : null}
 
-      {item.speed >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${speedValue === 0 ? '' : speedValue}`}
-            placeholder={'0'}
-            onChangeText={text => {
-              const changedEntry = handleSpeedChange(item, text, setSpeedValue);
-              setChangedEntry({index, entry: changedEntry});
-            }}
-            keyboardType="numeric"
-            maxLength={6}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                width: 70,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>
-            km/h
-          </Text>
-        </View>
-      ) : null}
+        {item.speed >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${speedValue === 0 ? '' : speedValue}`}
+              placeholder={'0'}
+              onChangeText={text => {
+                const changedEntry = handleSpeedChange(
+                  item,
+                  text,
+                  setSpeedValue,
+                );
+                setChangedEntry({index, entry: changedEntry});
+              }}
+              keyboardType="numeric"
+              maxLength={6}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  width: 70,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              km/h
+            </Text>
+          </View>
+        ) : null}
 
-      {item.distance >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${distanceValue === 0 ? '' : distanceValue}`}
-            placeholder={'0'}
-            onChangeText={text => {
-              const changedEntry = handleDistanceChange(
-                text,
-                index,
-                setDistanceValue,
-              );
-              setChangedEntry({index, entry: changedEntry});
-            }}
-            keyboardType="numeric"
-            maxLength={6}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                width: 70,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>km</Text>
-        </View>
-      ) : null}
+        {item.distance >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${distanceValue === 0 ? '' : distanceValue}`}
+              placeholder={'0'}
+              onChangeText={text => {
+                const changedEntry = handleDistanceChange(
+                  text,
+                  index,
+                  setDistanceValue,
+                );
+                setChangedEntry({index, entry: changedEntry});
+              }}
+              keyboardType="numeric"
+              maxLength={6}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  width: 70,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              km
+            </Text>
+          </View>
+        ) : null}
 
-      {item.reps >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${repsValue === 0 ? '' : repsValue}`}
-            placeholder={'0'}
-            onChangeText={text => {
-              const changedEntry = handleRepsChange(item, text, setRepsValue);
-              setChangedEntry({index, entry: changedEntry});
-            }}
-            keyboardType="numeric"
-            maxLength={4}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
-          />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>회</Text>
-        </View>
-      ) : null}
+        {item.reps >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${repsValue === 0 ? '' : repsValue}`}
+              placeholder={'0'}
+              onChangeText={text => {
+                const changedEntry = handleRepsChange(item, text, setRepsValue);
+                setChangedEntry({index, entry: changedEntry});
+              }}
+              keyboardType="numeric"
+              maxLength={4}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              회
+            </Text>
+          </View>
+        ) : null}
 
-      {item.time >= 0 ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextInput
-            value={`${timeValue === 0 ? '' : timeValue}`}
-            placeholder={'0'}
-            onChangeText={text => {
-              const changedEntry = handleTimeChange(item, text, setTimeValue);
-              setChangedEntry({index, entry: changedEntry});
-            }}
-            keyboardType="numeric"
-            maxLength={4}
-            style={[
-              styles.entryInput,
-              {
-                color: themeColors.textColor,
-                backgroundColor: themeColors.boxColors[0],
-              },
-            ]}
+        {item.time >= 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              value={`${timeValue === 0 ? '' : timeValue}`}
+              placeholder={'0'}
+              onChangeText={text => {
+                const changedEntry = handleTimeChange(item, text, setTimeValue);
+                setChangedEntry({index, entry: changedEntry});
+              }}
+              keyboardType="numeric"
+              maxLength={4}
+              style={[
+                styles.entryInput,
+                {
+                  color: themeColors.textColor,
+                  backgroundColor: themeColors.boxColors[0],
+                },
+              ]}
+            />
+            <Text style={{color: themeColors.textColor, marginLeft: 5}}>
+              분
+            </Text>
+          </View>
+        ) : null}
+      </View>
+
+      <TouchableOpacity
+        onPress={() => {
+          const changedEntry = {...item, isDone: !item.isDone};
+          setChangedEntry({index, entry: changedEntry});
+        }}
+        style={{
+          marginLeft: 10,
+          width: 40,
+          height: 35,
+          alignItems: 'flex-end',
+          justifyContent: 'center',
+        }}>
+        {item.isDone ? (
+          <MaterialIcons
+            name="check-circle"
+            size={25}
+            color={themeColors.buttonColors[7]}
           />
-          <Text style={{color: themeColors.textColor, marginLeft: 5}}>분</Text>
-        </View>
-      ) : null}
+        ) : (
+          <MaterialIcons
+            style={{opacity: 0.5}}
+            name="check-circle-outline"
+            size={25}
+            color={themeColors.buttonColors[6]}
+          />
+        )}
+      </TouchableOpacity>
 
       <SetEditModal
         modalVisible={setEditModalVisible}
         setModalVisible={setSetEditModalVisible}
+        setEntrySetValue={setEntrySetValue}
       />
     </View>
   );
@@ -235,17 +297,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 3,
+    marginVertical: 4,
     paddingHorizontal: 20,
     paddingVertical: 4,
     marginHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 8,
   },
   entryInput: {
     padding: 5,
     borderRadius: 3,
     fontSize: 15,
-    height: 30,
+    height: 35,
     width: 50,
     textAlign: 'center',
   },
