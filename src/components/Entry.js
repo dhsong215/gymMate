@@ -17,10 +17,13 @@ import {
   handleSpeedChange,
   handleRepsChange,
   handleTimeChange,
-  handleIsWarmUpChange,
+  handleSetChange,
 } from '../logic/entries';
 
-const Entry = ({index, item, entries, setEntries, refreshing}) => {
+//component
+import SetEditModal from './modals/SetEditModal';
+
+const Entry = ({index, item, refreshing, setChangedEntry}) => {
   const themeColors = useContext(ThemeColorsContext);
 
   const [weightValue, setWeightValue] = useState(item.weight);
@@ -28,6 +31,7 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
   const [timeValue, setTimeValue] = useState(item.time);
   const [distanceValue, setDistanceValue] = useState(item.distance);
   const [speedValue, setSpeedValue] = useState(item.speed);
+  const [setEditModalVisible, setSetEditModalVisible] = useState(false);
 
   useEffect(() => {
     setWeightValue(item.weight);
@@ -43,7 +47,31 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
         styles.workoutEntryBox,
         {backgroundColor: themeColors.boxColors[1]},
       ]}>
-      <Text style={{color: themeColors.textColor, width: 30}}>{index + 1}</Text>
+      <View
+        style={{
+          width: 80,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Text style={{color: themeColors.textColor, width: 30}}>
+          {index + 1}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setSetEditModalVisible(true);
+          }}>
+          <Text
+            style={{
+              color: themeColors.textColor,
+              width: 40,
+              textAlign: 'center',
+            }}>
+            {item.isWarmUp === true ? '워밍업' : '일반'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {item.weight >= 0 ? (
         <View
           style={{
@@ -52,15 +80,14 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
           }}>
           <TextInput
             value={`${weightValue === 0 ? '' : weightValue}`}
-            onChangeText={text =>
-              handleWeightChange(
-                entries,
-                setEntries,
+            onChangeText={text => {
+              const changedEntry = handleWeightChange(
+                item,
                 text,
-                index,
                 setWeightValue,
-              )
-            }
+              );
+              setChangedEntry({index, entry: changedEntry});
+            }}
             keyboardType="numeric"
             maxLength={6}
             placeholder={'0'}
@@ -86,9 +113,10 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
           <TextInput
             value={`${speedValue === 0 ? '' : speedValue}`}
             placeholder={'0'}
-            onChangeText={text =>
-              handleSpeedChange(entries, setEntries, text, index, setSpeedValue)
-            }
+            onChangeText={text => {
+              const changedEntry = handleSpeedChange(item, text, setSpeedValue);
+              setChangedEntry({index, entry: changedEntry});
+            }}
             keyboardType="numeric"
             maxLength={6}
             style={[
@@ -115,15 +143,14 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
           <TextInput
             value={`${distanceValue === 0 ? '' : distanceValue}`}
             placeholder={'0'}
-            onChangeText={text =>
-              handleDistanceChange(
-                entries,
-                setEntries,
+            onChangeText={text => {
+              const changedEntry = handleDistanceChange(
                 text,
                 index,
                 setDistanceValue,
-              )
-            }
+              );
+              setChangedEntry({index, entry: changedEntry});
+            }}
             keyboardType="numeric"
             maxLength={6}
             style={[
@@ -148,9 +175,10 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
           <TextInput
             value={`${repsValue === 0 ? '' : repsValue}`}
             placeholder={'0'}
-            onChangeText={text =>
-              handleRepsChange(entries, setEntries, text, index, setRepsValue)
-            }
+            onChangeText={text => {
+              const changedEntry = handleRepsChange(item, text, setRepsValue);
+              setChangedEntry({index, entry: changedEntry});
+            }}
             keyboardType="numeric"
             maxLength={4}
             style={[
@@ -174,9 +202,10 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
           <TextInput
             value={`${timeValue === 0 ? '' : timeValue}`}
             placeholder={'0'}
-            onChangeText={text =>
-              handleTimeChange(entries, setEntries, text, index, setTimeValue)
-            }
+            onChangeText={text => {
+              const changedEntry = handleTimeChange(item, text, setTimeValue);
+              setChangedEntry({index, entry: changedEntry});
+            }}
             keyboardType="numeric"
             maxLength={4}
             style={[
@@ -191,19 +220,10 @@ const Entry = ({index, item, entries, setEntries, refreshing}) => {
         </View>
       ) : null}
 
-      <TouchableOpacity
-        onPress={() => {
-          handleIsWarmUpChange(entries, setEntries, index);
-        }}>
-        <Text
-          style={{
-            color: themeColors.textColor,
-            width: 40,
-            textAlign: 'center',
-          }}>
-          {item.isWarmUp === true ? '워밍업' : '일반'}
-        </Text>
-      </TouchableOpacity>
+      <SetEditModal
+        modalVisible={setEditModalVisible}
+        setModalVisible={setSetEditModalVisible}
+      />
     </View>
   );
 };
@@ -216,7 +236,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 3,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     paddingVertical: 4,
     marginHorizontal: 10,
     borderRadius: 5,

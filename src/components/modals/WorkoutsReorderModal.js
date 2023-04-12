@@ -17,7 +17,7 @@ import FontAwsome from 'react-native-vector-icons/FontAwesome';
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {ThemeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../../contexts';
 
 const WorkoutsReorderModal = ({
   modalVisible,

@@ -17,6 +17,9 @@ import {getData} from '../logic/asyncStorage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
 
+//components
+import Entry from '../components/Entry';
+
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const Header = ({goBack, title}) => {
@@ -46,8 +49,15 @@ const Header = ({goBack, title}) => {
             />
           </TouchableOpacity>
         </View>
-        <View style={{backgroundColor: 'grey', height: 90, width: '100%'}}>
-          <Text>운동 타이머</Text>
+        <View
+          style={{
+            backgroundColor: 'grey',
+            height: 90,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text>타이머</Text>
         </View>
       </View>
     </SafeAreaView>
@@ -56,6 +66,8 @@ const Header = ({goBack, title}) => {
 
 const WorkoutPage = ({workout, workoutIndex}) => {
   const themeColors = useContext(ThemeColorsContext);
+
+  const [entries, setEntries] = useState(workout.entries);
 
   return (
     <View style={styles.workoutPageContainer}>
@@ -68,6 +80,8 @@ const WorkoutPage = ({workout, workoutIndex}) => {
       <Text style={[styles.workoutTarget, {color: themeColors.textColor}]}>
         {workout.target}
       </Text>
+
+      {/* 그래프 자리 */}
       <View
         style={{
           alignItems: 'center',
@@ -78,24 +92,33 @@ const WorkoutPage = ({workout, workoutIndex}) => {
         <View
           style={{
             backgroundColor: 'grey',
-            width: 180,
-            height: 180,
-            borderRadius: 90,
+            width: 150,
+            height: 150,
+            borderRadius: 75,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
           <View
             style={{
               backgroundColor: themeColors.backgroundColor,
-              width: 160,
-              height: 160,
-              borderRadius: 80,
+              width: 120,
+              height: 120,
+              borderRadius: 60,
             }}></View>
         </View>
       </View>
-      <View>
-        <Text>entrys</Text>
-      </View>
+
+      <ScrollView>
+        {entries.map((entry, index) => (
+          <Entry
+            key={`${workout.workoutId}${index}`}
+            index={index}
+            item={entry}
+            entries={entries}
+            setEntries={setEntries}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -151,6 +174,20 @@ export default function WorkingScreen({navigation: {setOptions, goBack}}) {
       ) : (
         <ActivityIndicator />
       )}
+
+      {/* 운동추가, 완료 버튼 */}
+      <View style={styles.bottomButtonContainer}>
+        <TouchableOpacity
+          style={[
+            styles.bottomButton,
+            {backgroundColor: themeColors.buttonColors[1]},
+          ]}></TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.bottomButton,
+            {backgroundColor: themeColors.buttonColors[5]},
+          ]}></TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -183,5 +220,17 @@ const styles = StyleSheet.create({
   workoutTarget: {
     opacity: 0.7,
     fontSize: 17,
+  },
+  bottomButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'space-evenly',
+    marginBottom: 10,
+  },
+  bottomButton: {
+    width: 185,
+    height: 70,
+    borderRadius: 10,
   },
 });

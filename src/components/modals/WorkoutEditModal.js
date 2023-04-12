@@ -13,7 +13,7 @@ import {
 import FontAwsome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {ThemeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../../contexts';
 import {TextInput} from 'react-native-gesture-handler';
 
 const WorkoutEditModal = ({

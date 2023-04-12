@@ -11,8 +11,8 @@ import {
   LayoutAnimation,
 } from 'react-native';
 
-import exercises from '../assets/exercises.json';
-import imagePaths from '../assets/imagePath';
+import exercises from '../../assets/exercises.json';
+import imagePaths from '../../assets/imagePath';
 
 import FontAwsome from 'react-native-vector-icons/FontAwesome';
 
@@ -32,7 +32,7 @@ const muscles = [
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {ThemeColorsContext} from '../contexts';
+import {ThemeColorsContext} from '../../contexts';
 
 const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
   const themeColors = useContext(ThemeColorsContext);

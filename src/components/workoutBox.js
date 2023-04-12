@@ -8,8 +8,8 @@ import {ThemeColorsContext} from '../contexts';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //components
-import EntriesReorderModal from './EntriesReorderModal';
-import WorkoutEditModal from './WorkoutEditModal';
+import EntriesReorderModal from './modals/EntriesReorderModal';
+import WorkoutEditModal from './modals/WorkoutEditModal';
 import Entry from './Entry';
 
 //logics
@@ -17,32 +17,40 @@ import {addEntry} from '../logic/entries';
 
 const WorkoutBox = ({
   workout,
-  workoutContainerIndex,
   //contexts
   optionVisible,
   setOptionVisible,
-  workouts,
-  setWorkouts,
+  isLastIndex,
   flatListRef, //scroll
+  setChangedWorkout,
 }) => {
   const [entries, setEntries] = useState([...workout.entries]); //handler에 보내야됨
   const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
     useState(false);
   const [workoutData, setWorkoutData] = useState(workout);
   const [WorkoutEditModalVisible, setWorkoutEditModalVisible] = useState(false);
+  const [changedEntry, setChangedEntry] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const themeColors = useContext(ThemeColorsContext);
 
   //workoutData바뀌면 실행
   useEffect(() => {
-    const updatedData = workouts.map(item => {
-      if (item.workoutId === workoutData.workoutId) {
-        return {...workoutData};
-      }
-      return item;
-    });
-    setWorkouts(updatedData);
+    setChangedWorkout({id: workout.workoutId, workout});
   }, [workoutData]);
+
+  useEffect(() => {
+    if (changedEntry) {
+      const updatedEntries = entries.map((entry, index) => {
+        if (changedEntry.index === index) {
+          return {...changedEntry.entry};
+        } else {
+          return entry;
+        }
+      });
+      setEntries(updatedEntries);
+      setChangedEntry();
+    }
+  }, [changedEntry]);
 
   //entry변경되면 실행
   useEffect(() => {
@@ -54,11 +62,10 @@ const WorkoutBox = ({
     const newEntries = addEntry(entries, workoutType);
 
     setEntries(newEntries);
-    if (workoutContainerIndex === workouts.length - 1) {
+    if (isLastIndex) {
       flatListRef.current.scrollToEnd({animated: false});
     }
   };
-
   const onPressMinus = () => {
     setEntries(pre => pre.slice(0, -1));
   };
@@ -112,9 +119,8 @@ const WorkoutBox = ({
                 <Entry
                   item={item}
                   index={index}
-                  entries={entries}
-                  setEntries={setEntries}
                   refreshing={refreshing}
+                  setChangedEntry={setChangedEntry}
                 />
               )}
               keyExtractor={(_, index) => `entry${workout.workoutId}${index}`}

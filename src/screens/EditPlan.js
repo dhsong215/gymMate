@@ -17,8 +17,8 @@ import {UserContext, ThemeColorsContext} from '../contexts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //components
-import AddExerciseModal from '../components/AddExerciseModal';
-import WorkoutsReorderModal from '../components/WorkoutsReorderModal';
+import AddExerciseModal from '../components/modals/AddExerciseModal';
+import WorkoutsReorderModal from '../components/modals/WorkoutsReorderModal';
 import WorkoutBox from '../components/WorkoutBox';
 
 //logics
@@ -73,6 +73,7 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   const [workouts, setWorkouts] = useState(
     params.plan ? params.plan.workouts : [],
   );
+  const [changedWorkout, setChangedWorkout] = useState();
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const [workoutsReorderModalVisible, setWorkoutsReorderModalVisible] =
     useState(false);
@@ -95,6 +96,20 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
       ),
     });
   }, [planTitle]);
+
+  useEffect(() => {
+    if (changedWorkout) {
+      const updatedWorkouts = workouts.map(workout => {
+        if (changedWorkout.workout.workoutId === workout.workoutId) {
+          return {...changedWorkout.workout};
+        } else {
+          return workout;
+        }
+      });
+      setWorkouts(updatedWorkouts);
+      setChangedWorkout();
+    }
+  }, [changedWorkout]);
 
   const flatListRef = useRef(null);
 
@@ -121,10 +136,9 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
                 workout={item}
                 optionVisible={optionVisible}
                 setOptionVisible={setOptionVisible}
-                workouts={workouts}
-                setWorkouts={setWorkouts}
-                workoutContainerIndex={index}
+                isLastIndex={index === workouts.length - 1}
                 flatListRef={flatListRef}
+                setChangedWorkout={setChangedWorkout}
               />
             );
           }}
