@@ -1,18 +1,16 @@
 import React, {useContext} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 //context
-import {ThemeColorsContext} from '../contexts';
+import {ThemeColorsContext, NowWorkingContext} from '../contexts';
 //screens
 import TemporaryScreen from '../screens/Temporary';
 import HomeScreen from '../screens/tabScreens/Home';
 import PlanScreen from '../screens/Plan';
 
 //icons
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import TabBar from '../components/TabBar';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,24 +19,11 @@ export default function MainTabs() {
 
   return (
     <Tab.Navigator
+      tabBar={props => <TabBar {...props} />}
       screenOptions={{
-        tabBarStyle: {
-          backgroundColor: themeColors.backgroundColor,
-          shadowColor: themeColors.tabBarShadowColor,
-          shadowOffset: {
-            width: 0,
-            height: 0,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 5,
-          elevation: 15,
-          position: 'relative',
-        },
         headerStyle: {backgroundColor: themeColors.screenHeaderColors[0]},
         headerShadowVisible: false,
         headerTitleStyle: {color: themeColors.textColor},
-        tabBarActiveTintColor: '#FF6666',
-        tabBarLabelStyle: {marginBottom: 3},
       }}>
       <Tab.Screen
         name="Home"

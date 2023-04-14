@@ -10,17 +10,18 @@ import {
   Platform,
   FlatList,
 } from 'react-native';
-import {ThemeColorsContext} from '../contexts';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+import {NowWorkingContext, ThemeColorsContext} from '../contexts';
 
 //logic
 import {getData, storeData} from '../logic/asyncStorage';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {ScrollView} from 'react-native-gesture-handler';
 
 //components
-import Entry from '../components/Entry';
+import WorkoutPage from '../components/WorkoutPage';
 import AddExerciseModal from '../components/modals/AddExerciseModal';
 import WorkoutsReorderModal from '../components/modals/WorkoutsReorderModal';
 
@@ -28,142 +29,56 @@ const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   const themeColors = useContext(ThemeColorsContext);
+  const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView style={{backgroundColor: themeColors.screenHeaderColors[1]}}>
-      <View style={[styles.headerContainer]}>
-        <View style={styles.headerTopContainer}>
-          <TouchableOpacity
-            style={styles.headerBackButton}
-            onPress={() => goBack()}>
-            <Ionicons
-              name="arrow-back"
-              size={30}
-              color={themeColors.textColor}
-            />
-          </TouchableOpacity>
-          <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
-            {title}
-          </Text>
-          <TouchableOpacity
-            style={styles.headerBackButton}
-            onPress={() => {
-              setWorkoutsReorderModalVisible(true);
-            }}>
-            <Ionicons
-              name="list-circle-outline"
-              size={35}
-              color={themeColors.textColor}
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            backgroundColor: 'grey',
-            height: 90,
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
+    <View
+      style={[
+        styles.headerContainer,
+        {paddingTop: insets.top, backgroundColor: themeColors.backgroundColor},
+      ]}>
+      <View style={styles.headerTopContainer}>
+        <TouchableOpacity
+          style={styles.headerBackButton}
+          onPress={() => goBack()}>
+          <Ionicons name="arrow-back" size={30} color={themeColors.textColor} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, {color: themeColors.textColor}]}>
+          {title}
+        </Text>
+        <TouchableOpacity
+          style={styles.headerBackButton}
+          onPress={() => {
+            setWorkoutsReorderModalVisible(true);
           }}>
-          <Text>타이머</Text>
-        </View>
+          <Ionicons
+            name="list-circle-outline"
+            size={35}
+            color={themeColors.textColor}
+          />
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
-  );
-};
-
-const WorkoutPage = memo(({workoutData, workoutIndex, setChangedWorkout}) => {
-  const themeColors = useContext(ThemeColorsContext);
-
-  const [workout, setWorkout] = useState(workoutData);
-  const [entries, setEntries] = useState(workoutData.entries);
-  const [changedEntry, setChangedEntry] = useState();
-  const [refreshing, setRefreshing] = useState(false);
-
-  //workoutData바뀌면 실행
-  useEffect(() => {
-    setChangedWorkout({...workout});
-  }, [workout]);
-
-  //entr배열이 변경되면 실행
-  useEffect(() => {
-    setWorkout(pre => ({...pre, entries: entries}));
-  }, [entries]);
-
-  //entry가 변경되면 실행
-  useEffect(() => {
-    if (changedEntry) {
-      const updatedEntries = entries.map((entry, index) => {
-        if (changedEntry.index === index) {
-          return {...changedEntry.entry};
-        } else {
-          return entry;
-        }
-      });
-      setEntries(updatedEntries);
-      setChangedEntry();
-    }
-  }, [changedEntry]);
-
-  return (
-    <View style={styles.workoutPageContainer}>
-      <Text style={[styles.workoutIndex, {color: themeColors.textColor}]}>
-        {workoutIndex}
-      </Text>
-      <Text style={[styles.workoutName, {color: themeColors.textColor}]}>
-        {workout.workoutName}
-      </Text>
-      <Text style={[styles.workoutTarget, {color: themeColors.textColor}]}>
-        {workout.target}
-      </Text>
-
-      {/* 그래프 자리 */}
       <View
         style={{
+          backgroundColor: 'grey',
+          height: 90,
+          width: '100%',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '100%',
-          height: 200,
         }}>
-        <View
-          style={{
-            backgroundColor: 'grey',
-            width: 150,
-            height: 150,
-            borderRadius: 75,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <View
-            style={{
-              backgroundColor: themeColors.backgroundColor,
-              width: 120,
-              height: 120,
-              borderRadius: 60,
-            }}></View>
-        </View>
+        <Text>타이머</Text>
       </View>
-
-      <ScrollView>
-        {entries.map((entry, index) => (
-          <Entry
-            key={`${workout.workoutId}${index}`}
-            index={index}
-            item={entry}
-            refreshing={refreshing}
-            setChangedEntry={setChangedEntry}
-          />
-        ))}
-      </ScrollView>
     </View>
   );
-});
+};
 
 export default function WorkingScreen({
   navigation: {setOptions, goBack},
   route: {params},
 }) {
   const themeColors = useContext(ThemeColorsContext);
+  const {nowWorking, updateData} = useContext(NowWorkingContext);
+  const insets = useSafeAreaInsets();
 
   const [isLoading, setIsLoading] = useState(true);
   const [plan, setPlan] = useState();
@@ -173,20 +88,21 @@ export default function WorkingScreen({
   const [workoutsReorderModalVisible, setWorkoutsReorderModalVisible] =
     useState(false);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const flatListRef = useRef(null);
 
-  setOptions({
-    header: () => (
-      <Header
-        goBack={goBack}
-        title={isLoading ? 'Working' : planTitle}
-        setWorkoutsReorderModalVisible={setWorkoutsReorderModalVisible}
-      />
-    ),
-  });
-
-  console.log(workouts);
+  useEffect(() => {
+    setOptions({
+      header: () => (
+        <Header
+          goBack={goBack}
+          title={isLoading ? 'loading' : planTitle}
+          setWorkoutsReorderModalVisible={setWorkoutsReorderModalVisible}
+        />
+      ),
+    });
+  }, [planTitle, isLoading]);
 
   useEffect(() => {
     if (changedWorkout) {
@@ -215,29 +131,32 @@ export default function WorkingScreen({
 
   useEffect(() => {
     const setData = async () => {
-      const data = {...plan, workouts};
-      await storeData('nowWorkingPlan', data);
+      const data = {
+        ...plan,
+        workouts,
+        planTitle,
+        exercises: workouts.map(item => item.exerciseId),
+      };
+      updateData(data);
     };
-    setData();
-  }, [workouts]);
-
-  useEffect(() => {
-    const setData = async () => {
-      const data = {...plan, title: planTitle};
-      await storeData('nowWorkingPlan', data);
-    };
-    setData();
-  }, [planTitle]);
+    if (workouts) {
+      setData();
+    }
+  }, [workouts, planTitle]);
 
   return (
-    <SafeAreaView
+    <View
       style={[
         styles.mainContainer,
-        {backgroundColor: themeColors.backgroundColor},
+        {
+          backgroundColor: themeColors.backgroundColor,
+          paddingBottom: insets.bottom,
+        },
       ]}>
       <KeyboardAvoidingView
+        behavior="position"
         style={styles.mainContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        keyboardVerticalOffset={120}>
         {/* workout list */}
         <FlatList
           ref={flatListRef}
@@ -247,19 +166,19 @@ export default function WorkingScreen({
             const workoutIndex = `${index + 1} / ${workouts.length}`;
             return (
               <WorkoutPage
+                refrehsingPage={refreshing}
                 workoutIndex={workoutIndex}
                 workoutData={item}
                 setChangedWorkout={setChangedWorkout}
               />
             );
           }}
-          keyExtractor={(_, index) => 'workout' + index}
+          keyExtractor={(_, index) => 'workoutWorking' + index}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={true}
         />
       </KeyboardAvoidingView>
-
       {/* 운동추가, 완료 버튼 */}
       <View style={styles.bottomButtonContainer}>
         <TouchableOpacity
@@ -299,7 +218,7 @@ export default function WorkingScreen({
         setModalVisible={setAddExerciseModalVisible}
         setWorkouts={setWorkouts}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -320,17 +239,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  workoutPageContainer: {width: WINDOW_WIDTH, padding: 10},
-  workoutIndex: {opacity: 0.7, marginBottom: 8},
-  workoutName: {
-    fontSize: 22,
-    fontWeight: '500',
-    marginBottom: 3,
-  },
-  workoutTarget: {
-    opacity: 0.7,
-    fontSize: 17,
   },
   bottomButtonContainer: {
     flexDirection: 'row',

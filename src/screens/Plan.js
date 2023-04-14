@@ -31,6 +31,7 @@ export default function PlanScreen({navigation: {navigate}}) {
   const [monthPlans, setMonthPlans] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [checkedPlans, setCheckedPlans] = useState([]);
+  const [isRendering, setIsRendering] = useState(true);
 
   const onPressEdit = () => {
     setIsEditMode(pre => !pre);
@@ -70,6 +71,12 @@ export default function PlanScreen({navigation: {navigate}}) {
   }, [selectedMonth]);
 
   useEffect(() => {
+    setTimeout(() => {
+      setIsRendering(false);
+    }, 300);
+  }, [monthPlans]);
+
+  useEffect(() => {
     setSelectedMonth(selectedDate.slice(0, 7));
     setIsEditMode(false);
     setCheckedPlans([]);
@@ -84,7 +91,9 @@ export default function PlanScreen({navigation: {navigate}}) {
     <View
       style={[
         styles.mainContainer,
-        {backgroundColor: themeColors.backgroundColor},
+        {
+          backgroundColor: themeColors.backgroundColor,
+        },
       ]}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
@@ -93,6 +102,8 @@ export default function PlanScreen({navigation: {navigate}}) {
         <PlanCalendar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          isRendering={isRendering}
+          setIsRendering={setIsRendering}
           markedList={monthPlans.map(plan => plan._data.date)}
         />
         <View style={styles.plansContainer}>

@@ -1,43 +1,57 @@
-import React, {useState, useCallback, useContext, useEffect, memo} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
-
-//context
+import React, {useContext, useEffect, useState, memo, useRef} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  FlatList,
+} from 'react-native';
 import {ThemeColorsContext} from '../contexts';
+
+//logic
+import {addEntry} from '../logic/entries';
 
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //components
-import EntriesReorderModal from './modals/EntriesReorderModal';
+import Entry from '../components/Entry';
+import EntriesReorderModal from '../components/modals/EntriesReorderModal';
 import WorkoutEditModal from './modals/WorkoutEditModal';
-import Entry from './Entry';
 
-//logics
-import {addEntry} from '../logic/entries';
+const WINDOW_WIDTH = Dimensions.get('window').width;
 
-const WorkoutBox = ({
-  workoutData,
-  //contexts
-  optionVisible,
-  setOptionVisible,
-  isLastIndex,
-  flatListRef, //scroll
-  setChangedWorkout,
-}) => {
-  const [entries, setEntries] = useState([...workoutData.entries]); //handler에 보내야됨
-  const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
-    useState(false);
-  const [workout, setWorkout] = useState(workoutData);
-  const [WorkoutEditModalVisible, setWorkoutEditModalVisible] = useState(false);
-  const [changedEntry, setChangedEntry] = useState();
-  const [refreshing, setRefreshing] = useState(false);
+const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
   const themeColors = useContext(ThemeColorsContext);
 
-  //workout data바뀌면 실행
+  const scrollViewRef = useRef();
+
+  const [workout, setWorkout] = useState(workoutData);
+  const [entries, setEntries] = useState([...workoutData.entries]);
+  const [changedEntry, setChangedEntry] = useState();
+  const [refreshing, setRefreshing] = useState(false);
+  const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
+    useState(false);
+  const [workoutEditModalVisible, setWorkoutEditModalVisible] = useState(false);
+  const [plusPressed, setPlusPressed] = useState(false);
+
+  if (workoutData.workoutId !== workout.workoutId) {
+    setWorkout(workoutData);
+    setEntries([...workoutData.entries]);
+  }
+
+  //workout바뀌면 실행
   useEffect(() => {
     setChangedWorkout({...workout});
   }, [workout]);
 
+  //entr배열이 변경되면 실행
+  useEffect(() => {
+    setWorkout(pre => ({...pre, entries: entries}));
+  }, [entries]);
+
+  //entry가 변경되면 실행
   useEffect(() => {
     if (changedEntry) {
       const updatedEntries = entries.map((entry, index) => {
@@ -52,19 +66,19 @@ const WorkoutBox = ({
     }
   }, [changedEntry]);
 
-  //entry변경되면 실행
-  useEffect(() => {
-    setWorkout(pre => ({...pre, entries: entries}));
-  }, [entries]);
+  const onContentSizeChange = () => {
+    if (entries && entries.length > 0 && plusPressed) {
+      scrollViewRef.current.scrollToEnd({animated: true});
+      setPlusPressed(false);
+    }
+  };
 
   const onPressPlus = () => {
     const workoutType = workout.type;
     const newEntries = addEntry(entries, workoutType);
 
     setEntries(newEntries);
-    if (isLastIndex) {
-      flatListRef.current.scrollToEnd({animated: false});
-    }
+    setPlusPressed(true);
   };
   const onPressMinus = () => {
     setEntries(pre => pre.slice(0, -1));
@@ -75,59 +89,40 @@ const WorkoutBox = ({
   };
 
   return (
-    <View
-      style={[
-        styles.workoutContainer,
-        {backgroundColor: themeColors.boxColors[0]},
-      ]}>
-      <TouchableOpacity
-        onPress={() => {
-          if (optionVisible.includes(workout.workoutId)) {
-            setOptionVisible(pre =>
-              pre.filter(item => item !== workout.workoutId),
-            );
-          } else {
-            setOptionVisible(pre => [...pre, workout.workoutId]);
-          }
-        }}
-        style={{
-          padding: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <Text style={[styles.workoutTitle, {color: themeColors.textColor}]}>
-          {workout.workoutName} {entries.length}세트
-        </Text>
-        {/* workout modal 띄우는 버튼 */}
-        <TouchableOpacity
-          onPress={() => {
-            setWorkoutEditModalVisible(true);
-          }}>
-          <AntDesign name="edit" size={25} color={themeColors.textColor} />
-        </TouchableOpacity>
-      </TouchableOpacity>
-      {optionVisible.includes(workout.workoutId) ? (
-        <View
-          style={{
-            width: '100%',
-          }}>
-          <View>
-            <FlatList
-              data={entries}
-              renderItem={({item, index}) => (
-                <Entry
-                  item={item}
-                  index={index}
-                  refreshing={refreshing}
-                  setChangedEntry={setChangedEntry}
-                />
-              )}
-              keyExtractor={(_, index) => `entry${workout.workoutId}${index}`}
-            />
-          </View>
+    <View style={styles.workoutPageContainer}>
+      <Text style={[styles.workoutIndex, {color: themeColors.textColor}]}>
+        {workoutIndex}
+      </Text>
+      <Text style={[styles.workoutName, {color: themeColors.textColor}]}>
+        {workout.workoutName}
+      </Text>
+      <Text style={[styles.workoutTarget, {color: themeColors.textColor}]}>
+        {workout.target}
+      </Text>
 
-          {/* 엔트리 더하기 빼기 순서변경 버튼이 있습니다 */}
+      {/* 그래프 자리 */}
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: 200,
+        }}></View>
+      <FlatList
+        ref={scrollViewRef}
+        data={entries}
+        keyExtractor={(_, index) => `${workout.workoutId}${index}`}
+        onContentSizeChange={onContentSizeChange}
+        initialScrollIndex={0}
+        renderItem={({item, index}) => (
+          <Entry
+            index={index}
+            item={item}
+            refreshing={refreshing}
+            setChangedEntry={setChangedEntry}
+          />
+        )}
+        ListFooterComponent={() => (
           <View style={[styles.bottomEditButtonContainer]}>
             {/* 엔트리를 하나 뺍니다 */}
             <TouchableOpacity
@@ -164,8 +159,9 @@ const WorkoutBox = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
-      ) : null}
+        )}
+      />
+
       <EntriesReorderModal
         modalVisible={entriesReorderModalVisible}
         setModalVisible={setEntriesReorderModalVisible}
@@ -174,7 +170,7 @@ const WorkoutBox = ({
         setRefreshing={setRefreshing}
       />
       <WorkoutEditModal
-        modalVisible={WorkoutEditModalVisible}
+        modalVisible={workoutEditModalVisible}
         setModalVisible={setWorkoutEditModalVisible}
         workoutData={workout}
         setWorkout={setWorkout}
@@ -183,15 +179,20 @@ const WorkoutBox = ({
   );
 };
 
-export default React.memo(WorkoutBox);
+export default React.memo(WorkoutPage);
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    height: 130,
+  workoutPageContainer: {width: WINDOW_WIDTH, padding: 10},
+  workoutIndex: {opacity: 0.7, marginBottom: 8},
+  workoutName: {
+    fontSize: 22,
+    fontWeight: '500',
+    marginBottom: 3,
   },
-  headerTitle: {fontSize: 20, fontWeight: '600'},
-  workoutContainer: {marginBottom: 5},
-  workoutTitle: {fontSize: 20},
+  workoutTarget: {
+    opacity: 0.7,
+    fontSize: 17,
+  },
   bottomEditButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',

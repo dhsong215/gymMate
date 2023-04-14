@@ -39,12 +39,14 @@ LocaleConfig.defaultLocale = 'kr';
 export default function PlanCalendar({
   selectedDate,
   setSelectedDate,
+  isRendering,
+  setIsRendering,
   markedList,
 }) {
   const [markedDates, setMarkedDates] = useState({});
 
   useEffect(() => {
-    const markedDates = markedList.reduce((accumulator, date) => {
+    const markedDatesData = markedList.reduce((accumulator, date) => {
       accumulator[date] = {
         marked: true,
         dotColor: 'grey',
@@ -53,10 +55,10 @@ export default function PlanCalendar({
     }, {});
 
     setMarkedDates({
-      ...markedDates,
+      ...markedDatesData,
       [selectedDate]: {
         selected: true,
-        marked: markedDates[selectedDate]?.marked,
+        marked: markedDatesData[selectedDate]?.marked,
         selectedColor: 'grey',
       },
     });
@@ -74,9 +76,16 @@ export default function PlanCalendar({
         dayTextColor: 'white',
       }}
       hideExtraDays={true}
-      enableSwipeMonths={true}
       minDate={'2023-01-01'}
-      onMonthChange={month => setSelectedDate(month.dateString)}
+      onPressArrowLeft={(goBack, month) => {
+        if (isRendering === false) {
+          setIsRendering(true);
+          goBack();
+        }
+      }}
+      onMonthChange={month => {
+        setSelectedDate(month.dateString);
+      }}
       onDayPress={day => {
         setSelectedDate(day.dateString);
       }}

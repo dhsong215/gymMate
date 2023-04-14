@@ -26,8 +26,15 @@ const WorkoutsReorderModal = ({
   setWorkouts,
   planTitle,
   setPlanTitle,
+  setRefreshing,
 }) => {
   const themeColors = useContext(ThemeColorsContext);
+
+  useEffect(() => {
+    if (setRefreshing) {
+      setRefreshing(true);
+    }
+  }, []);
 
   const renderItem = ({item, drag, isActive, getIndex}) => {
     return (
@@ -85,7 +92,12 @@ const WorkoutsReorderModal = ({
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
                 style={{opacity: 0.6}}
-                onPress={() => setModalVisible(false)}>
+                onPress={() => {
+                  if (setRefreshing) {
+                    setRefreshing(false);
+                  }
+                  setModalVisible(false);
+                }}>
                 <Ionicons
                   name="close"
                   size={40}

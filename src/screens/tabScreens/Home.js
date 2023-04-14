@@ -7,12 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getUserRef} from '../../logic/firebase';
 
 //context
-import {UserContext} from '../../contexts';
-import {ThemeColorsContext} from '../../contexts';
+import {UserContext, ThemeColorsContext} from '../../contexts';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,6 +19,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 export default function HomeScreen({navigation: {navigate}}) {
   const user = useContext(UserContext); //useState로 수정하기
   const themeColors = useContext(ThemeColorsContext);
+  const insets = useSafeAreaInsets();
 
   const [routines, setRoutines] = useState([]);
   const [userProfile, setUserProfile] = useState({});
@@ -37,8 +37,12 @@ export default function HomeScreen({navigation: {navigate}}) {
   }, [user]);
 
   return userProfile !== {} ? (
-    <SafeAreaView
-      style={{flex: 1, backgroundColor: themeColors.backgroundColor}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: themeColors.backgroundColor,
+        paddingTop: insets.top,
+      }}>
       <FlatList
         ListHeaderComponent={
           <View>
@@ -106,7 +110,7 @@ export default function HomeScreen({navigation: {navigate}}) {
                 <TouchableOpacity style={[styles.detailButton]}>
                   <Ionicons
                     name="chevron-forward"
-                    size={30}
+                    size={28}
                     color={themeColors.textColor}
                   />
                 </TouchableOpacity>
@@ -127,7 +131,7 @@ export default function HomeScreen({navigation: {navigate}}) {
                 <TouchableOpacity style={[styles.detailButton]}>
                   <Ionicons
                     name="chevron-forward"
-                    size={30}
+                    size={28}
                     color={themeColors.textColor}
                   />
                 </TouchableOpacity>
@@ -167,7 +171,7 @@ export default function HomeScreen({navigation: {navigate}}) {
               <TouchableOpacity style={[styles.detailButton]}>
                 <Ionicons
                   name="chevron-forward"
-                  size={30}
+                  size={28}
                   color={themeColors.textColor}
                 />
               </TouchableOpacity>
@@ -181,7 +185,7 @@ export default function HomeScreen({navigation: {navigate}}) {
         renderItem
         keyExtractor={item => item.id}
       />
-    </SafeAreaView>
+    </View>
   ) : null;
 }
 
@@ -191,7 +195,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 25,
   },
-  detailButton: {width: 25, height: 25},
+  detailButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   ContainerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -218,7 +225,6 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     marginVertical: 40,
-
     flex: 1,
     justifyContent: 'space-between',
   },
