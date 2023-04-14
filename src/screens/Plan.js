@@ -71,9 +71,7 @@ export default function PlanScreen({navigation: {navigate}}) {
   }, [selectedMonth]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsRendering(false);
-    }, 300);
+    setIsRendering(false);
   }, [monthPlans]);
 
   useEffect(() => {

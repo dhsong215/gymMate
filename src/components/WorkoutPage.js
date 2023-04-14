@@ -7,10 +7,13 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
+import {VictoryPie, VictoryAnimation, VictoryLabel} from 'victory-native';
+
+//contexts
 import {ThemeColorsContext} from '../contexts';
 
 //logic
-import {addEntry} from '../logic/entries';
+import {addEntry, entriesTotalReps, entriesTotalWeight} from '../logic/entries';
 
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -35,6 +38,8 @@ const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
     useState(false);
   const [workoutEditModalVisible, setWorkoutEditModalVisible] = useState(false);
   const [plusPressed, setPlusPressed] = useState(false);
+  const [progress, setProgress] = useState([]);
+  const [percentage, setPercentage] = useState(0);
 
   if (workoutData.workoutId !== workout.workoutId) {
     setWorkout(workoutData);
@@ -49,6 +54,27 @@ const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
   //entr배열이 변경되면 실행
   useEffect(() => {
     setWorkout(pre => ({...pre, entries: entries}));
+
+    const getProgressData = () => {
+      const data1 = entries.filter(item => item.isDone === true).length;
+      const data2 = entries.length;
+      const dataArr = [
+        {x: 1, y: (data1 / data2) * 100},
+        {x: 2, y: 100 - (data1 / data2) * 100},
+      ];
+      if (isNaN(dataArr[0].y)) {
+        setProgress([
+          {x: 1, y: 0},
+          {x: 2, y: 100},
+        ]);
+      } else {
+        setProgress(dataArr);
+      }
+      setPercentage(
+        Math.round(isNaN(dataArr[0].y) ? 0 : (data1 / data2) * 100),
+      );
+    };
+    getProgressData();
   }, [entries]);
 
   //entry가 변경되면 실행
@@ -80,6 +106,7 @@ const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
     setEntries(newEntries);
     setPlusPressed(true);
   };
+
   const onPressMinus = () => {
     setEntries(pre => pre.slice(0, -1));
   };
@@ -101,13 +128,69 @@ const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
       </Text>
 
       {/* 그래프 자리 */}
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: 200,
-        }}></View>
+      <View style={styles.workoutDashboard}>
+        <View style={styles.pieContainer}>
+          <VictoryPie
+            animate={{
+              duration: 500,
+            }}
+            data={progress}
+            height={200}
+            width={200}
+            innerRadius={80}
+            cornerRadius={50}
+            labels={() => null}
+            style={{
+              data: {
+                fill: ({datum}) => {
+                  return datum.x === 1 ? 'green' : 'transparent';
+                },
+              },
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                color: themeColors.textColor,
+              }}>{`${percentage}%`}</Text>
+            <Text
+              style={{
+                color: themeColors.textColor,
+                opacity: 0.5,
+              }}>{`(${entries.filter(item => item.isDone === true).length} / ${
+              entries.length
+            })`}</Text>
+          </View>
+        </View>
+        {entries[0] ? (
+          <View>
+            {entries[0].weight ? (
+              <Text style={[{color: themeColors.textColor}]}>
+                총 볼륨 : {entriesTotalWeight(entries)} kg
+              </Text>
+            ) : null}
+            {entries[0].reps ? (
+              <Text style={[{color: themeColors.textColor}]}>
+                총 횟수 : {entriesTotalReps(entries)}
+              </Text>
+            ) : null}
+            <Text style={[{color: themeColors.textColor}]}>
+              총 세트수 : {entries.length}
+            </Text>
+            <Text style={[{color: themeColors.textColor}]}>
+              남은 세트수 :{' '}
+              {entries.length -
+                entries.filter(item => item.isDone === true).length}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+
       <FlatList
         ref={scrollViewRef}
         data={entries}
@@ -192,6 +275,18 @@ const styles = StyleSheet.create({
   workoutTarget: {
     opacity: 0.7,
     fontSize: 17,
+  },
+  workoutDashboard: {
+    flexDirection: 'row',
+    width: '100%',
+    height: 200,
+    alignItems: 'center',
+  },
+  pieContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 200,
+    width: 200,
   },
   bottomEditButtonContainer: {
     flexDirection: 'row',

@@ -26,7 +26,7 @@ export const addEntry = (entries, type) => {
         break;
     }
   } else {
-    newEntry = {...entries[entries.length - 1]};
+    newEntry = {...entries[entries.length - 1], isDone: false};
   }
 
   const newEntries = [...entries, newEntry];
@@ -92,4 +92,18 @@ export const handleRepsChange = (entry, text, setRepsValue) => {
 
 export const handleSetChange = (entry, text) => {
   return {...entry, set: text};
+};
+
+export const entriesTotalWeight = entries => {
+  const totalWeight = entries.reduce((accumulator, entry) => {
+    return accumulator + entry.weight * entry.reps;
+  }, 0);
+  return totalWeight;
+};
+
+export const entriesTotalReps = entries => {
+  const totalReps = entries.reduce((accumulator, entry) => {
+    return accumulator + entry.reps;
+  }, 0);
+  return totalReps;
 };
