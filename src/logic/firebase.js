@@ -41,12 +41,32 @@ export async function uploadNewPlan(user, workouts, planTitle, date) {
 
 export async function uploadPlan(user, workouts, planTitle, plan, id) {
   const exercisesData = workouts.map(workout => workout.exerciseId);
-  console.log(plan.date);
   const planData = {
     ...plan,
     workouts,
     title: planTitle,
     exercises: exercisesData,
+  };
+
+  const userRef = getUserRef(user.uid);
+  const userPlanDocRef = userRef.collection('Plans').doc(id);
+
+  try {
+    await userPlanDocRef.set(planData);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function uploadFinishedPlan(user, workouts, planTitle, plan, id) {
+  const exercisesData = workouts.map(workout => workout.exerciseId);
+  const planData = {
+    ...plan,
+    workouts,
+    title: planTitle,
+    exercises: exercisesData,
+    finishTimestamp: firestore.FieldValue.serverTimestamp(),
+    isDone: true,
   };
 
   const userRef = getUserRef(user.uid);

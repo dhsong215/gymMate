@@ -20,8 +20,7 @@ const TabBar = ({state, descriptors, navigation}) => {
       style={{
         backgroundColor: themeColors.backgroundColor,
       }}>
-      {/* Add PlayingVideoBar here */}
-      {nowWorking && (
+      {nowWorking && nowWorking.planData ? (
         <View
           style={{
             width: '100%',
@@ -30,7 +29,7 @@ const TabBar = ({state, descriptors, navigation}) => {
           }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Working');
+              navigation.navigate('Working', nowWorking);
             }}
             style={{
               height: '100%',
@@ -41,12 +40,11 @@ const TabBar = ({state, descriptors, navigation}) => {
               flexDirection: 'row',
             }}>
             <Text style={{color: themeColors.textColor}}>
-              {nowWorking.title}
+              {nowWorking.planData.title}
             </Text>
           </TouchableOpacity>
         </View>
-      )}
-      {/* End of PlayingVideoBar */}
+      ) : null}
 
       {/* Render the tab buttons */}
       <View

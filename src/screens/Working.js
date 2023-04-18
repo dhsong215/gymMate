@@ -5,17 +5,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  SafeAreaView,
   KeyboardAvoidingView,
-  Platform,
   FlatList,
+  Alert,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {NowWorkingContext, ThemeColorsContext} from '../contexts';
+import {NowWorkingContext, ThemeColorsContext, UserContext} from '../contexts';
 
 //logic
-import {getData, storeData} from '../logic/asyncStorage';
+import {getData} from '../logic/asyncStorage';
+import {uploadFinishedPlan} from '../logic/firebase';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -24,8 +24,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import WorkoutPage from '../components/WorkoutPage';
 import AddExerciseModal from '../components/modals/AddExerciseModal';
 import WorkoutsReorderModal from '../components/modals/WorkoutsReorderModal';
-
-const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   const themeColors = useContext(ThemeColorsContext);
@@ -74,14 +72,16 @@ const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
 
 export default function WorkingScreen({
   navigation: {setOptions, goBack},
-  route: {params},
+  route: {params: nowWorking},
 }) {
   const themeColors = useContext(ThemeColorsContext);
-  const {nowWorking, updateData} = useContext(NowWorkingContext);
+  const user = useContext(UserContext);
+  const {updateData} = useContext(NowWorkingContext);
   const insets = useSafeAreaInsets();
 
   const [isLoading, setIsLoading] = useState(true);
   const [plan, setPlan] = useState();
+  const [planId, setPlanId] = useState();
   const [workouts, setWorkouts] = useState();
   const [planTitle, setPlanTitle] = useState();
   const [changedWorkout, setChangedWorkout] = useState();
@@ -119,23 +119,26 @@ export default function WorkingScreen({
   }, [changedWorkout]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getData('nowWorkingPlan');
-      setPlan(data);
-      setWorkouts(data.workouts);
-      setPlanTitle(data.title);
+    const initScreen = () => {
+      setPlan(nowWorking.planData);
+      setPlanId(nowWorking.id);
+      setWorkouts(nowWorking.planData.workouts);
+      setPlanTitle(nowWorking.planData.title);
       setIsLoading(false);
     };
-    fetchData();
+    initScreen();
   }, []);
 
   useEffect(() => {
     const setData = async () => {
       const data = {
-        ...plan,
-        workouts,
-        planTitle,
-        exercises: workouts.map(item => item.exerciseId),
+        planData: {
+          ...plan,
+          workouts,
+          planTitle,
+          exercises: workouts.map(item => item.exerciseId),
+        },
+        id: planId,
       };
       updateData(data);
     };
@@ -143,6 +146,37 @@ export default function WorkingScreen({
       setData();
     }
   }, [workouts, planTitle]);
+
+  const onPressDone = () => {
+    const check = workouts.find(workout =>
+      workout.entries.find(entry => entry.isDone === false),
+    );
+    if (check) {
+      Alert.alert(
+        '완료하지 않은 운동이 있습니다.',
+        `${check.workoutName} \n 그래도 완료하시겠습니까?`,
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () => {
+              uploadFinishedPlan(user, workouts, planTitle, plan, planId);
+              updateData({});
+              goBack();
+            },
+          },
+        ],
+      );
+    } else {
+      uploadFinishedPlan(user, workouts, planTitle, plan, planId);
+      updateData({});
+      goBack();
+    }
+  };
 
   return (
     <View
@@ -195,6 +229,9 @@ export default function WorkingScreen({
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => {
+            onPressDone();
+          }}
           style={[
             styles.bottomButton,
             {backgroundColor: themeColors.buttonColors[5]},

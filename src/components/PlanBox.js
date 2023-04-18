@@ -3,10 +3,7 @@ import {View, TouchableOpacity, Text, StyleSheet, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 //context
-import {ThemeColorsContext} from '../contexts';
-
-//logics
-import {storeData, getData} from '../logic/asyncStorage';
+import {NowWorkingContext, ThemeColorsContext} from '../contexts';
 
 //icons
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -20,6 +17,7 @@ export default function PlanBox({
   id,
 }) {
   const themeColors = useContext(ThemeColorsContext);
+  const {updateData} = useContext(NowWorkingContext);
 
   const navigation = useNavigation();
 
@@ -33,9 +31,9 @@ export default function PlanBox({
       {
         text: 'OK',
         onPress: async () => {
-          await storeData('nowWorkingPlan', plan);
+          await updateData({planData: plan, id});
           navigation.goBack();
-          navigation.navigate('Working');
+          navigation.navigate('Working', {planData: plan, id});
         },
       },
     ]);
