@@ -21,7 +21,7 @@ export default function PlanBox({
 }) {
   const themeColors = useContext(ThemeColorsContext);
   const {updateData, nowWorking} = useContext(NowWorkingContext);
-  const user = useContext(UserContext);
+  const {user} = useContext(UserContext);
   const navigation = useNavigation();
 
   const doPlanAlert = () => {

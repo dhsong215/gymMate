@@ -18,23 +18,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {entriesTotalWeight} from '../../logic/entries';
 
 export default function HomeScreen({navigation: {navigate}}) {
-  const user = useContext(UserContext); //useState로 수정하기
+  const {user, userProfile} = useContext(UserContext); //useState로 수정하기
   const themeColors = useContext(ThemeColorsContext);
   const insets = useSafeAreaInsets();
 
   const [routines, setRoutines] = useState([]);
-  const [userProfile, setUserProfile] = useState({});
   const [recentPlans, setRecentPlans] = useState([]);
 
   useEffect(() => {
     //user 없으면 실행 x
     if (user) {
-      const getUserProfile = async user => {
-        const userRef = getUserRef(user.uid);
-        const userProfileData = await userRef.get({source: 'cache'});
-        setUserProfile(userProfileData._data);
-      };
-
       const userRef = getUserRef(user.uid);
       const userPlansRef = userRef.collection('Plans');
 
@@ -44,11 +37,8 @@ export default function HomeScreen({navigation: {navigate}}) {
         .orderBy('finishTimestamp', 'desc')
         .limit(5)
         .onSnapshot(querySnapshot => {
-          console.log(querySnapshot.docs);
           setRecentPlans(querySnapshot.docs);
         });
-
-      getUserProfile(user);
 
       // 컴포넌트가 언마운트 될 때 리스너를 제거합니다.
       return () => {

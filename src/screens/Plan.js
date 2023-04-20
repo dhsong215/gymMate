@@ -24,7 +24,7 @@ import {ThemeColorsContext, UserContext} from '../contexts';
 
 export default function PlanScreen({navigation: {navigate}}) {
   const themeColors = useContext(ThemeColorsContext);
-  const user = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');

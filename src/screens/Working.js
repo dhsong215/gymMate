@@ -216,7 +216,7 @@ export default function WorkingScreen({
   route: {params: nowWorking},
 }) {
   const themeColors = useContext(ThemeColorsContext);
-  const user = useContext(UserContext);
+  const {user} = useContext(UserContext);
   const {updateData} = useContext(NowWorkingContext);
   const insets = useSafeAreaInsets();
 

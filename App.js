@@ -20,7 +20,8 @@ LogBox.ignoreLogs(['new NativeEventEmitter']);
 export default function App() {
   const [appLoading, setAppLoading] = useState(true);
   const [user, setUser] = useState();
-  const [nowWorking, setNowWorking] = useState();
+  const [userProfile, setUserProfile] = useState({});
+  const [nowWorking, setNowWorking] = useState({});
 
   const colorScheme = useColorScheme(); //define themeColors
 
@@ -30,8 +31,8 @@ export default function App() {
     if (user) {
       const getUserProfile = async user => {
         const userRef = getUserRef(user.uid);
-        let userProfile = await userRef.get();
-        if (!userProfile._exists) {
+        let userProfileData = await userRef.get();
+        if (!userProfileData._exists) {
           const data = {
             createAt: firestore.FieldValue.serverTimestamp(),
             imagePath: '',
@@ -49,9 +50,11 @@ export default function App() {
             },
           };
           await getUserRef(user.uid).set(data);
-          userProfile = await userRef.get({source: 'cache'});
+          userProfileData = await userRef.get({source: 'cache'});
         }
+        setUserProfile(userProfileData._data);
       };
+
       getUserProfile(user);
     }
   }, [user]);
@@ -66,6 +69,9 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData('nowWorkingPlan');
+      if (data === null) {
+        return;
+      }
       setNowWorking(data);
     };
     fetchData();
@@ -95,7 +101,7 @@ export default function App() {
   //user loggedin -> user home screen
   return (
     <NowWorkingContext.Provider value={{nowWorking, updateData}}>
-      <UserContext.Provider value={user}>
+      <UserContext.Provider value={{user, userProfile}}>
         <ThemeColorsContext.Provider
           value={colorScheme === 'dark' ? darkModeColors : lightModeColors}>
           <NavigationContainer>

@@ -83,7 +83,7 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
   );
 
   const themeColors = useContext(ThemeColorsContext);
-  const user = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   useEffect(() => {
     setOptions({
