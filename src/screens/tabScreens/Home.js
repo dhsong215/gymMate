@@ -15,6 +15,7 @@ import {UserContext, ThemeColorsContext} from '../../contexts';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {entriesTotalWeight} from '../../logic/entries';
 
 export default function HomeScreen({navigation: {navigate}}) {
   const user = useContext(UserContext); //useState로 수정하기
@@ -23,6 +24,7 @@ export default function HomeScreen({navigation: {navigate}}) {
 
   const [routines, setRoutines] = useState([]);
   const [userProfile, setUserProfile] = useState({});
+  const [recentPlans, setRecentPlans] = useState([]);
 
   useEffect(() => {
     //user 없으면 실행 x
@@ -32,7 +34,26 @@ export default function HomeScreen({navigation: {navigate}}) {
         const userProfileData = await userRef.get({source: 'cache'});
         setUserProfile(userProfileData._data);
       };
+
+      const userRef = getUserRef(user.uid);
+      const userPlansRef = userRef.collection('Plans');
+
+      // 리스너를 설정하여 변화를 감지하고, 변화가 발생하면 monthPlans를 업데이트합니다.
+      const unsubscribe = userPlansRef
+        .where('finishTimestamp', '!=', null)
+        .orderBy('finishTimestamp', 'desc')
+        .limit(5)
+        .onSnapshot(querySnapshot => {
+          console.log(querySnapshot.docs);
+          setRecentPlans(querySnapshot.docs);
+        });
+
       getUserProfile(user);
+
+      // 컴포넌트가 언마운트 될 때 리스너를 제거합니다.
+      return () => {
+        unsubscribe();
+      };
     }
   }, [user]);
 
@@ -168,21 +189,41 @@ export default function HomeScreen({navigation: {navigate}}) {
               <Text style={[styles.title, {color: themeColors.textColor}]}>
                 최근 기록
               </Text>
-              <TouchableOpacity style={[styles.detailButton]}>
+              {/* <TouchableOpacity style={[styles.detailButton]}>
                 <Ionicons
                   name="chevron-forward"
                   size={28}
                   color={themeColors.textColor}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         }
         ListHeaderComponentStyle={{
           paddingHorizontal: 20,
         }}
-        data={[]}
-        renderItem
+        data={recentPlans}
+        renderItem={({item: {_data: plan}}) => (
+          <View
+            style={[
+              styles.planContainer,
+              {backgroundColor: themeColors.boxColors[0]},
+            ]}>
+            <Text style={[{color: themeColors.textColor}, styles.planTitle]}>
+              {plan.title}
+            </Text>
+            <Text style={[{color: themeColors.textColor}, styles.planDate]}>
+              {plan.date}
+            </Text>
+            {plan.workouts.map(workout => (
+              <View key={workout.workoutId}>
+                <Text style={[{color: themeColors.textColor, opacity: 0.8}]}>
+                  {workout.workoutName} {workout.entries.length}세트
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
         keyExtractor={item => item.id}
       />
     </View>
@@ -275,5 +316,19 @@ const styles = StyleSheet.create({
     width: 200,
     height: 100,
     borderRadius: 15,
+  },
+  planContainer: {
+    marginHorizontal: 20,
+    padding: 10,
+    borderRadius: 15,
+    marginBottom: 10,
+  },
+  planTitle: {
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  planDate: {
+    opacity: 0.4,
+    marginBottom: 4,
   },
 });

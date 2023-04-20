@@ -3,7 +3,7 @@ export const darkModeColors = {
   tabBarShadowColor: 'grey',
   textColor: '#f2f2f2',
   screenHeaderColors: ['#111111', '#1B2430'],
-  boxColors: ['#2D2727', '#245953'],
+  boxColors: ['#2D2727', '#454545'],
   buttonColors: [
     '#A44BE2',
     '#245953',

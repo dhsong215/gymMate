@@ -48,16 +48,7 @@ export default function InStack() {
         component={StartModal}
         options={{animation: 'none', presentation: 'transparentModal'}}
       />
-      <Stack.Screen
-        name="Working"
-        component={WorkingScreen}
-        options={{
-          headerShown: true,
-          headerTitle: '으쌰',
-          presentation: 'card',
-          animation: 'fade_from_bottom',
-        }}
-      />
+
       <Stack.Screen
         name="EditPlan"
         component={EditPlanScreen}

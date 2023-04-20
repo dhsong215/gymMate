@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {useColorScheme} from 'react-native';
 import {auth, getUserRef, firestore} from './src/logic/firebase';
+import {LogBox} from 'react-native';
 
 import {
   NowWorkingContext,
@@ -13,6 +14,8 @@ import {getData, storeData} from './src/logic/asyncStorage';
 
 import InStack from './src/navigation/InStack';
 import OutStack from './src/navigation/OutStack';
+
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true);

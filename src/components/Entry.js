@@ -25,7 +25,7 @@ import SetEditModal from './modals/SetEditModal';
 //icons
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const Entry = ({index, item, refreshing, setChangedEntry}) => {
+const Entry = ({index, item, refreshing, setChangedEntry, setTimerOn}) => {
   const themeColors = useContext(ThemeColorsContext);
 
   const [weightValue, setWeightValue] = useState(item.weight);
@@ -171,8 +171,8 @@ const Entry = ({index, item, refreshing, setChangedEntry}) => {
               placeholder={'0'}
               onChangeText={text => {
                 const changedEntry = handleDistanceChange(
+                  item,
                   text,
-                  index,
                   setDistanceValue,
                 );
                 setChangedEntry({index, entry: changedEntry});
@@ -257,6 +257,11 @@ const Entry = ({index, item, refreshing, setChangedEntry}) => {
         onPress={() => {
           const changedEntry = {...item, isDone: !item.isDone};
           setChangedEntry({index, entry: changedEntry});
+          if (setTimerOn) {
+            if (item.isDone === false) {
+              setTimerOn(true);
+            }
+          }
         }}
         style={{
           marginLeft: 10,

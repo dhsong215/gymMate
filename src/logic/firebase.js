@@ -58,6 +58,22 @@ export async function uploadPlan(user, workouts, planTitle, plan, id) {
   }
 }
 
+export async function changePlanDate(user, date, plan, id) {
+  const planData = {
+    ...plan,
+    date,
+  };
+
+  const userRef = getUserRef(user.uid);
+  const userPlanDocRef = userRef.collection('Plans').doc(id);
+
+  try {
+    await userPlanDocRef.set(planData);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export async function uploadFinishedPlan(user, workouts, planTitle, plan, id) {
   const exercisesData = workouts.map(workout => workout.exerciseId);
   const planData = {

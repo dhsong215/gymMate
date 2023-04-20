@@ -9,12 +9,12 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
+import BackgroundTimer from 'react-native-background-timer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {NowWorkingContext, ThemeColorsContext, UserContext} from '../contexts';
 
 //logic
-import {getData} from '../logic/asyncStorage';
 import {uploadFinishedPlan} from '../logic/firebase';
 
 //icons
@@ -25,9 +25,77 @@ import WorkoutPage from '../components/WorkoutPage';
 import AddExerciseModal from '../components/modals/AddExerciseModal';
 import WorkoutsReorderModal from '../components/modals/WorkoutsReorderModal';
 
-const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
+const Header = ({
+  goBack,
+  title,
+  setWorkoutsReorderModalVisible,
+  progress,
+  timerOn,
+  setTimerOn,
+  planId,
+}) => {
   const themeColors = useContext(ThemeColorsContext);
   const insets = useSafeAreaInsets();
+
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
+
+  useEffect(() => {
+    if (timerOn) {
+      setSecondsLeft(90);
+      setTimerOn(false);
+    }
+  }, [timerOn]);
+
+  useEffect(() => {
+    setSecondsElapsed(0);
+  }, [planId]);
+
+  useEffect(() => {
+    const startTimer = () => {
+      BackgroundTimer.runBackgroundTimer(() => {
+        setSecondsElapsed(secs => secs + 1);
+        setSecondsLeft(secs => {
+          if (secs > 0) return secs - 1;
+          else return 0;
+        });
+      }, 1000);
+    };
+
+    startTimer();
+
+    return () => {
+      BackgroundTimer.stopBackgroundTimer();
+    };
+  }, []);
+
+  const clockify = () => {
+    let hours = Math.floor(secondsLeft / 60 / 60);
+    let mins = Math.floor((secondsLeft / 60) % 60);
+    let seconds = Math.floor(secondsLeft % 60);
+    let displayHours = hours < 10 ? `0${hours}` : hours;
+    let displayMins = mins < 10 ? `0${mins}` : mins;
+    let displaySecs = seconds < 10 ? `0${seconds}` : seconds;
+    return {
+      displayHours,
+      displayMins,
+      displaySecs,
+    };
+  };
+
+  const elapsedClockify = () => {
+    let hours = Math.floor(secondsElapsed / 60 / 60);
+    let mins = Math.floor((secondsElapsed / 60) % 60);
+    let seconds = Math.floor(secondsElapsed % 60);
+    let displayHours = hours < 10 ? `0${hours}` : hours;
+    let displayMins = mins < 10 ? `0${mins}` : mins;
+    let displaySecs = seconds < 10 ? `0${seconds}` : seconds;
+    return {
+      displayHours,
+      displayMins,
+      displaySecs,
+    };
+  };
 
   return (
     <View
@@ -58,13 +126,86 @@ const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
       </View>
       <View
         style={{
-          backgroundColor: 'grey',
           height: 90,
           width: '100%',
+          flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
+          backgroundColor: themeColors.boxColors[0],
         }}>
-        <Text>타이머</Text>
+        <View
+          style={{
+            width: '25%',
+            height: 80,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View>
+            <Text style={{color: themeColors.textColor, fontSize: 13}}>
+              진행도
+            </Text>
+            <Text
+              style={{
+                color: themeColors.textColor,
+                fontSize: 22,
+                fontWeight: '500',
+              }}>
+              {Math.floor(progress * 100)}%
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            width: '75%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: themeColors.boxColors[1],
+              width: '95%',
+              height: 75,
+              borderRadius: 11,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+            }}>
+            <TouchableOpacity
+              onPress={() => {}}
+              style={{width: 100, alignItems: 'center'}}>
+              <Text style={{color: themeColors.textColor}}>휴식타이머</Text>
+              <Text
+                style={{
+                  color: themeColors.textColor,
+                  fontSize: 26,
+                  fontWeight: '600',
+                }}>
+                {clockify().displayMins}:{clockify().displaySecs}
+              </Text>
+            </TouchableOpacity>
+
+            <View
+              style={{
+                height: '80%',
+                width: 1,
+                backgroundColor: themeColors.textColor,
+                opacity: 0.2,
+              }}></View>
+
+            <View style={{width: 120, alignItems: 'center'}}>
+              <Text style={{color: themeColors.textColor}}>경과 시간</Text>
+              <Text
+                style={{
+                  color: themeColors.textColor,
+                  fontSize: 26,
+                  fontWeight: '600',
+                }}>
+                {elapsedClockify().displayHours}:{elapsedClockify().displayMins}
+                :{elapsedClockify().displaySecs}
+              </Text>
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -89,20 +230,27 @@ export default function WorkingScreen({
     useState(false);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [timerOn, setTimerOn] = useState(false);
 
   const flatListRef = useRef(null);
 
   useEffect(() => {
+    // const workoutProgress =
     setOptions({
       header: () => (
         <Header
           goBack={goBack}
-          title={isLoading ? 'loading' : planTitle}
+          title={planTitle}
           setWorkoutsReorderModalVisible={setWorkoutsReorderModalVisible}
+          progress={progress}
+          timerOn={timerOn}
+          setTimerOn={setTimerOn}
+          planId={nowWorking.id}
         />
       ),
     });
-  }, [planTitle, isLoading]);
+  }, [planTitle, progress, timerOn, nowWorking]);
 
   useEffect(() => {
     if (changedWorkout) {
@@ -127,7 +275,7 @@ export default function WorkingScreen({
       setIsLoading(false);
     };
     initScreen();
-  }, []);
+  }, [nowWorking]);
 
   useEffect(() => {
     const setData = async () => {
@@ -142,7 +290,25 @@ export default function WorkingScreen({
       };
       updateData(data);
     };
+
+    const currentProgress = () => {
+      const finishedEntriesLength = workouts.reduce((acc, workout) => {
+        const length = workout.entries.filter(
+          entry => entry.isDone === true,
+        ).length;
+        return acc + length;
+      }, 0);
+      const allEntriesLength = workouts.reduce((acc, workout) => {
+        return acc + workout.entries.length;
+      }, 0);
+      const progressData = isNaN(finishedEntriesLength / allEntriesLength)
+        ? 0
+        : finishedEntriesLength / allEntriesLength;
+      setProgress(progressData);
+    };
+
     if (workouts) {
+      currentProgress();
       setData();
     }
   }, [workouts, planTitle]);
@@ -164,6 +330,7 @@ export default function WorkingScreen({
           {
             text: 'OK',
             onPress: () => {
+              BackgroundTimer.stopBackgroundTimer();
               uploadFinishedPlan(user, workouts, planTitle, plan, planId);
               updateData({});
               goBack();
@@ -172,6 +339,7 @@ export default function WorkingScreen({
         ],
       );
     } else {
+      BackgroundTimer.stopBackgroundTimer();
       uploadFinishedPlan(user, workouts, planTitle, plan, planId);
       updateData({});
       goBack();
@@ -204,6 +372,7 @@ export default function WorkingScreen({
                 workoutIndex={workoutIndex}
                 workoutData={item}
                 setChangedWorkout={setChangedWorkout}
+                setTimerOn={setTimerOn}
               />
             );
           }}
@@ -234,9 +403,10 @@ export default function WorkingScreen({
           }}
           style={[
             styles.bottomButton,
-            {backgroundColor: themeColors.buttonColors[5]},
+            {backgroundColor: themeColors.buttonColors[3]},
           ]}>
-          <Text style={[styles.bottomButtonText, {color: 'black'}]}>
+          <Text
+            style={[styles.bottomButtonText, {color: themeColors.textColor}]}>
             운동 완료
           </Text>
         </TouchableOpacity>

@@ -61,6 +61,18 @@ export default function PlanScreen({navigation: {navigate}}) {
       .where('date', '>=', startDate)
       .where('date', '<=', endDate)
       .onSnapshot(querySnapshot => {
+        console.log(querySnapshot.docs);
+        querySnapshot.docs.sort((a, b) => {
+          if (b._data.createdAt === null) {
+            console.log('aa');
+            return -1;
+          }
+          if (a._data.createdAt === null) {
+            console.log('aa');
+            return -1;
+          }
+          return b._data.createdAt.seconds - a._data.createdAt.seconds;
+        });
         setMonthPlans(querySnapshot.docs);
       });
 
@@ -120,7 +132,12 @@ export default function PlanScreen({navigation: {navigate}}) {
               {/* edit button */}
               <TouchableOpacity
                 onPress={() => {
-                  onPressEdit();
+                  if (isEditMode === true) {
+                    setIsEditMode(false);
+                    setCheckedPlans([]);
+                  } else {
+                    onPressEdit();
+                  }
                 }}
                 style={[
                   styles.editButton,

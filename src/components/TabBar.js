@@ -15,6 +15,10 @@ const TabBar = ({state, descriptors, navigation}) => {
   const {nowWorking} = useContext(NowWorkingContext);
   const insets = useSafeAreaInsets();
 
+  if (state.index === 5) {
+    return null;
+  }
+
   return (
     <View
       style={{
@@ -24,7 +28,7 @@ const TabBar = ({state, descriptors, navigation}) => {
         <View
           style={{
             width: '100%',
-            backgroundColor: 'rgba(144, 144, 144, 0.1)',
+            backgroundColor: themeColors.boxColors[0],
             height: 50,
           }}>
           <TouchableOpacity
@@ -109,6 +113,10 @@ const TabBar = ({state, descriptors, navigation}) => {
           } else if (route.name === 'More') {
             iconName = 'more-horiz';
             IconComponent = MaterialIcons;
+          }
+
+          if (index === 5) {
+            return null;
           }
 
           return (

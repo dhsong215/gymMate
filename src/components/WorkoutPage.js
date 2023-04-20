@@ -25,7 +25,12 @@ import WorkoutEditModal from './modals/WorkoutEditModal';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
-const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
+const WorkoutPage = ({
+  workoutData,
+  workoutIndex,
+  setChangedWorkout,
+  setTimerOn,
+}) => {
   const themeColors = useContext(ThemeColorsContext);
 
   const scrollViewRef = useRef();
@@ -137,13 +142,13 @@ const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
             data={progress}
             height={200}
             width={200}
-            innerRadius={80}
+            innerRadius={70}
             cornerRadius={50}
             labels={() => null}
             style={{
               data: {
                 fill: ({datum}) => {
-                  return datum.x === 1 ? 'green' : 'transparent';
+                  return datum.x === 1 ? '#262A56' : 'transparent';
                 },
               },
             }}
@@ -169,12 +174,12 @@ const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
         </View>
         {entries[0] ? (
           <View>
-            {entries[0].weight ? (
+            {entries[0].weight >= 0 ? (
               <Text style={[{color: themeColors.textColor}]}>
                 총 볼륨 : {entriesTotalWeight(entries)} kg
               </Text>
             ) : null}
-            {entries[0].reps ? (
+            {entries[0].reps >= 0 ? (
               <Text style={[{color: themeColors.textColor}]}>
                 총 횟수 : {entriesTotalReps(entries)}
               </Text>
@@ -203,6 +208,7 @@ const WorkoutPage = ({workoutData, workoutIndex, setChangedWorkout}) => {
             item={item}
             refreshing={refreshing}
             setChangedEntry={setChangedEntry}
+            setTimerOn={setTimerOn}
           />
         )}
         ListFooterComponent={() => (

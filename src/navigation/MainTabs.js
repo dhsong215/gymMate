@@ -8,6 +8,7 @@ import {ThemeColorsContext, NowWorkingContext} from '../contexts';
 import TemporaryScreen from '../screens/Temporary';
 import HomeScreen from '../screens/tabScreens/Home';
 import PlanScreen from '../screens/Plan';
+import WorkingScreen from '../screens/Working';
 
 //icons
 import TabBar from '../components/TabBar';
@@ -75,6 +76,16 @@ export default function MainTabs() {
           tabBarIcon: ({focused, color, size}) => (
             <MaterialIcons name="more-horiz" color={color} size={size} />
           ),
+        }}
+      />
+      <Tab.Screen
+        name="Working"
+        component={WorkingScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '으쌰',
+          animation: 'fade_from_bottom',
+          tabBarStyle: {display: 'none'},
         }}
       />
     </Tab.Navigator>
