@@ -49,7 +49,7 @@ export default function PlanScreen({navigation: {navigate}, navigation}) {
     }
   };
 
-  const fetchData = () => {
+  const fetchData = async () => {
     const userRef = getUserRef(user.uid);
     const userPlansRef = userRef.collection('Plans');
 
@@ -57,12 +57,11 @@ export default function PlanScreen({navigation: {navigate}, navigation}) {
     const startDate = `${selectedMonth}-01`;
     const endDate = `${selectedMonth}-31`;
 
-    userPlansRef
+    await userPlansRef
       .where('date', '>=', startDate)
       .where('date', '<=', endDate)
       .get({source: 'cache'})
       .then(querySnapshot => {
-        console.log(querySnapshot.docs);
         querySnapshot.docs.sort((a, b) => {
           if (b._data.createdAt === null) {
             return -1;
@@ -83,7 +82,7 @@ export default function PlanScreen({navigation: {navigate}, navigation}) {
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, selectedMonth]);
 
   useEffect(() => {
     //삭제 누르면 plans 리렌더링
