@@ -22,7 +22,7 @@ import PlanBox from '../components/PlanBox';
 //contexts
 import {ThemeColorsContext, UserContext} from '../contexts';
 
-export default function PlanScreen({navigation: {navigate}}) {
+export default function PlanScreen({navigation: {navigate}, navigation}) {
   const themeColors = useContext(ThemeColorsContext);
   const {user} = useContext(UserContext);
 
@@ -32,6 +32,7 @@ export default function PlanScreen({navigation: {navigate}}) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [checkedPlans, setCheckedPlans] = useState([]);
   const [isRendering, setIsRendering] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   const onPressEdit = () => {
     setIsEditMode(pre => !pre);
@@ -48,7 +49,7 @@ export default function PlanScreen({navigation: {navigate}}) {
     }
   };
 
-  useEffect(() => {
+  const fetchData = () => {
     const userRef = getUserRef(user.uid);
     const userPlansRef = userRef.collection('Plans');
 
@@ -56,30 +57,44 @@ export default function PlanScreen({navigation: {navigate}}) {
     const startDate = `${selectedMonth}-01`;
     const endDate = `${selectedMonth}-31`;
 
-    // 리스너를 설정하여 변화를 감지하고, 변화가 발생하면 monthPlans를 업데이트합니다.
-    const unsubscribe = userPlansRef
+    userPlansRef
       .where('date', '>=', startDate)
       .where('date', '<=', endDate)
-      .onSnapshot(querySnapshot => {
+      .get({source: 'cache'})
+      .then(querySnapshot => {
         console.log(querySnapshot.docs);
         querySnapshot.docs.sort((a, b) => {
           if (b._data.createdAt === null) {
-            console.log('aa');
             return -1;
           }
           if (a._data.createdAt === null) {
-            console.log('aa');
             return -1;
           }
           return b._data.createdAt.seconds - a._data.createdAt.seconds;
         });
         setMonthPlans(querySnapshot.docs);
       });
+  };
 
-    // 컴포넌트가 언마운트 될 때 리스너를 제거합니다.
-    return () => {
-      unsubscribe();
-    };
+  useEffect(() => {
+    // 뒤로 가기를 통해 이전 페이지로 돌아올 때 plans 리렌더링
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    //삭제 누르면 plans 리렌더링
+    if (refresh === true) {
+      fetchData();
+      setRefresh(false);
+    }
+  }, [refresh]);
+
+  useEffect(() => {
+    fetchData();
   }, [selectedMonth]);
 
   useEffect(() => {
@@ -151,6 +166,7 @@ export default function PlanScreen({navigation: {navigate}}) {
                 <TouchableOpacity
                   onPress={() => {
                     onPressDelete();
+                    setRefresh(true);
                     setIsEditMode(false);
                   }}
                   style={[
@@ -191,7 +207,10 @@ export default function PlanScreen({navigation: {navigate}}) {
           {backgroundColor: themeColors.buttonColors[2]},
         ]}
         onPress={() => {
-          navigate('EditPlan', {date: selectedDate});
+          const refreshPlans = () => {
+            setRefresh(true);
+          };
+          navigate('EditPlan', {date: selectedDate, refresh: refreshPlans});
         }}>
         <AntDesign name="plus" color="white" size={30} />
       </TouchableOpacity>
