@@ -6,11 +6,17 @@ import {
   Animated,
   Pressable,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
-import {ThemeColorsContext} from '../contexts';
+//context
+import {NowWorkingContext, ThemeColorsContext} from '../contexts';
+//logic
+import {nowDate} from '../logic/date';
+import {firestore} from '../logic/firebase';
 
 export default function StartModal({navigation: {goBack, navigate}}) {
   const themeColors = useContext(ThemeColorsContext);
+  const {nowWorking, updateData} = useContext(NowWorkingContext);
   const modalPositionY = useRef(new Animated.Value(0)).current;
 
   const startUp = Animated.spring(modalPositionY, {
@@ -88,7 +94,37 @@ export default function StartModal({navigation: {goBack, navigate}}) {
         </TouchableOpacity>
 
         {/* go Start */}
-        <TouchableOpacity style={[styles.button, {backgroundColor: '#B8621B'}]}>
+        <TouchableOpacity
+          onPress={() => {
+            const currentTime = new Date();
+            const planData = {
+              title: `${nowDate()} 운동`,
+              date: nowDate(),
+              startTimestamp: firestore.Timestamp.fromDate(currentTime),
+              finishTimestamp: null,
+              isDone: false,
+              time: null,
+              routine: null,
+              workouts: [],
+              exercises: [],
+              createdAt: firestore.FieldValue.serverTimestamp(),
+            };
+            if (Object.keys(nowWorking).length !== 0) {
+              Alert.alert(
+                '진행중인 운동이 있습니다.',
+                '진행중인 운동을 먼저 완료해 주세요.',
+                [
+                  {
+                    text: '확인',
+                  },
+                ],
+              );
+            } else {
+              updateData({planData, id: 'temporary'});
+              navigate('Working', {planData, id: 'temporary'});
+            }
+          }}
+          style={[styles.button, {backgroundColor: '#B8621B'}]}>
           <Text style={[styles.buttonText, {color: 'white'}]}>바로 시작!</Text>
         </TouchableOpacity>
       </Animated.View>

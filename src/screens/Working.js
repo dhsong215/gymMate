@@ -22,7 +22,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //components
 import WorkoutPage from '../components/WorkoutPage';
-import AddExerciseModal from '../components/modals/AddExerciseModal';
+import AddExerciseModal from '../components/modals/AddWorkoutModal';
 import WorkoutsReorderModal from '../components/modals/WorkoutsReorderModal';
 
 const Header = ({
@@ -47,10 +47,7 @@ const Header = ({
     }
   }, [timerOn]);
 
-  useEffect(() => {
-    setSecondsElapsed(0);
-  }, [planId]);
-
+  //plan이 바뀌면 경과시간 0으로 설정하고 타이머 다시 시작
   useEffect(() => {
     const startTimer = () => {
       BackgroundTimer.runBackgroundTimer(() => {
@@ -62,13 +59,15 @@ const Header = ({
       }, 1000);
     };
 
+    setSecondsElapsed(0);
     startTimer();
 
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, []);
+  }, [planId]);
 
+  //휴식 타이머 00:00
   const clockify = () => {
     let hours = Math.floor(secondsLeft / 60 / 60);
     let mins = Math.floor((secondsLeft / 60) % 60);
@@ -83,6 +82,7 @@ const Header = ({
     };
   };
 
+  //운동 경과 시간 00:00:00
   const elapsedClockify = () => {
     let hours = Math.floor(secondsElapsed / 60 / 60);
     let mins = Math.floor((secondsElapsed / 60) % 60);
@@ -283,7 +283,7 @@ export default function WorkingScreen({
         planData: {
           ...plan,
           workouts,
-          planTitle,
+          title: planTitle,
           exercises: workouts.map(item => item.exerciseId),
         },
         id: planId,

@@ -14,6 +14,8 @@ GoogleSignin.configure({
 
 export const getUserRef = uid => firestore().collection('Users').doc(uid);
 
+//plan functions
+
 export async function uploadNewPlan(user, workouts, planTitle, date) {
   const exercisesData = workouts.map(workout => workout.exerciseId);
   const planData = {
@@ -86,12 +88,20 @@ export async function uploadFinishedPlan(user, workouts, planTitle, plan, id) {
   };
 
   const userRef = getUserRef(user.uid);
-  const userPlanDocRef = userRef.collection('Plans').doc(id);
-
-  try {
-    await userPlanDocRef.set(planData);
-  } catch (error) {
-    console.error(error);
+  if (id === 'temporary') {
+    const userPlanRef = userRef.collection('Plans');
+    try {
+      await userPlanRef.add(planData);
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    const userPlanDocRef = userRef.collection('Plans').doc(id);
+    try {
+      await userPlanDocRef.set(planData);
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 
@@ -111,6 +121,44 @@ export async function deletePlans(user, plans) {
     console.log('Deleted plans:', plans);
   } catch (error) {
     console.error('Error deleting plans:', error);
+  }
+}
+
+//routine functions
+
+export async function uploadNewRoutine(user, workouts, routineTitle) {
+  const exercisesData = workouts.map(workout => workout.exerciseId);
+  const routineData = {
+    title: routineTitle,
+    workouts: workouts,
+    exercises: exercisesData,
+    createdAt: firestore.FieldValue.serverTimestamp(),
+  };
+
+  const userRef = getUserRef(user.uid);
+  const userRoutineRef = userRef.collection('Routines');
+
+  try {
+    await userRoutineRef.add(routineData);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateRoutine(user, workouts, routineTitle, id) {
+  const exercisesData = workouts.map(workout => workout.exerciseId);
+
+  const userRef = getUserRef(user.uid);
+  const userRoutineDocRef = userRef.collection('Routines').doc(id);
+
+  try {
+    await userRoutineDocRef.update({
+      workouts: workouts,
+      title: routineTitle,
+      exercises: exercisesData,
+    });
+  } catch (error) {
+    console.error(error);
   }
 }
 

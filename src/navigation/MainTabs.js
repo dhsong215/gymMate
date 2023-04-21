@@ -83,7 +83,6 @@ export default function MainTabs() {
         component={WorkingScreen}
         options={{
           headerShown: true,
-          headerTitle: '으쌰',
           animation: 'fade_from_bottom',
           tabBarStyle: {display: 'none'},
         }}

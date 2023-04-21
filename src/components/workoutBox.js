@@ -23,6 +23,7 @@ const WorkoutBox = ({
   isLastIndex,
   flatListRef, //scroll
   setChangedWorkout,
+  isRoutine,
 }) => {
   const [entries, setEntries] = useState([...workoutData.entries]); //handler에 보내야됨
   const [entriesReorderModalVisible, setEntriesReorderModalVisible] =
@@ -121,6 +122,7 @@ const WorkoutBox = ({
                   index={index}
                   refreshing={refreshing}
                   setChangedEntry={setChangedEntry}
+                  isRoutine={isRoutine}
                 />
               )}
               keyExtractor={(_, index) => `entry${workout.workoutId}${index}`}

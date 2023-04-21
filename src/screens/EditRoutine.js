@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState, useRef} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,10 @@ import {
 } from 'react-native';
 
 //context
-import {UserContext, ThemeColorsContext} from '../contexts';
+import {ThemeColorsContext, UserContext} from '../contexts';
+
+//logic
+import {getUserRef, uploadNewRoutine, updateRoutine} from '../logic/firebase';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,9 +23,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AddExerciseModal from '../components/modals/AddWorkoutModal';
 import WorkoutsReorderModal from '../components/modals/WorkoutsReorderModal';
 import WorkoutBox from '../components/WorkoutBox';
-
-//logics
-import {uploadNewPlan, uploadPlan} from '../logic/firebase';
 
 const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
   const themeColors = useContext(ThemeColorsContext);
@@ -59,28 +59,26 @@ const Header = ({goBack, title, setWorkoutsReorderModalVisible}) => {
             />
           </TouchableOpacity>
         </View>
-        <View
-          style={[
-            styles.headerStateBox,
-            {backgroundColor: themeColors.modalColors[1]},
-          ]}></View>
       </View>
     </SafeAreaView>
   );
 };
 
-function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
+export default function EditRoutineScreen({
+  navigation: {setOptions, goBack},
+  route: {params},
+}) {
   const [workouts, setWorkouts] = useState(
-    params.plan ? params.plan.workouts : [],
+    params.routine ? params.routine.workouts : [],
+  );
+  const [routineTitle, setRoutineTitle] = useState(
+    params.routine ? params.routine.title : '내 루틴',
   );
   const [changedWorkout, setChangedWorkout] = useState();
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const [workoutsReorderModalVisible, setWorkoutsReorderModalVisible] =
     useState(false);
   const [optionVisible, setOptionVisible] = useState([]);
-  const [planTitle, setPlanTitle] = useState(
-    params.plan ? params.plan.title : params.date + ' 운동',
-  );
 
   const themeColors = useContext(ThemeColorsContext);
   const {user} = useContext(UserContext);
@@ -90,12 +88,12 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
       header: () => (
         <Header
           goBack={goBack}
-          title={planTitle}
+          title={routineTitle}
           setWorkoutsReorderModalVisible={setWorkoutsReorderModalVisible}
         />
       ),
     });
-  }, [planTitle]);
+  }, [routineTitle]);
 
   useEffect(() => {
     if (changedWorkout) {
@@ -127,7 +125,7 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
         <FlatList
           ref={flatListRef}
           style={{flex: 1}}
-          contentContainerStyle={{paddingTop: 40, paddingBottom: 10}}
+          contentContainerStyle={{paddingTop: 5, paddingBottom: 10}}
           data={workouts}
           keyExtractor={item => item.workoutId}
           renderItem={({item, index}) => {
@@ -139,6 +137,7 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
                 isLastIndex={index === workouts.length - 1}
                 flatListRef={flatListRef}
                 setChangedWorkout={setChangedWorkout}
+                isRoutine={true}
               />
             );
           }}
@@ -174,9 +173,9 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
           <TouchableOpacity
             onPress={() => {
               if (params.id) {
-                uploadPlan(user, workouts, planTitle, params.plan, params.id);
+                updateRoutine(user, workouts, routineTitle, params.id);
               } else {
-                uploadNewPlan(user, workouts, planTitle, params.date);
+                uploadNewRoutine(user, workouts, routineTitle);
               }
               goBack();
             }}
@@ -195,26 +194,20 @@ function EditPlanScreen({navigation: {setOptions, goBack}, route: {params}}) {
           setModalVisible={setWorkoutsReorderModalVisible}
           workouts={workouts}
           setWorkouts={setWorkouts}
-          planTitle={planTitle}
-          setPlanTitle={setPlanTitle}
+          planTitle={routineTitle}
+          setPlanTitle={setRoutineTitle}
         />
         <AddExerciseModal
           modalVisible={addExerciseModalVisible}
           setModalVisible={setAddExerciseModalVisible}
           setWorkouts={setWorkouts}
-          date={params.date}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
-export default EditPlanScreen;
-
 const styles = StyleSheet.create({
-  headerContainer: {
-    height: 130,
-  },
   headerTopContainer: {
     flexDirection: 'row',
     padding: 13,

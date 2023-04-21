@@ -36,7 +36,7 @@ import {ThemeColorsContext} from '../../contexts';
 
 const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
   const themeColors = useContext(ThemeColorsContext);
-  const [exerciseList, setExerciseList] = useState(exercises);
+  const [exerciseList, setExerciseList] = useState();
   const [selectedMuscle, setSelectedMuscle] = useState({
     id: 100,
     name: 'all',
@@ -48,18 +48,21 @@ const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
   //검색창 아래 타겟을 선택하면 해당 타겟에 맞는 운동만 나열
   useEffect(() => {
     if (searchInput === '') {
-      const list = exercises;
+      const list = [...exercises];
       setExerciseList(
         selectedMuscle.id === 100
           ? list
           : list.filter(item => item.target === selectedMuscle.name),
       );
     } else {
-      const list = exercises.filter(item => item.korName.includes(searchInput));
+      const list = [...exercises];
+      const filteredList = list.filter(item =>
+        item.korName.includes(searchInput),
+      );
       setExerciseList(
         selectedMuscle.id === 100
-          ? list
-          : list.filter(item => item.target === selectedMuscle.name),
+          ? filteredList
+          : filteredList.filter(item => item.target === selectedMuscle.name),
       );
     }
   }, [selectedMuscle, searchInput]);
@@ -96,7 +99,12 @@ const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
               {backgroundColor: themeColors.screenHeaderColors[1]},
             ]}>
             {/* top of header */}
-            <View style={{flexDirection: 'row'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
               <TouchableOpacity
                 style={{opacity: 0.6}}
                 onPress={() => setModalVisible(false)}>
@@ -105,6 +113,13 @@ const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
                   size={40}
                   color={themeColors.textColor}
                 />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.addExerciseButton,
+                  {backgroundColor: themeColors.buttonColors[3]},
+                ]}>
+                <Text style={[styles.addExerciseButtonText]}>운동 추가</Text>
               </TouchableOpacity>
             </View>
             <TextInput
@@ -163,7 +178,11 @@ const AddExerciseModal = ({modalVisible, setModalVisible, setWorkouts}) => {
                     <Image
                       resizeMode="contain"
                       style={{width: 50, height: 50, borderRadius: 35}}
-                      source={imagePaths.find(a => a.id == item.id).uri}
+                      source={
+                        imagePaths.find(a => a.id == item.id)
+                          ? imagePaths.find(a => a.id == item.id).uri
+                          : require('../../assets/images/CBum.png')
+                      }
                     />
                   </View>
                   {selectedExercises.find(a => a.id === item.id) ? (
@@ -274,6 +293,8 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     paddingTop: 5,
   },
+  addExerciseButton: {marginRight: 10, padding: 5, borderRadius: 10},
+  addExerciseButtonText: {fontSize: 15, fontWeight: '600', color: 'white'},
   headerTextInput: {
     backgroundColor: 'white',
     borderRadius: 30,

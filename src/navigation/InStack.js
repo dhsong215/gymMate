@@ -10,7 +10,7 @@ import MainTabs from './MainTabs';
 import PlanScreen from '../screens/Plan';
 import RoutineScreen from '../screens/Routine';
 import EditPlanScreen from '../screens/EditPlan';
-import WorkingScreen from '../screens/Working';
+import EditRoutineScreen from '../screens/EditRoutine';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -37,9 +37,31 @@ export default function InStack() {
       />
 
       <Stack.Screen
+        name="EditPlan"
+        component={EditPlanScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '계획 편집',
+          presentation: 'fullScreenModal',
+          animation: 'fade_from_bottom',
+        }}
+      />
+
+      <Stack.Screen
         name="Routine"
         component={RoutineScreen}
         options={{headerShown: true, headerTitle: '내 루틴'}}
+      />
+
+      <Stack.Screen
+        name="EditRoutine"
+        component={EditRoutineScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '루틴 편집',
+          presentation: 'fullScreenModal',
+          animation: 'fade_from_bottom',
+        }}
       />
 
       {/* modals */}
@@ -47,17 +69,6 @@ export default function InStack() {
         name="StartModal"
         component={StartModal}
         options={{animation: 'none', presentation: 'transparentModal'}}
-      />
-
-      <Stack.Screen
-        name="EditPlan"
-        component={EditPlanScreen}
-        options={{
-          headerShown: true,
-          headerTitle: '계획 추가',
-          presentation: 'fullScreenModal',
-          animation: 'fade_from_bottom',
-        }}
       />
     </Stack.Navigator>
   );

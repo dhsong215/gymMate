@@ -35,7 +35,7 @@ export default function HomeScreen({navigation: {navigate}}) {
       const unsubscribe = userPlansRef
         .where('finishTimestamp', '!=', null)
         .orderBy('finishTimestamp', 'desc')
-        .limit(5)
+        .limit(10)
         .onSnapshot(querySnapshot => {
           setRecentPlans(querySnapshot.docs);
         });
@@ -68,7 +68,7 @@ export default function HomeScreen({navigation: {navigate}}) {
                 <View style={[styles.userStateContainer]}>
                   <Text
                     style={[styles.userState, {color: themeColors.textColor}]}>
-                    Lv.1
+                    Lv.320
                   </Text>
                   <Text
                     style={[styles.userState, {color: themeColors.textColor}]}>
@@ -79,7 +79,7 @@ export default function HomeScreen({navigation: {navigate}}) {
             </View>
 
             {/* 목표박스 */}
-            <View style={[styles.goalsContainer]}>
+            {/* <View style={[styles.goalsContainer]}>
               <TouchableOpacity
                 style={[
                   styles.addGoals,
@@ -90,7 +90,7 @@ export default function HomeScreen({navigation: {navigate}}) {
                   목표 추가
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             {/* 운동시작 버튼 */}
             <View style={[styles.goalsContainer]}>
@@ -107,7 +107,7 @@ export default function HomeScreen({navigation: {navigate}}) {
                     styles.startWorkText,
                     {color: themeColors.textColor},
                   ]}>
-                  내 운동
+                  운동 시작
                 </Text>
               </TouchableOpacity>
             </View>
@@ -274,28 +274,28 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {marginBottom: 10},
   addGoals: {
-    height: 60,
-    borderRadius: 15,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 15,
   },
   addGoalsText: {fontSize: 15, fontWeight: '600'},
   startWorkButton: {
-    height: 50,
-    borderRadius: 15,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 40,
+    borderRadius: 15,
   },
   startWorkText: {fontSize: 15, fontWeight: '600'},
-  weeklyContainer: {marginBottom: 20},
+  weeklyContainer: {marginBottom: 40},
   weeklyChart: {
     height: 150,
     width: '100%',
     borderRadius: 15,
   },
   routinesContainer: {
-    marginBottom: 20,
+    marginBottom: 40,
   },
   routinesPosition: {
     position: 'relative',
@@ -310,12 +310,12 @@ const styles = StyleSheet.create({
   planContainer: {
     marginHorizontal: 20,
     padding: 10,
+    marginBottom: 15,
     borderRadius: 15,
-    marginBottom: 10,
   },
   planTitle: {
     fontWeight: '600',
-    fontSize: 15,
+    fontSize: 17,
   },
   planDate: {
     opacity: 0.4,

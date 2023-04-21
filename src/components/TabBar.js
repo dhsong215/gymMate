@@ -28,7 +28,7 @@ const TabBar = ({state, descriptors, navigation}) => {
         <View
           style={{
             width: '100%',
-            backgroundColor: themeColors.boxColors[0],
+            backgroundColor: themeColors.boxColors[1],
             height: 50,
           }}>
           <TouchableOpacity

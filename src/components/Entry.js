@@ -25,7 +25,14 @@ import SetEditModal from './modals/SetEditModal';
 //icons
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const Entry = ({index, item, refreshing, setChangedEntry, setTimerOn}) => {
+const Entry = ({
+  index,
+  item,
+  refreshing,
+  setChangedEntry,
+  setTimerOn,
+  isRoutine,
+}) => {
   const themeColors = useContext(ThemeColorsContext);
 
   const [weightValue, setWeightValue] = useState(item.weight);
@@ -253,38 +260,40 @@ const Entry = ({index, item, refreshing, setChangedEntry, setTimerOn}) => {
         ) : null}
       </View>
 
-      <TouchableOpacity
-        onPress={() => {
-          const changedEntry = {...item, isDone: !item.isDone};
-          setChangedEntry({index, entry: changedEntry});
-          if (setTimerOn) {
-            if (item.isDone === false) {
-              setTimerOn(true);
+      {isRoutine !== true ? (
+        <TouchableOpacity
+          onPress={() => {
+            const changedEntry = {...item, isDone: !item.isDone};
+            setChangedEntry({index, entry: changedEntry});
+            if (setTimerOn) {
+              if (item.isDone === false) {
+                setTimerOn(true);
+              }
             }
-          }
-        }}
-        style={{
-          marginLeft: 10,
-          width: 40,
-          height: 35,
-          alignItems: 'flex-end',
-          justifyContent: 'center',
-        }}>
-        {item.isDone ? (
-          <MaterialIcons
-            name="check-circle"
-            size={25}
-            color={themeColors.buttonColors[7]}
-          />
-        ) : (
-          <MaterialIcons
-            style={{opacity: 0.5}}
-            name="check-circle-outline"
-            size={25}
-            color={themeColors.buttonColors[6]}
-          />
-        )}
-      </TouchableOpacity>
+          }}
+          style={{
+            marginLeft: 10,
+            width: 40,
+            height: 35,
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+          }}>
+          {item.isDone ? (
+            <MaterialIcons
+              name="check-circle"
+              size={25}
+              color={themeColors.buttonColors[7]}
+            />
+          ) : (
+            <MaterialIcons
+              style={{opacity: 0.5}}
+              name="check-circle-outline"
+              size={25}
+              color={themeColors.buttonColors[6]}
+            />
+          )}
+        </TouchableOpacity>
+      ) : null}
 
       <SetEditModal
         modalVisible={setEditModalVisible}
