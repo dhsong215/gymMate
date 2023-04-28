@@ -62,6 +62,7 @@ export default function PlanScreen({navigation: {navigate}, navigation}) {
       .where('date', '<=', endDate)
       .get({source: 'cache'})
       .then(querySnapshot => {
+        console.log(querySnapshot);
         querySnapshot.docs.sort((a, b) => {
           if (b._data.createdAt === null) {
             return -1;
@@ -206,10 +207,7 @@ export default function PlanScreen({navigation: {navigate}, navigation}) {
           {backgroundColor: themeColors.buttonColors[2]},
         ]}
         onPress={() => {
-          const refreshPlans = () => {
-            setRefresh(true);
-          };
-          navigate('EditPlan', {date: selectedDate, refresh: refreshPlans});
+          navigate('EditPlan', {date: selectedDate});
         }}>
         <AntDesign name="plus" color="white" size={30} />
       </TouchableOpacity>

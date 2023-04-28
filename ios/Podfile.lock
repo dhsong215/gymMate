@@ -1086,6 +1086,8 @@ PODS:
     - React-jsi (= 0.71.4)
     - React-logger (= 0.71.4)
     - React-perflogger (= 0.71.4)
+  - RealmJS (11.8.0):
+    - React
   - RNCAsyncStorage (1.18.1):
     - React-Core
   - RNFBApp (17.4.0):
@@ -1177,6 +1179,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RealmJS (from `../node_modules/realm`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
@@ -1282,6 +1285,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RealmJS:
+    :path: "../node_modules/realm"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNFBApp:
@@ -1359,6 +1364,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: ad17efcfb2fa8f6bfd8ac0cf48d96668b8b28e0b
   React-runtimeexecutor: 8fa50b38df6b992c76537993a2b0553d3b088004
   ReactCommon: 34f9369c376d5f335069dda29552b3e7351b9ec6
+  RealmJS: 27b8d695fa4bc9606a4a4a378de55511edc2084c
   RNCAsyncStorage: b90b71f45b8b97be43bc4284e71a6af48ac9f547
   RNFBApp: 525cc4317f7955eda6bac09fac3acf7ee06afa0b
   RNFBAuth: 57e0173a5cc9e63201bfe9379ef89f3ece5d923d
